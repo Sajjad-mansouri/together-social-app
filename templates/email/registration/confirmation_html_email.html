@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            text-align: center;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="header">
+            <h1>Confirm Your Email</h1>
+            <p>Dear {{ user.get_username }},
+
+Welcome to {{ site_name }} !, You Succeessfully created an account ,now let's
+complete your registration:</p>
+<p><a href="{{ protocol }}://{{ domain }}{% url 'email_confirm' uidb64=uid token=token %}">Verify</a></p>
+<p>Thanks for using My site!"</p>
+<p>Sajjad Mansouri
+</p>
+        </div>
+
+
+    </div>
+</body>
+</html>
