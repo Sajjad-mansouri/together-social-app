@@ -1,0 +1,58 @@
+{%extends 'base.html'%}
+{%block body%}
+<div class="container">
+    <div class="cover-photo">
+        <img src="https://images.unsplash.com/photo-1565464027194-7957a2295fb7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80" class="profile">
+    </div>
+    <div class="profile-name">Beni Smith</div>
+    <p class="about">User Interface Designer and<br>front-end developer</p>
+    <button class="msg-btn">Message</button>
+    <button class="follow-btn">Following</button>
+    <div class="content">
+        <div class="card">
+            <div class="card__header">
+                <img src="https://source.unsplash.com/600x400/?car,automobile" alt="card__image" class="card__image" width="600">
+            </div>
+            <div class="card__body">
+                <span class="tag tag-red">Automobile</span>
+                <h4>Race to your heart content</h4>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi perferendis molestiae non nemo doloribus. Doloremque, nihil! At ea atque quidem!</p>
+            </div>
+            <div class="card__footer">
+                <div class="user">
+                    <img src="https://i.pravatar.cc/40?img=3" alt="user__image" class="user__image">
+                    <div class="user__info">
+                        <h5>John Doe</h5>
+                        <small>2d ago</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card__header">
+                <img src="https://source.unsplash.com/600x400/?car,automobile" alt="card__image" class="card__image" width="600">
+            </div>
+            <div class="card__body">
+
+                <h4>Race to your heart content</h4>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi perferendis molestiae non nemo doloribus. Doloremque, nihil! At ea atque quidem!</p>
+            </div>
+            <div class="card__footer">
+                <div class="user">
+
+                    <div class="user__info">
+                        
+                        <small>2d ago</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+    <div class="footer">
+        <button class="follow-btn"><i class="fa-solid fa-house"></i></button>
+        <button class="follow-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button class="follow-btn"><i class="fa-solid fa-user"></i></button>
+    </div>
+{%endblock%}

@@ -13,7 +13,7 @@ User_Model=get_user_model()
 
 class Profile(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
 	model=User_Model
-	template_name='profile/profile.html'
+	template_name='social/profile.html'
 	form_class=UserForm
 	success_message = "Profile successfully Updated"
 	def get_success_url(self):
@@ -23,7 +23,7 @@ class Profile(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
 		return self.request.user
 	def get_context_data(self,**kwargs):
 		context=super().get_context_data(**kwargs)
-		context['user_form']=UserInfoForm(instance=self.get_object().userinfo)
+		context['user_form']=ProfileForm(instance=self.get_object().profile)
 		return context
 
 
