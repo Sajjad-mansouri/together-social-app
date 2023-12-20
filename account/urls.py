@@ -4,7 +4,7 @@ from . import views
 from . import emailconf
 
 urlpatterns=[
-	path('profile',views.Profile.as_view(),name='profile'),
+	path('profile',views.UpdateProfile.as_view(),name='update-profile'),
 	path('register/',views.Register.as_view(),name='register'),
 	path('',include('django.contrib.auth.urls')),
 ]

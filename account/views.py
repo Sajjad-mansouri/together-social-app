@@ -11,9 +11,9 @@ from .emailconf import EmailConfirmation
 
 User_Model=get_user_model()
 
-class Profile(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
+class UpdateProfile(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
 	model=User_Model
-	template_name='social/profile.html'
+	template_name='social/update-profile.html'
 	form_class=UserForm
 	success_message = "Profile successfully Updated"
 	def get_success_url(self):

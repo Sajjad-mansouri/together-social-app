@@ -14,6 +14,7 @@ body{
   width: 80%;
   text-align: center;
   box-shadow: 0 10px 20px -10px rgba(0,0,0,.75);
+  position: relative;
 }
 
 .cover-photo{
@@ -75,6 +76,9 @@ button{
 .container i:hover{
   color: #03bfbc;
 }
+
+/*my css*/
+
 .content{
   margin-top: 20px;
 }
@@ -101,3 +105,57 @@ button{
 
 }
 
+
+/*form*/
+.add-form{
+  display: none;
+  width: 600px;
+  text-align: center;
+  padding: 1rem;
+  background-color: hsl(0, 0%, 100%);;
+  border: 4px solid hsl(0, 0%, 90%);
+  position: absolute;
+  left: 50%;
+  top:50%;
+  transform: translate(-50%, -50%);
+  
+}
+form div{
+  margin-top: 5px;
+
+}
+
+textarea,
+input,
+button{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border: 2px solid #333;
+  background-color: white;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  margin: 2px 0;
+  font: 1.25rem / 1.5 sans-serif;
+}
+
+label{
+  font: 1.25rem / 1.5 sans-serif;
+}
+
+textarea{
+  max-height: 10rem;
+}
+
+input::placeholder,
+textarea::placeholder{
+  opacity: 1;
+/*  color: hsl(213, 73%, 50%);*/
+}
+
+input::file-selector-button{
+  color:red;
+}
