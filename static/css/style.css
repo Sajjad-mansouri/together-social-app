@@ -66,6 +66,12 @@ button{
   background: #03bfbc;
   transition: .5s;
 }
+.active{
+  color: #231e39;
+  background: #03bfbc;
+
+}
+
 .container i{
   padding-left: 20px;
   font-size: 20px;
@@ -162,3 +168,4 @@ input::file-selector-button{
 .hidden{
   display: none;
 }
+

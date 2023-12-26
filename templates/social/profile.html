@@ -1,9 +1,15 @@
 {%extends 'base.html'%}
+{% load static%}
 {%load humanize%}
 {%block body%}
 <div class="container">
     <div class="cover-photo">
-        <img src="https://images.unsplash.com/photo-1565464027194-7957a2295fb7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80" class="profile">
+        <img src="
+        {%if user.profile.profile_image%}
+        {{user.profile.profile_image.url}}
+        {%else%}
+        {%static 'img/profile_image/blank-profile.png'%}
+        {%endif%}" class="profile">
     </div>
     <div class="profile-name">Beni Smith</div>
     <p class="about">User Interface Designer and<br>front-end developer</p>
@@ -53,12 +59,7 @@
     </div>
 
 </div>
-    <div class="footer">
-        <button class="follow-btn add-button"><i class="fa-solid fa-plus"></i></button>
-        <button class="follow-btn home-button"><i class="fa-solid fa-house"></i></button>
-        <button class="follow-btn seart-button"><i class="fa-solid fa-magnifying-glass"></i></button>
-        <button class="follow-btn profile-button"><i class="fa-solid fa-user"></i></button>
-    </div>
+
 
     {%include 'partials/_add-form.html'%}
 

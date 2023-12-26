@@ -19,7 +19,13 @@
     
 {%block body%}
 {%endblock%}
-
+    <div class="footer">
+        <button class="follow-btn add-button"><i class="fa-solid fa-plus"></i></button>
+        <button class="follow-btn home-button"><i class="fa-solid fa-house"></i></button>
+        <button class="follow-btn search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button class="follow-btn profile-button 
+        {%if request.path == '/profile/'%} active{%endif%}"><i class="fa-solid fa-user"></i></button>
+    </div>
 
 
 
