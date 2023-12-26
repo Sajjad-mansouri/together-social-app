@@ -5,10 +5,10 @@ function formModal(){
 	const addButton=document.querySelector('.add-button');
 	addButton.addEventListener('click',()=>{
 		
-		modal.style.display='block';
+		modal.classList.toggle('hidden');
 		window.addEventListener('mouseup',(event)=>{
-			if (!event.target.closest('.add-form')){
-				modal.style.display='none';
+			if (!event.target.closest('.add-form') && !event.target.closest('.add-button')){
+				modal.classList.add('hidden');
 			}
 		})
 	})
