@@ -1,4 +1,5 @@
 {%extends 'base.html'%}
+{%load humanize%}
 {%block body%}
 <div class="container">
     <div class="cover-photo">
@@ -8,6 +9,25 @@
     <p class="about">User Interface Designer and<br>front-end developer</p>
     <button class="msg-btn">Message</button>
     <button class="follow-btn">Following</button>
+
+        <div class="card hidden" >
+            <div class="card__header">
+                <img src="" alt="card__image" class="card__image" width="600">
+            </div>
+            <div class="card__body">
+
+                <h4 class='post-title'></h4>
+                <p class='post-text'></p>
+            </div>
+            <div class="card__footer">
+                <div class="user">
+
+                    <div class="user__info">
+                        <small class='post-created'></small>
+                    </div>
+                </div>
+            </div>
+        </div>
     <div class="content">
       {%for object in object_list%}
         <div class="card">
@@ -16,14 +36,14 @@
             </div>
             <div class="card__body">
 
-                <h4>{{object.title}}</h4>
-                <p>{{object.text}}</p>
+                <h4 class='post-title'>{{object.title}}</h4>
+                <p class='post-text'>{{object.text}}</p>
             </div>
             <div class="card__footer">
                 <div class="user">
 
                     <div class="user__info">
-                        <small>2d ago</small>
+                        <small class='post-created'>{{object.created|naturaltime}}</small>
                     </div>
                 </div>
             </div>

@@ -19,6 +19,9 @@ class Message(models.Model):
 	def __str__(self):
 		return f'{self.user}-{truncatechars(self.title,10)}'
 
+	class Meta:
+		ordering=['-created']
+
 
 
 

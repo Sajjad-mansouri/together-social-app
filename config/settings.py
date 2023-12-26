@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     #myapp
     'account.apps.AccountConfig',
@@ -52,7 +53,8 @@ INSTALLED_APPS = [
     #installed
     "crispy_forms",
     "crispy_bootstrap5",
-    'fontawesomefree'
+    'fontawesomefree',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -144,7 +146,7 @@ STATICFILES_DIRS=[
 MEDIA_URL='media/'
 MEDIA_ROOT=BASE_DIR/'media'
 
-
+LOGIN_REDIRECT_URL='profile'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -163,3 +165,13 @@ EMAIL_PORT = env('EMAIL_PORT')
 #crispy 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+REST_FRAMEWORK = {
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+
+}

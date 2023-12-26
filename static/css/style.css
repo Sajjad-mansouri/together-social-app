@@ -159,3 +159,7 @@ textarea::placeholder{
 input::file-selector-button{
   color:red;
 }
+
+.hidden{
+  display: none;
+}
