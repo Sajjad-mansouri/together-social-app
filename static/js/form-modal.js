@@ -3,14 +3,15 @@ import { getToken, login } from './get-token.js'
 // const modal = document.querySelector('.add-form');
 const searchInput = document.getElementById('search-input')
 const searchCard = document.querySelector('.search-card')
+const baseUrl=window.location.origin
 
-function formModal() {
-    document.querySelectorAll('button.btn-modal').forEach(btn => {
-        const data = btn.getAttribute('data-modal');
-        const modal = document.querySelector(`[data-modal="${data}"]`)
+function formModal(btn) {
+    	console.log(btn)
+        const data = btn.getAttribute('data-type');
+        const modal = document.querySelector(`div[data-modal="${data}"]`)
         console.log(modal)
         btn.addEventListener('click', () => {
-            console.log('add')
+        	console.log('toggle add')
             modal.classList.toggle('hidden');
         })
         window.addEventListener('mouseup', (event) => {
@@ -21,12 +22,15 @@ function formModal() {
                 })
             }
         })
-    });
+    
 
 
 }
 
 function addPost() {
+	const btn =document.querySelector('.add-button')
+	console.log('add function')
+    formModal(btn)
     const form = document.querySelector('.add-form form')
 
     form.addEventListener('submit', (e) => {
@@ -35,7 +39,6 @@ function addPost() {
 
         console.log(formData)
         getToken().then((accessToken) => {
-            console.log(accessToken)
             fetch('http://localhost:8000/api/', {
                     method: 'POST',
                     headers: {
@@ -50,7 +53,7 @@ function addPost() {
                     }
                 })
                 .then((data) => {
-                    console.log(data);
+                    const modal=document.querySelector('.add-form')
                     modal.style.display = 'none';
                     form.reset();
                     const content = document.querySelector('.content');
@@ -61,7 +64,7 @@ function addPost() {
                     const text = cloned.querySelector('.post-text');
                     const img = cloned.querySelector('img');
                     const postCreated = cloned.querySelector('.post-created');
-                    console.log(postCreated);
+                    
                     img.src = data.image;
                     title.textContent = data.title;
                     text.textContent = data.text;
@@ -77,10 +80,7 @@ function addPost() {
 }
 
 
-if (window.location.pathname === '/profile/') {
-    formModal()
-    addPost()
-}
+
 
 const loginForm = document.querySelector('.login')
 if (loginForm) {
@@ -89,8 +89,11 @@ if (loginForm) {
     loginForm.addEventListener('submit', (event) => login(event))
 }
 
-function search() {
-    searchInput.addEventListener('input', (event) => {
+function search(btn) {
+
+        
+        searchInput.addEventListener('input',(event)=>{
+            
         const search = event.target.value.trim();
 
         if (event.target.value.trim() != "") {
@@ -116,7 +119,7 @@ function search() {
                             data.forEach((user) => {
                                 const li = document.createElement('li');
                                 const link = document.createElement('a')
-                                link.setAttribute('href', user.username)
+                                link.setAttribute('href', baseUrl+'/profile/'+user.username)
                                 link.textContent = user.username;
                                 li.append(link);
                                 ul.append(li);
@@ -134,17 +137,9 @@ function search() {
         } else {
             searchCard.classList.add('hidden');
         }
+        })
 
-    })
-}
-
-if (searchInput) {
-    search();
-    document.addEventListener('mouseup', (event) => {
-        if (!event.target.closest('.card')) {
-            searchCard.classList.add('hidden');
-        }
-    })
+    
 }
 
 
@@ -191,10 +186,28 @@ async function follow(btn) {
 
 }
 
-const followBtns = document.querySelectorAll('.follow-btn')
-if (followBtns) {
-
-    followBtns.forEach(btn => {
+document.querySelectorAll('.btn').forEach(btn=>{
+    const dataType=btn.getAttribute('data-type')
+    if (dataType=='follow' || dataType=='unfollow'){
         btn.addEventListener('click', ()=>follow(btn))
-    })
-}
+    }else if(dataType=='add'){
+        if (window.location.pathname === '/profile/') {
+
+                addPost()
+            }
+
+    }else if(dataType=='search'){
+        formModal(btn)
+        btn.addEventListener('click', ()=>search(btn))
+    }else if(dataType=='home'){
+        btn.addEventListener('click',()=>{
+
+        window.location.pathname='home'
+        })
+    }else if(dataType=='profile'){
+        btn.addEventListener('click',()=>{
+            window.location.pathname='profile'
+        })
+    }
+
+})

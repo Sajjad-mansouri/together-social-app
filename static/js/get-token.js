@@ -3,8 +3,7 @@ export async function getToken(){
 
             var accessToken =  localStorage.getItem('access_token');
             const refreshToken =  localStorage.getItem('refresh_token');      
-            console.log('access_token',accessToken)
-            console.log('refresh token',refreshToken)
+
             if(!refreshToken ){
                 console.log('dont exist refresh token')
             window.location.href=origin+'/account/login'
@@ -65,7 +64,7 @@ export async function login(event){
         body:JSON.stringify(Object.fromEntries(formData))
     });
     const data=await response.json();
-    console.log(data)
+    
     localStorage.setItem('access_token', data.access);
     localStorage.setItem('refresh_token', data.refresh);
     form.submit()

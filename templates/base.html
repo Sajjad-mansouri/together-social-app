@@ -20,11 +20,10 @@
 {%block body%}
 {%endblock%}
     <div class="footer">
-        <button class="follow-btn add-button btn-modal" data-modal='add'><i class="fa-solid fa-plus"></i></button>
-        <button class="follow-btn home-button"><i class="fa-solid fa-house"></i></button>
-        <button class="follow-btn search-button btn-modal" id='search' data-modal='search'><i class="fa-solid fa-magnifying-glass"></i></button>
-        <button class="follow-btn profile-button 
-        {%if request.path == '/profile/'%} active{%endif%}" id='profile'><i class="fa-solid fa-user"></i></button>
+        <button class="btn add-button btn-modal" data-type='add'><i class="fa-solid fa-plus"></i></button>
+        <button class="btn home-button" data-type='home'><i class="fa-solid fa-house"></i></button>
+        <button class="btn search-button btn-modal" id='search' data-type='search'><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button class="btn profile-button {%if request.path == '/profile/'%} btn-active{%endif%}" id='profile' data-type='profile'><i class="fa-solid fa-user"></i></button>
     </div>
 
 

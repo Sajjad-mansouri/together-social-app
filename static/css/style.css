@@ -47,7 +47,7 @@ body{
 button{
   margin: 10px 0 10px 0;
 }
-.msg-btn, .follow-btn{
+.msg-btn, .btn{
   background: #03bfbc;
   border: 1px solid #03bfbc;
   padding: 10px 25px;
@@ -56,17 +56,17 @@ button{
   font-family: Montserrat, sans-serif;
   cursor: pointer;
 }
-.follow-btn{
+.btn{
   margin-left: 10px;
   background: transparent;
   color: #02899c;
 }
-.follow-btn:hover{
+.btn:hover{
   color: #231e39;
   background: #03bfbc;
   transition: .5s;
 }
-.active{
+.btn-active{
   color: #231e39;
   background: #03bfbc;
 

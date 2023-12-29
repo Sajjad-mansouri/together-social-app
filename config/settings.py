@@ -147,6 +147,7 @@ MEDIA_URL='media/'
 MEDIA_ROOT=BASE_DIR/'media'
 
 LOGIN_REDIRECT_URL='profile'
+LOGIN_URL='login'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

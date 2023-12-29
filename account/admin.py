@@ -1,5 +1,11 @@
 from django.contrib import admin
-from .models import Profile,Contact
+from django.contrib.auth.admin import UserAdmin
+
+from .models import Profile,Contact,MyUser
+
+class MyUserAdmin(UserAdmin):
+	pass
+admin.site.register(MyUser,MyUserAdmin)
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):

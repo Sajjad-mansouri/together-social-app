@@ -3,6 +3,7 @@ from django.views.generic import TemplateView,ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from .models import Message
 
@@ -38,3 +39,9 @@ class Search(LoginRequiredMixin,ListView):
 
 	def get_queryset(self):
 		return UserModel.objects.all()
+
+class Home(LoginRequiredMixin,ListView):
+	template_name='social/home.html'
+	def get_queryset(self):
+		following=self.request.user.rel_from.values_list('to_user',flat=True)
+		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user))
