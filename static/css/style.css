@@ -113,16 +113,21 @@ button{
 
 
 /*form*/
-.add-form{
-  width: 600px;
-  text-align: center;
-  padding: 1rem;
-  background-color: hsl(0, 0%, 100%);
-  border: 4px solid hsl(0, 0%, 90%);
-  position: fixed;
+
+.form-modal{
+    position: fixed;
   left: 50%;
   top:50%;
   transform: translate(-50%, -50%);
+    text-align: center;
+  padding: 1rem;
+  background-color: hsl(0, 0%, 100%);
+  border: 4px solid hsl(0, 0%, 90%);
+}
+.add-form{
+  width: 600px;
+
+
   
 }
 form div{
@@ -169,3 +174,9 @@ input::file-selector-button{
   display: none;
 }
 
+
+.search{
+  height: 500px;
+  width: 600px;
+
+}

@@ -4,11 +4,11 @@ from django.conf import settings
 
 class MyUser(AbstractUser):
 	email=models.EmailField(unique=True)
-	contact=models.ManyToManyField('self',through='Contact',symmetrical=False)
 
 class Profile(models.Model):
 	user=models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 	profile_image=models.ImageField(upload_to='profile_image/%Y/',null=True,blank=True)
+	contact=models.ManyToManyField('self',through='Contact',symmetrical=False)
 	
 	birth_day=models.DateField(blank=True,null=True)
 
@@ -20,3 +20,7 @@ class Contact(models.Model):
 	from_user=models.ForeignKey(MyUser,on_delete=models.CASCADE,related_name='rel_from')
 	to_user=models.ForeignKey(MyUser,on_delete=models.CASCADE,related_name='rel_to')
 	created=models.DateTimeField(auto_now_add=True)
+	class Meta:
+		unique_together=['from_user','to_user']
+
+

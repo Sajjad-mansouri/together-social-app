@@ -11,29 +11,36 @@
         {%static 'img/profile_image/blank-profile.png'%}
         {%endif%}" class="profile">
     </div>
-    <div class="profile-name">Beni Smith</div>
+    <div class="profile-name">{{owner.username}}</div>
     <p class="about">User Interface Designer and<br>front-end developer</p>
+    {%if owner != user%}
     <button class="msg-btn">Message</button>
-    <button class="follow-btn">Following</button>
+    {%if access%}
+    <button class="follow-btn " data-type='unfollow' data-owner='{{owner.id}}' data-contact='{{contact_id}}'>UnFollow</button>
+    {%else%}
+    <button class="follow-btn " data-type='follow' data-owner='{{owner.id}}' data-contact='{{contact_id}}'>Follow</button>
 
-        <div class="card hidden" >
-            <div class="card__header">
-                <img src="" alt="card__image" class="card__image" width="600">
-            </div>
-            <div class="card__body">
+    {%endif%}
+    {%endif%}
+{%if user == owner or access %}
+    <div class="card hidden" >
+        <div class="card__header">
+            <img src="" alt="card__image" class="card__image" width="600">
+        </div>
+        <div class="card__body">
 
-                <h4 class='post-title'></h4>
-                <p class='post-text'></p>
-            </div>
-            <div class="card__footer">
-                <div class="user">
+            <h4 class='post-title'></h4>
+            <p class='post-text'></p>
+        </div>
+        <div class="card__footer">
+            <div class="user">
 
-                    <div class="user__info">
-                        <small class='post-created'></small>
-                    </div>
+                <div class="user__info">
+                    <small class='post-created'></small>
                 </div>
             </div>
         </div>
+    </div>
     <div class="content">
       {%for object in object_list%}
         <div class="card">
@@ -57,10 +64,13 @@
         {%endfor%}
 
     </div>
-
+    {%else%}
+    follow {{owner.username}}
+{%endif%}
 </div>
 
 
     {%include 'partials/_add-form.html'%}
+    {%include 'partials/_search.html'%}
 
 {%endblock%}

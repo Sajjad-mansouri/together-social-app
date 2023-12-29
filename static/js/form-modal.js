@@ -1,27 +1,34 @@
 import { getToken, login } from './get-token.js'
 
-const modal = document.querySelector('.add-form');
+// const modal = document.querySelector('.add-form');
 const searchInput = document.getElementById('search-input')
-const divCard = document.querySelector('.card')
+const searchCard = document.querySelector('.search-card')
 
 function formModal() {
-    const addButton = document.querySelector('.add-button');
-    addButton.addEventListener('click', () => {
-
-        modal.classList.toggle('hidden');
+    document.querySelectorAll('button.btn-modal').forEach(btn => {
+        const data = btn.getAttribute('data-modal');
+        const modal = document.querySelector(`[data-modal="${data}"]`)
+        console.log(modal)
+        btn.addEventListener('click', () => {
+            console.log('add')
+            modal.classList.toggle('hidden');
+        })
         window.addEventListener('mouseup', (event) => {
-            if (!event.target.closest('.add-form') && !event.target.closest('.add-button')) {
+            if (!event.target.closest('.form-modal') && !event.target.closest('.btn-modal')) {
                 modal.classList.add('hidden');
+                modal.querySelectorAll('input').forEach(input => {
+                    input.value = '';
+                })
             }
         })
-    })
+    });
+
 
 }
 
 function addPost() {
-    const formDiv = document.querySelector('.add-form');
-    const form = formDiv.querySelector('form')
-    console.log(form)
+    const form = document.querySelector('.add-form form')
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const formData = new FormData(form);
@@ -101,28 +108,31 @@ function search() {
                     })
                     .then((data) => {
 
-                        divCard.classList.remove('hidden')
-                        divCard.textContent = ''
+                        searchCard.classList.remove('hidden')
+                        searchCard.textContent = ''
                         const ul = document.createElement('ul');
-                        if (data.length>=1){
+                        if (data.length >= 1) {
 
-                        data.forEach((user) => {
+                            data.forEach((user) => {
+                                const li = document.createElement('li');
+                                const link = document.createElement('a')
+                                link.setAttribute('href', user.username)
+                                link.textContent = user.username;
+                                li.append(link);
+                                ul.append(li);
+                            })
+                        } else {
                             const li = document.createElement('li');
-                            li.textContent = user.username;
-                            ul.append(li);
-                        })
-                    }else{
-                    	const li = document.createElement('li');
-                    	li.textContent='no user found';
-                    	ul.append(li)
-                    }
-                        divCard.append(ul);
+                            li.textContent = 'no user found';
+                            ul.append(li)
+                        }
+                        searchCard.append(ul);
 
                     })
             })
 
-        }else{
-        	divCard.classList.add('hidden');
+        } else {
+            searchCard.classList.add('hidden');
         }
 
     })
@@ -132,7 +142,59 @@ if (searchInput) {
     search();
     document.addEventListener('mouseup', (event) => {
         if (!event.target.closest('.card')) {
-            divCard.classList.add('hidden');
+            searchCard.classList.add('hidden');
         }
+    })
+}
+
+
+async function follow(btn) {
+    const accessToken = await getToken()
+
+    const type = btn.getAttribute('data-type');
+    const toUser = btn.getAttribute('data-owner');
+    const contact=btn.getAttribute('data-contact')
+    const body = { 'to_user': toUser }
+    if (type === 'follow') {
+
+        const jsBody = JSON.stringify(body)
+        const response = await fetch('http://localhost:8000/api/contact/', {
+            method: 'POST',
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+            },
+            body: jsBody
+        })
+        if (response.ok){
+        	const data=await response.json()
+        	btn.setAttribute('data-contact',data.id)
+        	btn.textContent='UnFollow'
+        	btn.setAttribute('data-type','unfollow')
+        }
+        
+    } else if (type === 'unfollow') {
+        const response = await fetch(`http://localhost:8000/api/contact/${contact}`, {
+            method: 'Delete',
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+
+        })
+       	if (response.ok){
+       		
+       		btn.setAttribute('data-contact','')
+       		btn.setAttribute('data-type','follow')
+       		btn.textContent='Follow'
+       	}
+    }
+
+}
+
+const followBtns = document.querySelectorAll('.follow-btn')
+if (followBtns) {
+
+    followBtns.forEach(btn => {
+        btn.addEventListener('click', ()=>follow(btn))
     })
 }

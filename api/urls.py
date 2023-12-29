@@ -10,6 +10,8 @@ urlpatterns=[
 	
 	path('',views.PostListApiView.as_view(),name='post_list'),
 	path('users/',views.UserListAPiView.as_view(),name='user_list'),
+	path('contact/',views.ContactApiView.as_view(),name='contact'),
+	path('contact/<int:pk>/',views.ContactDetailApiView.as_view(),name='contact_detail'),
 
 	path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
