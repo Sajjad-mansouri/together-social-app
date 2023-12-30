@@ -14,3 +14,4 @@ class ProfileAdmin(admin.ModelAdmin):
 @admin.register(Contact)
 class Contact(admin.ModelAdmin):
 	list_display=['from_user','to_user']
+

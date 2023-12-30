@@ -13,6 +13,9 @@ urlpatterns=[
 	path('contact/',views.ContactApiView.as_view(),name='contact'),
 	path('contact/<int:pk>/',views.ContactDetailApiView.as_view(),name='contact_detail'),
 
+	path('like/',views.LikeApiView.as_view(),name='like'),
+	path('like/<int:pk>/',views.LikeDetailApiView.as_view(),name='like_detail'),
+
 	path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 

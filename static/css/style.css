@@ -180,3 +180,7 @@ input::file-selector-button{
   width: 600px;
 
 }
+
+.liked{
+  color: red;
+}

@@ -2,8 +2,8 @@ from rest_framework import generics
 from rest_framework.parsers import FormParser,MultiPartParser
 from django.contrib.auth import get_user_model
 
-from .serializers import PostSerializer,UserSerializer,ContactSerializer
-from social.models import Message
+from .serializers import PostSerializer,UserSerializer,ContactSerializer,LikeSerializer
+from social.models import Message,Like
 from account.models import Contact
 UserModel=get_user_model()
 
@@ -26,11 +26,16 @@ class ContactApiView(generics.ListCreateAPIView):
 	serializer_class=ContactSerializer
 	queryset=Contact.objects.all()
 
-	def get_serializer_context(self):
-		context=super().get_serializer_context()
-		context['random']='random'
-		return context
 
 class ContactDetailApiView(generics.RetrieveDestroyAPIView):
 	serializer_class=ContactSerializer
 	queryset=Contact.objects.all()
+
+class LikeApiView(generics.ListCreateAPIView):
+	serializer_class=LikeSerializer
+	queryset=Like.objects.all()
+
+
+class LikeDetailApiView(generics.RetrieveDestroyAPIView):
+	serializer_class=LikeSerializer
+	queryset=Like.objects.all()

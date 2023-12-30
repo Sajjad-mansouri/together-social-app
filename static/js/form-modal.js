@@ -3,33 +3,33 @@ import { getToken, login } from './get-token.js'
 // const modal = document.querySelector('.add-form');
 const searchInput = document.getElementById('search-input')
 const searchCard = document.querySelector('.search-card')
-const baseUrl=window.location.origin
+const baseUrl = window.location.origin
 
 function formModal(btn) {
-    	console.log(btn)
-        const data = btn.getAttribute('data-type');
-        const modal = document.querySelector(`div[data-modal="${data}"]`)
-        console.log(modal)
-        btn.addEventListener('click', () => {
-        	console.log('toggle add')
-            modal.classList.toggle('hidden');
-        })
-        window.addEventListener('mouseup', (event) => {
-            if (!event.target.closest('.form-modal') && !event.target.closest('.btn-modal')) {
-                modal.classList.add('hidden');
-                modal.querySelectorAll('input').forEach(input => {
-                    input.value = '';
-                })
-            }
-        })
-    
+    console.log(btn)
+    const data = btn.getAttribute('data-type');
+    const modal = document.querySelector(`div[data-modal="${data}"]`)
+    console.log(modal)
+    btn.addEventListener('click', () => {
+        console.log('toggle add')
+        modal.classList.toggle('hidden');
+    })
+    window.addEventListener('mouseup', (event) => {
+        if (!event.target.closest('.form-modal') && !event.target.closest('.btn-modal')) {
+            modal.classList.add('hidden');
+            modal.querySelectorAll('input').forEach(input => {
+                input.value = '';
+            })
+        }
+    })
+
 
 
 }
 
 function addPost() {
-	const btn =document.querySelector('.add-button')
-	console.log('add function')
+    const btn = document.querySelector('.add-button')
+    console.log('add function')
     formModal(btn)
     const form = document.querySelector('.add-form form')
 
@@ -53,7 +53,7 @@ function addPost() {
                     }
                 })
                 .then((data) => {
-                    const modal=document.querySelector('.add-form')
+                    const modal = document.querySelector('.add-form')
                     modal.style.display = 'none';
                     form.reset();
                     const content = document.querySelector('.content');
@@ -64,7 +64,7 @@ function addPost() {
                     const text = cloned.querySelector('.post-text');
                     const img = cloned.querySelector('img');
                     const postCreated = cloned.querySelector('.post-created');
-                    
+
                     img.src = data.image;
                     title.textContent = data.title;
                     text.textContent = data.text;
@@ -91,9 +91,9 @@ if (loginForm) {
 
 function search(btn) {
 
-        
-        searchInput.addEventListener('input',(event)=>{
-            
+
+    searchInput.addEventListener('input', (event) => {
+
         const search = event.target.value.trim();
 
         if (event.target.value.trim() != "") {
@@ -119,7 +119,7 @@ function search(btn) {
                             data.forEach((user) => {
                                 const li = document.createElement('li');
                                 const link = document.createElement('a')
-                                link.setAttribute('href', baseUrl+'/profile/'+user.username)
+                                link.setAttribute('href', baseUrl + '/profile/' + user.username)
                                 link.textContent = user.username;
                                 li.append(link);
                                 ul.append(li);
@@ -137,9 +137,9 @@ function search(btn) {
         } else {
             searchCard.classList.add('hidden');
         }
-        })
+    })
 
-    
+
 }
 
 
@@ -148,7 +148,7 @@ async function follow(btn) {
 
     const type = btn.getAttribute('data-type');
     const toUser = btn.getAttribute('data-owner');
-    const contact=btn.getAttribute('data-contact')
+    const contact = btn.getAttribute('data-contact')
     const body = { 'to_user': toUser }
     if (type === 'follow') {
 
@@ -161,13 +161,13 @@ async function follow(btn) {
             },
             body: jsBody
         })
-        if (response.ok){
-        	const data=await response.json()
-        	btn.setAttribute('data-contact',data.id)
-        	btn.textContent='UnFollow'
-        	btn.setAttribute('data-type','unfollow')
+        if (response.ok) {
+            const data = await response.json()
+            btn.setAttribute('data-contact', data.id)
+            btn.textContent = 'UnFollow'
+            btn.setAttribute('data-type', 'unfollow')
         }
-        
+
     } else if (type === 'unfollow') {
         const response = await fetch(`http://localhost:8000/api/contact/${contact}`, {
             method: 'Delete',
@@ -176,38 +176,98 @@ async function follow(btn) {
             }
 
         })
-       	if (response.ok){
-       		
-       		btn.setAttribute('data-contact','')
-       		btn.setAttribute('data-type','follow')
-       		btn.textContent='Follow'
-       	}
+        if (response.ok) {
+
+            btn.setAttribute('data-contact', '')
+            btn.setAttribute('data-type', 'follow')
+            btn.textContent = 'Follow'
+        }
     }
 
 }
 
-document.querySelectorAll('.btn').forEach(btn=>{
-    const dataType=btn.getAttribute('data-type')
-    if (dataType=='follow' || dataType=='unfollow'){
-        btn.addEventListener('click', ()=>follow(btn))
-    }else if(dataType=='add'){
+document.querySelectorAll('.btn').forEach(btn => {
+    const dataType = btn.getAttribute('data-type')
+    if (dataType == 'follow' || dataType == 'unfollow') {
+        btn.addEventListener('click', () => follow(btn))
+    } else if (dataType == 'add') {
         if (window.location.pathname === '/profile/') {
 
-                addPost()
-            }
+            addPost()
+        }
 
-    }else if(dataType=='search'){
+    } else if (dataType == 'search') {
         formModal(btn)
-        btn.addEventListener('click', ()=>search(btn))
-    }else if(dataType=='home'){
-        btn.addEventListener('click',()=>{
+        btn.addEventListener('click', () => search(btn))
+    } else if (dataType == 'home') {
+        btn.addEventListener('click', () => {
 
-        window.location.pathname='home'
+            window.location.pathname = 'home'
         })
-    }else if(dataType=='profile'){
-        btn.addEventListener('click',()=>{
-            window.location.pathname='profile'
+    } else if (dataType == 'profile') {
+        btn.addEventListener('click', () => {
+            window.location.pathname = 'profile'
         })
     }
 
 })
+async function like(div) {
+      
+        const dataType = div.getAttribute('data-type');
+       
+        const dataPost = div.getAttribute('data-post');
+        const dataLike = div.getAttribute('data-like');
+
+        const accessToken = await getToken()
+        if (dataType === 'True') {
+            
+                    const response = await fetch(baseUrl + `/api/like/${dataLike}`, {
+                        method: "DELETE",
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
+                    })
+                    console.log(response)
+                    if (response.ok) {
+                        
+                        const likeIcon=div.querySelector('.fa-heart')
+                        const span=div.querySelector('span')
+                        
+                        likeIcon.style.color='white'
+                        div.setAttribute('data-type','False')
+                        span.textContent=Number(span.textContent)-1
+                    }
+                
+            }else if(dataType === 'False'){
+                const body={'post':dataPost}
+                
+                    const response=await fetch(baseUrl+'/api/like/',{
+                        method:'POST',
+                        headers:{
+                            'Authorization' :`Bearer ${accessToken}`,
+                            'Content-Type':'application/json'
+                        },
+                        body:JSON.stringify(body)
+                    })
+                    console.log(response)
+
+                    if (response.ok){
+                        const data =await response.json()
+                        console.log(data)
+                        const likeIcon=div.querySelector('.fa-heart')
+                        const span=div.querySelector('span')
+                        likeIcon.style.color = 'red';
+                        div.setAttribute('data-type','True')
+                        div.setAttribute('data-like',data.id)
+                        span.textContent=Number(span.textContent)+1
+                    }
+                
+            }
+        }
+
+        document.querySelectorAll('.like').forEach(div => {
+            div.addEventListener('click', (event) => {
+                like(div)
+
+            })
+        })

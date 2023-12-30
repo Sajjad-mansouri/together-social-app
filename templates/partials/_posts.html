@@ -1,4 +1,5 @@
     {%load humanize%}
+    {%load social_tags%}
     <div class="card hidden" >
         <div class="card__header">
             <img src="" alt="card__image" class="card__image" width="600">
@@ -24,6 +25,15 @@
                 <img src="{{object.image.url}}" alt="card__image" class="card__image" width="600">
             </div>
             <div class="card__body">
+                {%with object.id as post%}
+                {%liked post as is_liked %}
+                <div class='like' data-type='{{is_liked}}' data-post='{{object.id}}'data-like='{% get_like_id post %}'>
+                   
+                    <i class="fa-solid fa-heart {%if is_liked%}liked{%endif%}"></i>
+                    <span>{%count_like post%}</span>
+                    
+                </div>
+                {%endwith%}
 
                 <h4 class='post-title'>{{object.title}}</h4>
                 <p class='post-text'>{{object.text}}</p>

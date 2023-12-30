@@ -15,7 +15,7 @@ class Message(models.Model):
 	image=models.ImageField(upload_to=custom_upload)
 	created=models.DateTimeField(auto_now_add=True)
 	updated=models.DateTimeField(auto_now=True)
-
+	like=models.ManyToManyField(settings.AUTH_USER_MODEL,through='Like')
 	def __str__(self):
 		return f'{self.user}-{truncatechars(self.title,10)}'
 
@@ -24,5 +24,11 @@ class Message(models.Model):
 
 
 
+class Like(models.Model):
+	user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='likes')
+	post=models.ForeignKey(Message,on_delete=models.CASCADE,related_name='likes')
+	created=models.DateTimeField(auto_now_add=True)
 
+	class Meta:
+		unique_together=['user','post']
 

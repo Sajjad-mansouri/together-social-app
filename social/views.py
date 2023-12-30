@@ -45,3 +45,5 @@ class Home(LoginRequiredMixin,ListView):
 	def get_queryset(self):
 		following=self.request.user.rel_from.values_list('to_user',flat=True)
 		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user))
+
+
