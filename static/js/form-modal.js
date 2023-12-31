@@ -244,6 +244,11 @@ document.querySelectorAll('.btn').forEach(btn => {
                 changeProfile(userJsonFormData)
 
             })
+        }else if(dataType=='liked-post'){
+            btn.addEventListener('click',()=>{
+                console.log(window.location)
+                window.location.href=origin+'/liked-post'
+            })
         }
 
 })

@@ -48,5 +48,8 @@ class Home(LoginRequiredMixin,ListView):
 		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user))
 
 
-
+class LikedPost(LoginRequiredMixin,ListView):
+	template_name='social/home.html'
+	def get_queryset(self):
+		return Message.objects.filter(likes__user=self.request.user)
 
