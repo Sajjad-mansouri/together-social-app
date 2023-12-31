@@ -184,3 +184,31 @@ input::file-selector-button{
 .liked{
   color: red;
 }
+
+.setting{
+  position: relative;
+}
+.menu{
+  position: absolute;
+  right: 0px;
+  top: 0;
+
+  color: black;
+}
+.menu svg{
+  font-size: 2rem;
+}
+.menu div{
+  position: absolute;
+
+  right: 0;
+  z-index: 1;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 15px;
+}
+.menu div button{
+  width: 100px;
+  box-sizing: border-box;
+}
+.menu div button:hover{
+  background-color: #ffc595;
+}

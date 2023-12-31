@@ -1,4 +1,5 @@
 import { getToken, login } from './get-token.js'
+import {imageUpload,changeProfile} from './profile.js'
 
 // const modal = document.querySelector('.add-form');
 const searchInput = document.getElementById('search-input')
@@ -191,10 +192,10 @@ document.querySelectorAll('.btn').forEach(btn => {
     if (dataType == 'follow' || dataType == 'unfollow') {
         btn.addEventListener('click', () => follow(btn))
     } else if (dataType == 'add') {
-        if (window.location.pathname === '/profile/') {
 
-            addPost()
-        }
+
+        addPost()
+
 
     } else if (dataType == 'search') {
         formModal(btn)
@@ -208,66 +209,110 @@ document.querySelectorAll('.btn').forEach(btn => {
         btn.addEventListener('click', () => {
             window.location.pathname = 'profile'
         })
-    }
+    } else if (dataType == 'logout') {
+        btn.addEventListener('click', () => {
+
+            const logout = document.querySelector('.logout');
+            logout.submit()
+        })
+    } else if (dataType == 'info') {
+        btn.addEventListener('click', () => {
+            window.location.pathname = 'account/profile'
+        })
+    } else if (dataType == 'profile-image'){
+            btn.addEventListener('click', () => {
+                console.log('profile')
+                imageUpload(btn);
+            })
+        }else if (dataType=='submit'){
+            btn.addEventListener('click',(event)=>{
+                event.preventDefault();
+                const profileForm = document.querySelector('#user-form')
+                const formData = new FormData(profileForm);
+                const email=document.querySelector('#email').getAttribute('data-current');
+                const username=document.querySelector('#username').getAttribute('data-current');
+                if (formData.get('email')===email){
+                    formData.delete('email')
+                }
+                if (formData.get('username')===username){
+                    formData.delete('username')
+                }
+
+                const formDataObject = Object.fromEntries(formData.entries());
+                const userFormData={'user':formDataObject}
+                const userJsonFormData = JSON.stringify(userFormData);
+                changeProfile(userJsonFormData)
+
+            })
+        }
 
 })
 async function like(div) {
-      
-        const dataType = div.getAttribute('data-type');
-       
-        const dataPost = div.getAttribute('data-post');
-        const dataLike = div.getAttribute('data-like');
 
-        const accessToken = await getToken()
-        if (dataType === 'True') {
-            
-                    const response = await fetch(baseUrl + `/api/like/${dataLike}`, {
-                        method: "DELETE",
-                        headers: {
-                            'Authorization': `Bearer ${accessToken}`
-                        }
-                    })
-                    console.log(response)
-                    if (response.ok) {
-                        
-                        const likeIcon=div.querySelector('.fa-heart')
-                        const span=div.querySelector('span')
-                        
-                        likeIcon.style.color='white'
-                        div.setAttribute('data-type','False')
-                        span.textContent=Number(span.textContent)-1
-                    }
-                
-            }else if(dataType === 'False'){
-                const body={'post':dataPost}
-                
-                    const response=await fetch(baseUrl+'/api/like/',{
-                        method:'POST',
-                        headers:{
-                            'Authorization' :`Bearer ${accessToken}`,
-                            'Content-Type':'application/json'
-                        },
-                        body:JSON.stringify(body)
-                    })
-                    console.log(response)
+    const dataType = div.getAttribute('data-type');
 
-                    if (response.ok){
-                        const data =await response.json()
-                        console.log(data)
-                        const likeIcon=div.querySelector('.fa-heart')
-                        const span=div.querySelector('span')
-                        likeIcon.style.color = 'red';
-                        div.setAttribute('data-type','True')
-                        div.setAttribute('data-like',data.id)
-                        span.textContent=Number(span.textContent)+1
-                    }
-                
+    const dataPost = div.getAttribute('data-post');
+    const dataLike = div.getAttribute('data-like');
+
+    const accessToken = await getToken()
+    if (dataType === 'True') {
+
+        const response = await fetch(baseUrl + `/api/like/${dataLike}`, {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
             }
+        })
+        console.log(response)
+        if (response.ok) {
+
+            const likeIcon = div.querySelector('.fa-heart')
+            const span = div.querySelector('span')
+
+            likeIcon.style.color = 'white'
+            div.setAttribute('data-type', 'False')
+            span.textContent = Number(span.textContent) - 1
         }
 
-        document.querySelectorAll('.like').forEach(div => {
-            div.addEventListener('click', (event) => {
-                like(div)
+    } else if (dataType === 'False') {
+        const body = { 'post': dataPost }
 
-            })
+        const response = await fetch(baseUrl + '/api/like/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
         })
+        console.log(response)
+
+        if (response.ok) {
+            const data = await response.json()
+            console.log(data)
+            const likeIcon = div.querySelector('.fa-heart')
+            const span = div.querySelector('span')
+            likeIcon.style.color = 'red';
+            div.setAttribute('data-type', 'True')
+            div.setAttribute('data-like', data.id)
+            span.textContent = Number(span.textContent) + 1
+        }
+
+    }
+}
+
+document.querySelectorAll('.like').forEach(div => {
+    div.addEventListener('click', (event) => {
+        like(div)
+
+    })
+})
+
+console.log(window.location.pathname)
+if (window.location.pathname === '/profile/') {
+    const menu = document.querySelector('.menu');
+    menu.addEventListener('click', () => {
+        const div = menu.querySelector('div');
+        div.classList.toggle('hidden')
+    })
+}

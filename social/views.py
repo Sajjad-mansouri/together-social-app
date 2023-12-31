@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView,ListView
+from django.views.generic import TemplateView,ListView,UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
@@ -13,6 +13,7 @@ class Index(TemplateView):
 
 class Profile(LoginRequiredMixin,ListView):
 	template_name='social/profile.html'
+	
 
 	def get_queryset(self):
 		username=self.kwargs.get('username')
@@ -45,5 +46,7 @@ class Home(LoginRequiredMixin,ListView):
 	def get_queryset(self):
 		following=self.request.user.rel_from.values_list('to_user',flat=True)
 		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user))
+
+
 
 
