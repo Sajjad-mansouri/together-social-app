@@ -9,6 +9,8 @@ class Profile(models.Model):
 	user=models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 	profile_image=models.ImageField(upload_to='profile_image/%Y/',null=True,blank=True)
 	contact=models.ManyToManyField('self',through='Contact',symmetrical=False)
+	bio=models.TextField(blank=True)
+	link=models.URLField(blank=True)
 	
 	birth_day=models.DateField(blank=True,null=True)
 

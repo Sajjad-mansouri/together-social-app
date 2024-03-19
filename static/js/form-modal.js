@@ -274,7 +274,7 @@ async function like(div) {
             const likeIcon = div.querySelector('.fa-heart')
             const span = div.querySelector('span')
 
-            likeIcon.style.color = 'white'
+            likeIcon.style.color = 'black'
             div.setAttribute('data-type', 'False')
             span.textContent = Number(span.textContent) - 1
         }

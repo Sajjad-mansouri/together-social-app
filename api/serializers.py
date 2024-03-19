@@ -7,10 +7,25 @@ from social.models import Like
 
 UserModel=get_user_model()
 
+
 class PostSerializer(serializers.ModelSerializer):
+	def get_author(self,obj):
+		try:
+			image_url=obj.user.profile.profile_image.url
+		except ValueError:
+
+			image_url=''
+		return {
+			'username':obj.user.username,
+			'profile_image':image_url
+		}
+	owner=serializers.SerializerMethodField('get_author')
 	class Meta:
 		model=Message
-		fields='__all__'
+		fields=['id','title','text','image','created','owner','user']
+		read_only_fields=['owner']
+
+
 
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -62,9 +77,4 @@ class ProfileSerializer(serializers.ModelSerializer):
 		return instance
 
 
-	def is_valid(self,raise_exception=True):
-
-			valid=super().is_valid()
-			print(self.errors)
-			return valid
 

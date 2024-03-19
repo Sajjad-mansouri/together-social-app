@@ -1,0 +1,71 @@
+{%extends 'transfer/base.html'%}
+{%load static%}
+{%load humanize%}
+    {%load social_tags%}
+{%block main%}
+<main>
+    <section class="add-post">
+        <img src="{%if user.profile.profile_image%}{{user.profile.profile_image.url}}{%else%}
+                {%static 'img/profile_image/blank-profile.png'%}
+                {%endif%}">
+        <input type="text" name="add-post" placeholder="add post ...">
+    </section>
+    <div class="post-container">
+        <article class='post-card hidden'>
+            <section class="post-owner">
+                <img src="">
+                <span></span>
+            </section>
+            <section class="content">
+                <img src="">
+                <div class='interaction'>
+                                       <div >
+
+                        <div class='like' data-type='False' data-post=''data-like=''>
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        
+                        <div><i class="fa-solid fa-comment-dots"></i></div>
+                    </div>
+                    <div class='like-number'></div>
+              
+                </div>
+                <div class='description'></div>
+            </section>
+            <div class='post-created'>
+            </div>
+        </article>
+        {%for post in object_list%}
+        <article class='post-card'>
+            <section class="post-owner">
+                <img src="{%if user.profile.profile_image%}{{user.profile.profile_image.url}}{%else%}
+                {%static 'img/profile_image/blank-profile.png'%}
+                {%endif%}">
+                <span>{{post.user.username}}</span>
+            </section>
+            <section class="content">
+                <img src="{{post.image.url}}">
+                <div class='interaction'>
+                    <div >
+                        {%with post.id as post_id %}
+                {%liked post_id as is_liked %}
+                        <div class='like' data-type='{{is_liked}}' data-post='{{post.id}}'data-like='{% get_like_id post_id %}'>
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        
+                        <div><i class="fa-solid fa-comment-dots"></i></div>
+                    </div>
+                    <div class='like-number'>{%count_like post_id%}</div>
+                    {%endwith%}
+                </div>
+                <div class='description'>{{post.text}}</div>
+            </section>
+            <div class='post-created'>
+                {{post.created|naturaltime}}
+            </div>
+        </article>
+    </div>
+    {%endfor%}
+    {%include 'partials/_add-form.html'%}
+</main>
+{%endblock%}
