@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import CreateView,UpdateView
+from django.views.generic import CreateView,UpdateView,DeleteView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 
@@ -59,3 +59,10 @@ class Register(CreateView):
 		email_conf=EmailConfirmation(email=self.object.email,request=self.request)
 		email_conf.save()
 		return HttpResponseRedirect(self.get_success_url())
+
+
+class Deactivate(LoginRequiredMixin,DeleteView):
+	template_name='registration/delete_account.html'
+	model=User_Model
+	success_url=reverse_lazy('login')
+

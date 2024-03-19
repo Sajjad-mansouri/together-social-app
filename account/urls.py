@@ -7,6 +7,7 @@ urlpatterns=[
 	
 	path('edit-profile/',views.UpdateProfile.as_view(),name='update_profile'),
 	path('register/',views.Register.as_view(),name='register'),
+	path('deactivate/<int:pk>',views.Deactivate.as_view(),name='deactivate'),
 	path('',include('django.contrib.auth.urls')),
 ]
 

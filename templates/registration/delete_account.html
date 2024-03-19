@@ -1,0 +1,11 @@
+{%extends 'transfer/base.html'%}
+
+{%block main%}
+    <main>
+        <form method='POST'>
+            {%csrf_token%}
+            <h1>if you deactivate all your data be lost...are you sure </h1>
+            <input type="submit" name="">
+        </form>
+    </main>
+{%endblock%}
