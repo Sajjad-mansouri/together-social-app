@@ -16,7 +16,7 @@ class Profile(LoginRequiredMixin,ListView):
 	
 
 	def get_queryset(self):
-		username=self.kwargs.get('username')
+		username=self.kwargs.get('username',self.request.user.username)
 		user=self.request.user
 		if username:
 			user=get_object_or_404(UserModel,username=username)

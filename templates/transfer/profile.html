@@ -29,12 +29,15 @@
         {{user.profile.bio}}
     </div>
     <div class="interaction">
-        {%if access%}
+{%if user != owner%}
+{%if access%}
 <button class="btn connect " data-type='unfollow' data-owner='{{owner.id}}' data-contact='{{contact_id}}'>UnFollow</button>
 {%else%}
 <button class="btn connect" data-type='follow' data-owner='{{owner.id}}' data-contact='{{contact_id}}'>Follow</button>
 {%endif%}
+
         <button class="message">Message</button>
+{%endif%}
     </div>
     </section>
     <section class="posts-thumbnail">
