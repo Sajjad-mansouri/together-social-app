@@ -22,9 +22,16 @@ const user = document.querySelector('#user').textContent
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data)
-                    console.log(img)
+                    const navTab = document.querySelector('.nav-tabs')
+                    const message = document.createElement('div')
+                    message.className = 'message alert alert-success text-center'
+                    message.textContent = 'profile image update succussfully!'
+
                     img.src = data.profile_image
+                    navTab.before(message)
+                                setTimeout(() => {
+                message.remove()
+            }, 5000)
 
                 })
                 .catch(error => console.log(error))
@@ -77,7 +84,7 @@ export async function changeProfile(formData) {
                 ul.append(li)
                 console.log(key, data[key])
             }
-            navTab.after(errors)
+            navTab.before(errors)
         }
     } catch (error) {
         console.log(error)
