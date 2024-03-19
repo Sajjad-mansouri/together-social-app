@@ -95,7 +95,7 @@ function search() {
 
         const search = event.target.value.trim();
         const searchResult=document.querySelector('.search-result');
-
+        const baseUrl = window.location.origin
         if (event.target.value.trim() != "") {
             getToken().then((accessToken) => {
                 fetch(`http://localhost:8000/api/users/?search=${event.target.value.trim()}`, {
@@ -118,7 +118,10 @@ function search() {
                         data.forEach(user=>{
                             const result=document.createElement('div');
                             result.classList.add('search-user');
-                            result.textContent=user.username;
+                                const link = document.createElement('a')
+                                link.setAttribute('href', baseUrl + '/profile/' + user.username)
+                                link.textContent = user.username;
+                            result.append(link)
                             searchResult.append(result)
                         })
                             }else{

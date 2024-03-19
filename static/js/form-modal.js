@@ -4,6 +4,7 @@ import {imageUpload,changeProfile} from './profile.js'
 // const modal = document.querySelector('.add-form');
 const searchInput = document.getElementById('search-input')
 const searchCard = document.querySelector('.search-card')
+
 const baseUrl = window.location.origin
 
 function formModal(btn) {
@@ -124,6 +125,7 @@ function search(btn) {
                                 link.textContent = user.username;
                                 li.append(link);
                                 ul.append(li);
+                                console.log('this is')
                             })
                         } else {
                             const li = document.createElement('li');
@@ -131,6 +133,7 @@ function search(btn) {
                             ul.append(li)
                         }
                         searchCard.append(ul);
+                        console.log(searchCard)
 
                     })
             })
