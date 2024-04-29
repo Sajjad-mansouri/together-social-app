@@ -251,3 +251,7 @@ async function like(div) {
 
     }
 }
+
+document.querySelector('.comment').addEventListener('click',()=>{
+    console.log('comment')
+})

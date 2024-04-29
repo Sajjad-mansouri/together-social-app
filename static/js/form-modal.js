@@ -324,3 +324,4 @@ if (window.location.pathname === '/profile/') {
         div.classList.toggle('hidden')
     })
 }
+
