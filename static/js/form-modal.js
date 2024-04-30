@@ -273,13 +273,25 @@ async function like(div) {
         })
         console.log(response)
         if (response.ok) {
+            let post=div.closest('.post');
+            let liked=post.querySelector('.liked')
+            let span =liked.querySelector('span');
+            span.textContent=Number(span.textContent)-1;
+            if(Number(span.textContent)==0){
+                liked.textContent=''
+            }else if(Number(span.textContent)==1){
+                span.nextSibling.textContent=' like'
+            }
 
-            const likeIcon = div.querySelector('.fa-heart')
-            const span = div.querySelector('span')
-
-            likeIcon.style.color = 'black'
             div.setAttribute('data-type', 'False')
-            span.textContent = Number(span.textContent) - 1
+            div.classList.remove('love')
+            let not_loved = div.children[0];
+            let loved = div.children[1];
+            not_loved.classList.remove('hide_img')
+            loved.classList.remove('display')
+
+            
+            
         }
 
     } else if (dataType === 'False') {
@@ -297,13 +309,27 @@ async function like(div) {
 
         if (response.ok) {
             const data = await response.json()
-            console.log(data)
-            const likeIcon = div.querySelector('.fa-heart')
-            const span = div.querySelector('span')
-            likeIcon.style.color = 'red';
+            
+
             div.setAttribute('data-type', 'True')
+            console.log(div)
+            let post=div.closest('.post')
+            let liked=post.querySelector('.liked')
+            
+            if(liked.textContent==''){
+                liked.innerHTML='<span>1</span> like'
+            }else{
+                let span =liked.querySelector('span')
+            span.textContent=Number(span.textContent)+1;
+                span.nextSibling.textContent=' likes'
+            }
+            
             div.setAttribute('data-like', data.id)
-            span.textContent = Number(span.textContent) + 1
+            div.classList.add('love')
+            let not_loved = div.children[0];
+            let loved = div.children[1];
+            not_loved.classList.add('hide_img')
+            loved.classList.add('display')
         }
 
     }

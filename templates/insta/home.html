@@ -1,6 +1,8 @@
 {%extends 'base.html'%}
 {% load static%}
 {% load humanize%}
+
+{%load social_tags%}
 {%block content%}
 
     <!--***** nav menu end ****** -->
@@ -32,10 +34,13 @@
                         <div class="desc">
                             <div class="icons">
                                 <div class="icon_left d-flex">
-                                    <div class="like">
-                                        <img class="not_loved" src="{% static 'images/love.png' %}">
-                                        <img class="loved" src="{% static 'images/heart.png' %}">
+                                                            {%with post.id as post_id %}
+                {%liked post_id as is_liked %}
+                                    <div class="like" data-type='{{is_liked}}' data-post='{{post.id}}'data-like='{% get_like_id post_id %}'>
+                                        <img class="not_loved {%if is_liked %}hide_img{%endif%}" src="{% static 'images/love.png' %}">
+                                        <img class="loved {%if is_liked%}display {%endif%}" src="{% static 'images/heart.png' %}">
                                     </div>
+                                    
                                     <div class="chat">
                                         <button type="button" class="btn p-0" data-bs-toggle="modal" data-bs-target="#message_modal">
                                             <img src="{% static 'images/bubble-chat.png' %}">
@@ -53,8 +58,13 @@
                                 </div>
                             </div>
                             <div class="liked">
-                                <a class="bold" href="#">150 likes</a>
+                                {%count_like post_id as likes%}
+                                
+                                {%if likes > 0%}<span>{%count_like post_id%}</span> like{{likes|pluralize:"s" }}{%endif%}
+                                
+                                
                             </div>
+                            {%endwith%}
                             <div class="post_desc">
                                 <p>
                                     <a class="bold" href="#">{{post.user}}</a>

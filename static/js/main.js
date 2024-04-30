@@ -89,16 +89,7 @@ notification_icon.forEach( (notif)=>{
 //change the icon when the user click on it
 
 //love btn
-let love_icons = document.querySelectorAll(".like");
-love_icons.forEach(function(icon){
-  icon.addEventListener("click",function(){
-      let not_loved = icon.children[0];
-      let loved = icon.children[1];
-      icon.classList.toggle("love");
-      not_loved.classList.toggle("hide_img");
-      loved.classList.toggle("display");
-  })
-});
+
 
 //save btn
 let save_icon = document.querySelectorAll(".save");
