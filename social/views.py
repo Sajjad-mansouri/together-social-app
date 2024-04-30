@@ -12,7 +12,7 @@ class Index(TemplateView):
 	template_name='insta/home.html'
 
 class Profile(LoginRequiredMixin,ListView):
-	template_name='transfer/profile.html'
+	template_name='insta/profile.html'
 	
 
 	def get_queryset(self):

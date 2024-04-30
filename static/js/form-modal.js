@@ -255,6 +255,8 @@ document.querySelectorAll('.btn').forEach(btn => {
         }
 
 })
+
+// like and dislike
 async function like(div) {
 
     const dataType = div.getAttribute('data-type');
@@ -276,13 +278,14 @@ async function like(div) {
             let post=div.closest('.post');
             let liked=post.querySelector('.liked')
             let span =liked.querySelector('span');
-            span.textContent=Number(span.textContent)-1;
-            if(Number(span.textContent)==0){
+            let likeCount=Number(liked.getAttribute('data-likeCount'))-1;
+            span.textContent=likeCount;
+            liked.setAttribute('data-likeCount',likeCount)
+            if(likeCount==0){
                 liked.textContent=''
-            }else if(Number(span.textContent)==1){
+            }else if(likeCount==1){
                 span.nextSibling.textContent=' like'
             }
-
             div.setAttribute('data-type', 'False')
             div.classList.remove('love')
             let not_loved = div.children[0];
@@ -312,15 +315,17 @@ async function like(div) {
             
 
             div.setAttribute('data-type', 'True')
-            console.log(div)
             let post=div.closest('.post')
             let liked=post.querySelector('.liked')
+            let likeCount=Number(liked.getAttribute('data-likeCount'))+1
+            liked.setAttribute('data-likeCount',likeCount)
             
-            if(liked.textContent==''){
+            if(likeCount==1){
+
                 liked.innerHTML='<span>1</span> like'
             }else{
                 let span =liked.querySelector('span')
-            span.textContent=Number(span.textContent)+1;
+            span.textContent=likeCount;
                 span.nextSibling.textContent=' likes'
             }
             
@@ -341,6 +346,7 @@ document.querySelectorAll('.like').forEach(div => {
 
     })
 })
+
 
 console.log(window.location.pathname)
 if (window.location.pathname === '/profile/') {
