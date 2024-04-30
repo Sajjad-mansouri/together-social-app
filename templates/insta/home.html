@@ -1,0 +1,144 @@
+{%extends 'base.html'%}
+{% load static%}
+{% load humanize%}
+{%block content%}
+
+    <!--***** nav menu end ****** -->
+    <div class="second_container">
+        <!--***** posts_container start ****** -->
+        <div class="main_section">
+            <div class="posts_container">
+                <div class="stories">
+                    <div class="owl-carousel items">
+                    </div>
+                </div>
+                <div class="posts">
+                    {% for post in object_list%}
+                    <div class='post'>
+                        <div class="info">
+                            <div class="person">
+                                <img src="https://i.ibb.co/3S1hjKR/account1.jpg">
+                                <a href="#">{{post.user}}</a>
+                                <span class="circle">.</span>
+                                <span>{{post.created|naturaltime}}</span>
+                            </div>
+                            <div class="more">
+                                <img src="{% static 'images/show_more.png' %}" alt="show more">
+                            </div>
+                        </div>
+                        <div class="image">
+                            <img src="{{post.image.url}}">
+                        </div>
+                        <div class="desc">
+                            <div class="icons">
+                                <div class="icon_left d-flex">
+                                    <div class="like">
+                                        <img class="not_loved" src="{% static 'images/love.png' %}">
+                                        <img class="loved" src="{% static 'images/heart.png' %}">
+                                    </div>
+                                    <div class="chat">
+                                        <button type="button" class="btn p-0" data-bs-toggle="modal" data-bs-target="#message_modal">
+                                            <img src="{% static 'images/bubble-chat.png' %}">
+                                        </button>
+                                    </div>
+                                    <div class="send">
+                                        <button type="button" class="btn p-0" data-bs-toggle="modal" data-bs-target="#send_message_modal">
+                                            <img src="{% static 'images/send.png' %}">
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="save not_saved">
+                                    <img class="hide saved" src="{% static 'images/save_black.png' %}">
+                                    <img class="not_saved" src="{% static 'images/save-instagram.png' %}">
+                                </div>
+                            </div>
+                            <div class="liked">
+                                <a class="bold" href="#">150 likes</a>
+                            </div>
+                            <div class="post_desc">
+                                <p>
+                                    <a class="bold" href="#">{{post.user}}</a>
+                                    {{post.text}}
+                                </p>
+                                <p><a class="gray" href="#">View all 2 comments</a></p>
+                                <input type="text" placeholder="Add a comments...">
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor%}
+                </div>
+            </div>
+        </div>
+        <!--***** posts_container end ****** -->
+        <!--***** followers_container start ****** -->
+        <div class="followers_container">
+            <div>
+                <div class="cart">
+                    <div>
+                        <div class="img">
+                            <img src="./images/profile_img.jpg" alt="">
+                        </div>
+                        <div class="info">
+                            <p class="name">Zineb_essoussi</p>
+                            <p class="second_name">Zim Ess</p>
+                        </div>
+                    </div>
+                    <div class="switch">
+                        <a href="#">Switch</a>
+                    </div>
+                </div>
+                <div class="suggestions">
+                    <div class="title">
+                        <h4>Suggestions for you</h4>
+                        <a class="dark" href="#">See All</a>
+                    </div>
+                    <div class="cart">
+                        <div>
+                            <div class="img">
+                                <img src="./images/profile_img.jpg" alt="">
+                            </div>
+                            <div class="info">
+                                <p class="name">Zineb_essoussi</p>
+                                <p class="second_name">Zim Ess</p>
+                            </div>
+                        </div>
+                        <div class="switch">
+                            <button class="follow_text" href="#">follow</button>
+                        </div>
+                    </div>
+                    <div class="cart">
+                        <div>
+                            <div class="img">
+                                <img src="./images/profile_img.jpg" alt="">
+                            </div>
+                            <div class="info">
+                                <p class="name">Zineb_essoussi</p>
+                                <p class="second_name">Zim Ess</p>
+                            </div>
+                        </div>
+                        <div class="switch">
+                            <button class="follow_text" href="#">follow</button>
+                        </div>
+                    </div>
+                    <div class="cart">
+                        <div>
+                            <div class="img">
+                                <img src="./images/profile_img.jpg" alt="">
+                            </div>
+                            <div class="info">
+                                <p class="name">Zineb_essoussi</p>
+                                <p class="second_name">Zim Ess</p>
+                            </div>
+                        </div>
+                        <div class="switch">
+                            <button class="follow_text" href="#">follow</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--***** followers_container end ****** -->
+    </div>
+
+
+{%endblock%}

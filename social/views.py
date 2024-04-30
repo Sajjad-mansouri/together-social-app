@@ -9,7 +9,7 @@ from .models import Message
 
 UserModel=get_user_model()
 class Index(TemplateView):
-	template_name='social/index.html'
+	template_name='insta/home.html'
 
 class Profile(LoginRequiredMixin,ListView):
 	template_name='transfer/profile.html'
@@ -48,7 +48,7 @@ class Search(LoginRequiredMixin,ListView):
 		return UserModel.objects.all()
 
 class Home(LoginRequiredMixin,ListView):
-	template_name='transfer/home.html'
+	template_name='insta/home.html'
 	def get_queryset(self):
 		following=self.request.user.rel_from.values_list('to_user',flat=True)
 		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user))
