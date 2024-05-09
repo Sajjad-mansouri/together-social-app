@@ -20,9 +20,18 @@ class PostSerializer(serializers.ModelSerializer):
 			'profile_image':image_url
 		}
 	owner=serializers.SerializerMethodField('get_author')
+
+	def to_internal_value(self,data):
+		user=self._context['request'].user.id
+		data['user']=user
+		return super().to_internal_value(data)
+	def is_valid(self,raise_exception=False):
+		valid=super().is_valid()
+		print(self.errors)
+		return valid
 	class Meta:
 		model=Message
-		fields=['id','title','text','image','created','owner','user']
+		fields=['id','text','image','created','owner','user']
 		read_only_fields=['owner']
 
 

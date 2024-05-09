@@ -3,7 +3,7 @@ from .models import Message,Like,Comment
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
-	list_display=['user','title']
+	list_display=['user']
 
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):

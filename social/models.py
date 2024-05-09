@@ -11,7 +11,7 @@ def custom_upload(instance,filename):
 
 class Message(models.Model):
 	user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='messages')
-	title=models.CharField(max_length=200)
+	
 	text=models.TextField()
 	image=models.ImageField(upload_to=custom_upload)
 	created=models.DateTimeField(auto_now_add=True)

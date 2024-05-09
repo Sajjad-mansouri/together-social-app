@@ -1,3 +1,4 @@
+import { getToken, login } from './get-token.js'
 
 /***************Post**************************/
 const posts = document.querySelector(".posts");
@@ -158,18 +159,17 @@ function handleSubmit(event) {
     const imageURL = URL.createObjectURL(imageFile);
     
     img_url = imageURL;
-    console.log('handle submit')
-    handleNext()
+    handleNext(imageFile)
 }
 
 /////button submit
 
 
 //add a description + click btn to share post
-function handleNext(){
-  console.log('handle')
+function handleNext(imageFile){
+
   const image_description = document.querySelector("#image_description");
-  console.log(image_description)
+
     if(image_description.classList.contains('hide_img')){
         const next_btn_post = document.querySelector(".next_btn_post");
         const title_create = document.querySelector(".title_create");
@@ -185,19 +185,44 @@ function handleNext(){
         next_btn_post.classList.remove("next_btn_post");
         next_btn_post.innerHTML = 'Share';
         title_create.innerHTML = 'Create new post';
-        completed();
+        completed(imageFile);
     }
 }
 
 //post published
-function completed(){
+
+function completed(imageFile){
   const share_btn_post = document.querySelector(".share_btn_post");
   const post_published = document.querySelector('.post_published');
   const modal_dialog = document.querySelector("#create_modal .modal-dialog");
   share_btn_post.addEventListener("click", function(){
-    modal_dialog.classList.add("modal_complete");
-      post_published.classList.remove("hide_img");
-      share_btn_post.innerHTML = ""
+            const formData = new FormData();
+            let description=document.getElementById('description')
+            formData.append('image',imageFile)
+            formData.append('text',description.value)
+            console.log(description.value)
+            getToken().then((accessToken) => {
+            fetch('http://localhost:8000/api/', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: formData
+                })
+                .then((resp) => {
+                    if (resp.ok) {
+                        modal_dialog.classList.add("modal_complete");
+                        post_published.classList.remove("hide_img");
+                        share_btn_post.innerHTML = ""
+                        return resp.json()
+
+                    }
+                })
+                .then((data) => {
+                  console.log(data)
+                })
+        })
+
   })
 }
 
