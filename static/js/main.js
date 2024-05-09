@@ -141,27 +141,7 @@ if(replay_com){
 }
 
 
-/*************emojie*************** */
-$(document).ready(function() {
-	$("#emoji").emojioneArea({
-  	pickerPosition: "top",
-    tonesStyle: "radio"
-  });
-});
 
-$(document).ready(function() {
-	$("#emoji_create").emojioneArea({
-  	pickerPosition: "bottom",
-    tonesStyle: "radio"
-  });
-});
-
-$(document).ready(function() {
-	$("#emoji_comment").emojioneArea({
-  	pickerPosition: "bottom",
-    tonesStyle: "radio"
-  });
-});
 
 /**********Upload post*************/
 const form = document.getElementById('upload-form');
@@ -173,31 +153,27 @@ let img_url;
 //add the image post
 function handleSubmit(event) {
     event.preventDefault();
-    if(img_container.classList.contains('hide_img')){
-        img_container.classList.remove('hide_img');
-        const imageFile = document.getElementById('image-upload').files[0];
-        const imageURL = URL.createObjectURL(imageFile);
-        const image = document.createElement('img');
-        image.src = imageURL;
-        img_url = imageURL;
-        const imageContainer = document.getElementById('image-container');
-        imageContainer.appendChild(image);
-        const next_btn_post = document.querySelector(".next_btn_post");
-        const title_create = document.querySelector(".title_create");
-        next_btn_post.innerHTML = 'Next';
-        title_create.innerHTML = 'Crop';
-    }
+    const img_container = document.querySelector("#image-container");
+    const imageFile = document.getElementById('image-upload').files[0];
+    const imageURL = URL.createObjectURL(imageFile);
+    
+    img_url = imageURL;
+    console.log('handle submit')
+    handleNext()
 }
 
 /////button submit
-const next_btn_post = document.querySelector(".next_btn_post");
-next_btn_post.addEventListener('click',handleNext);
+
+
 //add a description + click btn to share post
 function handleNext(){
+  console.log('handle')
+  const image_description = document.querySelector("#image_description");
+  console.log(image_description)
     if(image_description.classList.contains('hide_img')){
         const next_btn_post = document.querySelector(".next_btn_post");
         const title_create = document.querySelector(".title_create");
-        const image_description = document.querySelector("#image_description");
+        
         const modal_dialog = document.querySelector("#create_modal .modal-dialog");
         modal_dialog.classList.add("modal_share");
         image_description.classList.remove('hide_img')
@@ -226,3 +202,36 @@ function completed(){
 }
 
 
+document.querySelector('#create-btn').addEventListener('click',(event)=>{
+  event.preventDefault();
+  console.log('clicked')
+  let modal=document.querySelector('#create_modal_clone')
+  let modalBack=document.createElement('div')
+  modalBack.className='modal-backdrop fade show'
+  document.body.appendChild(modalBack)
+  let modalClone=modal.cloneNode(true)
+  modalClone.id='create_modal'
+  modal.parentNode.insertBefore(modalClone,modal)
+  modalClone.classList.add('show')
+  modalClone.style.display='block'
+
+const form = document.querySelector('#upload-form');
+
+console.log('start')
+let next_btn_post = document.querySelector(".next_btn_post");
+next_btn_post.addEventListener('click',handleNext);
+form.addEventListener('change', handleSubmit);
+
+})
+  window.addEventListener('mouseup',(event)=>{
+  if(document.contains(document.querySelector('.modal-backdrop'))){
+
+    if(!event.target.closest('.modal-content') && !event.target.closest('#create-btn')){
+      console.log('if condition')
+      document.querySelector('.modal-backdrop').remove()
+      document.querySelector('#create_modal').remove()
+
+      
+    }
+  }
+})
