@@ -14,6 +14,9 @@ class PostListApiView(generics.ListCreateAPIView):
 	parser_classes=[FormParser,MultiPartParser]
 	queryset=Message.objects.all()
 
+class PostRetrieveDestroyAPIView(generics.RetrieveDestroyAPIView):
+	serializer_class=ProfileSerializer
+	queryset=Message.objects.all()
 
 class UserListAPiView(generics.ListAPIView):
 	serializer_class=UserSerializer

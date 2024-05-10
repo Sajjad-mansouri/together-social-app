@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="posts">
-                <div class='post hide'>
+                <div class='post hide' data-post>
                     <div class="info">
                         <div class="person">
                             <img src="">
@@ -61,7 +61,7 @@
                     </div>
                 </div> 
                 {% for post in object_list%}
-                <div class='post'>
+                <div class='post' data-post='{{post.id}}'>
                     <div class="info">
                         <div class="person">
                             <img src="https://i.ibb.co/3S1hjKR/account1.jpg">

@@ -189,72 +189,102 @@ function handleNext(imageFile) {
 }
 
 //post published
-function addPost(data){
-  let post=document.querySelector('.post');
-  let postClone=post.cloneNode(true);
-  let image=postClone.querySelector('.image img');
-  let personInfo=postClone.querySelector('.info .person');
-  let profileImage=personInfo.querySelector('img');
-  let userName=personInfo.querySelector('a');
-  let postDesc=postClone.querySelector('.post_desc');
-  let descUser=postDesc.querySelector('a');
-  let descText=postDesc.querySelector('.post_text span')
+function addPost(data) {
+    let post = document.querySelector('.post');
+    let postClone = post.cloneNode(true);
+    let image = postClone.querySelector('.image img');
+    let personInfo = postClone.querySelector('.info .person');
+    let profileImage = personInfo.querySelector('img');
+    let userName = personInfo.querySelector('a');
+    let postDesc = postClone.querySelector('.post_desc');
+    let descUser = postDesc.querySelector('a');
+    let descText = postDesc.querySelector('.post_text span')
+    let more = postClone.querySelector('.more')
+    let like = postClone.querySelector('.icons .like');
+    like.setAttribute('data-post', data.id)
 
-  let like=postClone.querySelector('.icons .like');
-  like.setAttribute('data-post',data.id)
-  console.log(data)
-  profileImage.src=data.owner.profile_image;
-  userName.textContent=data.owner.username;
-  descUser.textContent=data.owner.username;
-  descText.textContent=data.text
-  image.src=data.image;
+    postClone.setAttribute('data-post', data.id);
+    profileImage.src = data.owner.profile_image;
+    userName.textContent = data.owner.username;
+    descUser.textContent = data.owner.username;
+    descText.textContent = data.text
+    image.src = data.image;
 
-  post.parentNode.insertBefore(postClone,post.nextSibling)
-  postClone.classList.remove('hide')
+    post.parentNode.insertBefore(postClone, post.nextSibling)
+    deletePost(more)
+    postClone.classList.remove('hide')
 
 }
+
 function completed(imageFile) {
     const share_btn_post = document.querySelector(".share_btn_post");
     const post_published = document.querySelector('.post_published');
     const modal_dialog = document.querySelector("#create_modal .modal-dialog");
-    share_btn_post.addEventListener("click", function() {
+    share_btn_post.addEventListener("click", async function() {
         const formData = new FormData();
-        let description = document.getElementById('description')
-        formData.append('image', imageFile)
-        formData.append('text', description.value)
-        console.log(description.value)
-        getToken().then((accessToken) => {
-            fetch('http://localhost:8000/api/', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`
-                    },
-                    body: formData
-                })
-                .then((resp) => {
-                    if (resp.ok) {
-                        modal_dialog.classList.add("modal_complete");
-                        post_published.classList.remove("hide_img");
-                        share_btn_post.innerHTML = ""
-                        return resp.json()
-
-                    }
-                })
-                .then((data) => {
-                    
-                    let posts = document.querySelector('.posts')
-                    let post = document.querySelector('.post')
-                    let clonePost = post.cloneNode(true)
-                    addPost(data)
-                    addEventListeners()
+        let description = document.getElementById('description');
+        formData.append('image', imageFile);
+        formData.append('text', description.value);
+        console.log(description)
+        console.log(imageFile)
+        const accessToken = await getToken()
+        console.log(accessToken)
+        const response = await fetch('http://localhost:8000/api/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: formData
+        })
+        const data = await response.json()
+        
+        if (response.ok) {
+            modal_dialog.classList.add("modal_complete");
+            post_published.classList.remove("hide_img");
+            share_btn_post.innerHTML = ""
+            let posts = document.querySelector('.posts')
+            let post = document.querySelector('.post')
+            let clonePost = post.cloneNode(true)
+            addPost(data)
+            addEventListeners()
+        }
 
 
-                })
+    })
+}
+
+function deletePost(element) {
+
+    element.addEventListener('click', (event) => {
+        let deleteBtn = document.getElementById('delete-post')
+        let post = event.target.closest('.post');
+        let postId = post.getAttribute('data-post')
+        console.log(event)
+        deleteBtn.addEventListener('click', async () => {
+            const accessToken = await getToken()
+            const response = await fetch(`http://localhost:8000/api/post/${postId}`, {
+                method: 'Delete',
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+
+            })
+            if (response.ok) {
+
+                post.remove()
+                let btnClose = document.querySelector('#submit_delete_modal .btn-close');
+
+                btnClose.click()
+                console.log('btnClose')
+            }
         })
 
     })
 }
 
+document.querySelectorAll('.more').forEach((element) => {
+    deletePost(element)
+})
 
 document.querySelector('#create-btn').addEventListener('click', (event) => {
     event.preventDefault();

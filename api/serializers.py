@@ -28,11 +28,16 @@ class PostSerializer(serializers.ModelSerializer):
 	owner=serializers.SerializerMethodField('get_author')
 
 	def to_internal_value(self,data):
+		print(data)
 		user=self._context['request'].user.id
 		data['user']=user
 		return super().to_internal_value(data)
 
+	def is_valid(self,raise_exception=False):
 
+			valid=super().is_valid()
+			print(self.errors)
+			return valid
 
 	class Meta:
 		model=Message

@@ -9,6 +9,7 @@ from . import views
 urlpatterns=[
 	
 	path('',views.PostListApiView.as_view(),name='post_list'),
+	path('post/<int:pk>/',views.PostRetrieveDestroyAPIView.as_view(),name='post_detail'),
 	path('users/',views.UserListAPiView.as_view(),name='user_list'),
 	path('contact/',views.ContactApiView.as_view(),name='contact'),
 	path('contact/<int:pk>/',views.ContactDetailApiView.as_view(),name='contact_detail'),
