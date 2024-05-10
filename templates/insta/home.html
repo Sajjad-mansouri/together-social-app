@@ -13,6 +13,57 @@
                 </div>
             </div>
             <div class="posts">
+                <div class='post hide'>
+                    <div class="info">
+                        <div class="person">
+                            <img src="">
+                            <a href="#"></a>
+                            <span class="circle">.</span>
+                            <span></span>
+                        </div>
+                        <div class="more">
+                            <img src="{% static 'images/show_more.png' %}" alt="show more">
+                        </div>
+                    </div>
+                    <div class="image">
+                        <img src="">
+                    </div>
+                    <div class="desc">
+                        <div class="icons">
+                            <div class="icon_left d-flex">
+                                <div class="like" data-type='False' data-post='{{post.id}}' data-like>
+                                    <img class="not_loved " src="{% static 'images/love.png' %}">
+                                    <img class="loved" src="{% static 'images/heart.png' %}">
+                                </div>
+                                <div class="chat">
+                                    <button type="button" class="btn p-0" data-bs-toggle="modal" data-bs-target="#message_modal">
+                                        <img src="{% static 'images/bubble-chat.png' %}">
+                                    </button>
+                                </div>
+                                <div class="send">
+                                    <button type="button" class="btn p-0" data-bs-toggle="modal" data-bs-target="#send_message_modal">
+                                        <img src="{% static 'images/send.png' %}">
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="save not_saved">
+                                <img class="hide saved" src="{% static 'images/save_black.png' %}">
+                                <img class="not_saved" src="{% static 'images/save-instagram.png' %}">
+                            </div>
+                        </div>
+                        <div class="liked" data-likeCount="0">
+                        </div>
+                        <div class="post_desc">
+                            <p class='post_text'>
+                                <a class="bold" href="#">{{post.user}}</a>
+                                <span>{{post.text}}</span>
+                                
+                            </p>
+                            <p><a class="gray" href="#">View all 2 comments</a></p>
+                            <input type="text" placeholder="Add a comments...">
+                        </div>
+                    </div>
+                </div> 
                 {% for post in object_list%}
                 <div class='post'>
                     <div class="info">
@@ -55,18 +106,16 @@
                             </div>
                         </div>
                         {%count_like post_id as likes%}
-                        
                         <div class="liked" data-likeCount={%count_like post_id%}>
                             {%if likes > 0%}
                             <span>{%count_like post_id%}</span> like{{likes|pluralize:"s" }}
                             {%endif%}
                         </div>
-                        
                         {%endwith%}
                         <div class="post_desc">
                             <p>
                                 <a class="bold" href="#">{{post.user}}</a>
-                                {{post.text}}
+                                <span>{{post.text}}</span>
                             </p>
                             <p><a class="gray" href="#">View all 2 comments</a></p>
                             <input type="text" placeholder="Add a comments...">

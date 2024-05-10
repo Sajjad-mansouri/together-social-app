@@ -1,5 +1,5 @@
 import { getToken, login } from './get-token.js'
-import {imageUpload,changeProfile} from './profile.js'
+import { imageUpload, changeProfile } from './profile.js'
 
 // const modal = document.querySelector('.add-form');
 const searchInput = document.getElementById('search-input')
@@ -222,43 +222,43 @@ document.querySelectorAll('.btn').forEach(btn => {
         btn.addEventListener('click', () => {
             window.location.pathname = 'account/profile'
         })
-    } else if (dataType == 'profile-image'){
-            btn.addEventListener('click', () => {
-                console.log('profile')
-                imageUpload(btn);
-            })
-        }else if (dataType=='submit'){
-            btn.addEventListener('click',(event)=>{
-                event.preventDefault();
-                const profileForm = document.querySelector('#user-form')
-                const formData = new FormData(profileForm);
-                const email=document.querySelector('#email').getAttribute('data-current');
-                const username=document.querySelector('#username').getAttribute('data-current');
-                if (formData.get('email')===email){
-                    formData.delete('email')
-                }
-                if (formData.get('username')===username){
-                    formData.delete('username')
-                }
+    } else if (dataType == 'profile-image') {
+        btn.addEventListener('click', () => {
+            console.log('profile')
+            imageUpload(btn);
+        })
+    } else if (dataType == 'submit') {
+        btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const profileForm = document.querySelector('#user-form')
+            const formData = new FormData(profileForm);
+            const email = document.querySelector('#email').getAttribute('data-current');
+            const username = document.querySelector('#username').getAttribute('data-current');
+            if (formData.get('email') === email) {
+                formData.delete('email')
+            }
+            if (formData.get('username') === username) {
+                formData.delete('username')
+            }
 
-                const formDataObject = Object.fromEntries(formData.entries());
-                const userFormData={'user':formDataObject}
-                const userJsonFormData = JSON.stringify(userFormData);
-                changeProfile(userJsonFormData)
+            const formDataObject = Object.fromEntries(formData.entries());
+            const userFormData = { 'user': formDataObject }
+            const userJsonFormData = JSON.stringify(userFormData);
+            changeProfile(userJsonFormData)
 
-            })
-        }else if(dataType=='liked-post'){
-            btn.addEventListener('click',()=>{
-                console.log(window.location)
-                window.location.href=origin+'/liked-post'
-            })
-        }
+        })
+    } else if (dataType == 'liked-post') {
+        btn.addEventListener('click', () => {
+            console.log(window.location)
+            window.location.href = origin + '/liked-post'
+        })
+    }
 
 })
 
 // like and dislike
 async function like(div) {
-
+    console.log('liked')
     const dataType = div.getAttribute('data-type');
 
     const dataPost = div.getAttribute('data-post');
@@ -275,16 +275,16 @@ async function like(div) {
         })
         console.log(response)
         if (response.ok) {
-            let post=div.closest('.post');
-            let liked=post.querySelector('.liked')
-            let span =liked.querySelector('span');
-            let likeCount=Number(liked.getAttribute('data-likeCount'))-1;
-            span.textContent=likeCount;
-            liked.setAttribute('data-likeCount',likeCount)
-            if(likeCount==0){
-                liked.textContent=''
-            }else if(likeCount==1){
-                span.nextSibling.textContent=' like'
+            let post = div.closest('.post');
+            let liked = post.querySelector('.liked')
+            let span = liked.querySelector('span');
+            let likeCount = Number(liked.getAttribute('data-likeCount')) - 1;
+            span.textContent = likeCount;
+            liked.setAttribute('data-likeCount', likeCount)
+            if (likeCount == 0) {
+                liked.textContent = ''
+            } else if (likeCount == 1) {
+                span.nextSibling.textContent = ' like'
             }
             div.setAttribute('data-type', 'False')
             div.classList.remove('love')
@@ -293,8 +293,8 @@ async function like(div) {
             not_loved.classList.remove('hide_img')
             loved.classList.remove('display')
 
-            
-            
+
+
         }
 
     } else if (dataType === 'False') {
@@ -312,23 +312,23 @@ async function like(div) {
 
         if (response.ok) {
             const data = await response.json()
-            
+
 
             div.setAttribute('data-type', 'True')
-            let post=div.closest('.post')
-            let liked=post.querySelector('.liked')
-            let likeCount=Number(liked.getAttribute('data-likeCount'))+1
-            liked.setAttribute('data-likeCount',likeCount)
-            
-            if(likeCount==1){
+            let post = div.closest('.post')
+            let liked = post.querySelector('.liked')
+            let likeCount = Number(liked.getAttribute('data-likeCount')) + 1
+            liked.setAttribute('data-likeCount', likeCount)
 
-                liked.innerHTML='<span>1</span> like'
-            }else{
-                let span =liked.querySelector('span')
-            span.textContent=likeCount;
-                span.nextSibling.textContent=' likes'
+            if (likeCount == 1) {
+
+                liked.innerHTML = '<span>1</span> like'
+            } else {
+                let span = liked.querySelector('span')
+                span.textContent = likeCount;
+                span.nextSibling.textContent = ' likes'
             }
-            
+
             div.setAttribute('data-like', data.id)
             div.classList.add('love')
             let not_loved = div.children[0];
@@ -340,13 +340,17 @@ async function like(div) {
     }
 }
 
-document.querySelectorAll('.like').forEach(div => {
-    div.addEventListener('click', (event) => {
-        like(div)
 
+
+export function addEventListeners() {
+    document.querySelectorAll('.like').forEach(div => {
+        div.addEventListener('click', (event) => {
+            like(div)
+
+        })
     })
-})
-
+}
+addEventListeners()
 
 console.log(window.location.pathname)
 if (window.location.pathname === '/profile/') {
@@ -356,4 +360,3 @@ if (window.location.pathname === '/profile/') {
         div.classList.toggle('hidden')
     })
 }
-
