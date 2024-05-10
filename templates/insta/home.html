@@ -19,9 +19,9 @@
                             <img src="">
                             <a href="#"></a>
                             <span class="circle">.</span>
-                            <span></span>
+                            <span>just now</span>
                         </div>
-                        <div class="more">
+                        <div class="more" data-bs-toggle="modal" data-bs-target="#delete_modal">
                             <img src="{% static 'images/show_more.png' %}" alt="show more">
                         </div>
                     </div>
@@ -31,7 +31,7 @@
                     <div class="desc">
                         <div class="icons">
                             <div class="icon_left d-flex">
-                                <div class="like" data-type='False' data-post='{{post.id}}' data-like>
+                                <div class="like" data-type='False' data-post='' data-like>
                                     <img class="not_loved " src="{% static 'images/love.png' %}">
                                     <img class="loved" src="{% static 'images/heart.png' %}">
                                 </div>
@@ -40,11 +40,7 @@
                                         <img src="{% static 'images/bubble-chat.png' %}">
                                     </button>
                                 </div>
-                                <div class="send">
-                                    <button type="button" class="btn p-0" data-bs-toggle="modal" data-bs-target="#send_message_modal">
-                                        <img src="{% static 'images/send.png' %}">
-                                    </button>
-                                </div>
+
                             </div>
                             <div class="save not_saved">
                                 <img class="hide saved" src="{% static 'images/save_black.png' %}">
@@ -73,7 +69,7 @@
                             <span class="circle">.</span>
                             <span>{{post.created|naturaltime}}</span>
                         </div>
-                        <div class="more">
+                        <div class="more" data-bs-toggle="modal" data-bs-target="#delete_modal">
                             <img src="{% static 'images/show_more.png' %}" alt="show more">
                         </div>
                     </div>
@@ -94,11 +90,7 @@
                                         <img src="{% static 'images/bubble-chat.png' %}">
                                     </button>
                                 </div>
-                                <div class="send">
-                                    <button type="button" class="btn p-0" data-bs-toggle="modal" data-bs-target="#send_message_modal">
-                                        <img src="{% static 'images/send.png' %}">
-                                    </button>
-                                </div>
+
                             </div>
                             <div class="save not_saved">
                                 <img class="hide saved" src="{% static 'images/save_black.png' %}">

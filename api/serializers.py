@@ -1,7 +1,11 @@
+from datetime import timedelta
+from django.utils.timesince import timesince
+
+
 from rest_framework import serializers
 from social.models import Message
 from django.contrib.auth import get_user_model
-
+from django.utils import timezone
 from account.models import Contact,Profile
 from social.models import Like
 
@@ -10,6 +14,7 @@ UserModel=get_user_model()
 
 class PostSerializer(serializers.ModelSerializer):
 	def get_author(self,obj):
+		
 		try:
 			image_url=obj.user.profile.profile_image.url
 		except ValueError:
@@ -19,16 +24,16 @@ class PostSerializer(serializers.ModelSerializer):
 			'username':obj.user.username,
 			'profile_image':image_url
 		}
+
 	owner=serializers.SerializerMethodField('get_author')
 
 	def to_internal_value(self,data):
 		user=self._context['request'].user.id
 		data['user']=user
 		return super().to_internal_value(data)
-	def is_valid(self,raise_exception=False):
-		valid=super().is_valid()
-		print(self.errors)
-		return valid
+
+
+
 	class Meta:
 		model=Message
 		fields=['id','text','image','created','owner','user']

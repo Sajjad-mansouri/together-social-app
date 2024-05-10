@@ -19,7 +19,7 @@ class Message(models.Model):
 	like=models.ManyToManyField(settings.AUTH_USER_MODEL,through='Like')
 	comment=GenericRelation('Comment')
 	def __str__(self):
-		return f'{self.user}-{truncatechars(self.title,10)}'
+		return f'{self.user}'
 
 	class Meta:
 		ordering=['-created']
