@@ -352,11 +352,11 @@ export function addEventListeners() {
 }
 addEventListeners()
 
-console.log(window.location.pathname)
-if (window.location.pathname === '/profile/') {
-    const menu = document.querySelector('.menu');
-    menu.addEventListener('click', () => {
-        const div = menu.querySelector('div');
-        div.classList.toggle('hidden')
-    })
-}
+// console.log(window.location.pathname)
+// if (window.location.pathname === '/profile/') {
+//     const menu = document.querySelector('.menu');
+//     menu.addEventListener('click', () => {
+//         const div = menu.querySelector('div');
+//         div.classList.toggle('hidden')
+//     })
+// }

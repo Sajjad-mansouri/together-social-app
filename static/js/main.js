@@ -188,8 +188,7 @@ function handleNext(imageFile) {
     }
 }
 
-//post published
-function addPost(data) {
+function addPostHome(data){
     let post = document.querySelector('.post');
     let postClone = post.cloneNode(true);
     let image = postClone.querySelector('.image img');
@@ -213,6 +212,30 @@ function addPost(data) {
     post.parentNode.insertBefore(postClone, post.nextSibling)
     deletePost(more)
     postClone.classList.remove('hide')
+}
+
+function addPostProfile(data){
+  let postsSection=document.getElementById('posts_sec');
+  let div=document.createElement('div');
+  div.className='item';
+  let image=document.createElement('img');
+  image.src=data.image;
+  image.className='img-fluid item_img';
+  div.appendChild(image);
+  postsSection.prepend(div);
+
+}
+//post published
+function addPost(data) {
+    //add post in home 
+    let pathName=window.location.pathname;
+    if(pathName=='/'){
+      addPostHome(data)
+    }
+    if(pathName=='/profile/'){
+      addPostProfile(data)
+    }
+
 
 }
 
@@ -225,10 +248,9 @@ function completed(imageFile) {
         let description = document.getElementById('description');
         formData.append('image', imageFile);
         formData.append('text', description.value);
-        console.log(description)
-        console.log(imageFile)
+
         const accessToken = await getToken()
-        console.log(accessToken)
+
         const response = await fetch('http://localhost:8000/api/', {
             method: 'POST',
             headers: {
@@ -242,9 +264,6 @@ function completed(imageFile) {
             modal_dialog.classList.add("modal_complete");
             post_published.classList.remove("hide_img");
             share_btn_post.innerHTML = ""
-            let posts = document.querySelector('.posts')
-            let post = document.querySelector('.post')
-            let clonePost = post.cloneNode(true)
             addPost(data)
             addEventListeners()
         }
