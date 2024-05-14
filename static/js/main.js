@@ -7,66 +7,6 @@ const posts = document.querySelector(".posts");
 
 
 /**************************video**************************/
-//play video onscroll
-const videos = document.querySelectorAll("video");
-const reels = document.querySelector(".reels");
-window.addEventListener("scroll", function() {
-    const scrollPosition = window.scrollY + window.innerHeight;
-    videos.forEach((video, index) => {
-        reels.children[index].removeAttribute("id");
-        const videoPosition = video.getBoundingClientRect().top + video.offsetHeight / 2;
-        if (scrollPosition > videoPosition && videoPosition > 0 && videoPosition <= video.offsetHeight) {
-            video.play();
-            reels.children[index].setAttribute("id", "video_play");
-        } else {
-            video.pause();
-        }
-    });
-});
-
-//play && pause && mute video
-let video_container = document.querySelectorAll(".video");
-video_container.forEach(function(item) {
-    let video = item.children[0];
-    //if the user click on the video pause it 
-    let button_play = item.children[1].children[1];
-    item.addEventListener("click", function() {
-        if (button_play.classList.contains("opac_1")) {
-            video.play();
-        } else {
-            video.pause();
-        }
-        button_play.classList.toggle("opac_1");
-    });
-    //if the user click the mute btn make the video mute
-    let mute_btn = item.children[1].children[0];
-    let volum_up = mute_btn.children[0];
-    let volum_mute = mute_btn.children[1];
-    mute_btn.addEventListener("click", function(e) {
-        e.stopPropagation();
-        if (!video.muted) {
-            video.muted = true;
-            volum_up.classList.add("hide_img");
-            volum_mute.classList.add("display");
-        } else {
-            video.muted = false;
-            volum_up.classList.remove("hide_img");
-            volum_mute.classList.remove("display");
-        }
-    });
-    //change the text follow ==> following and the opposite
-    let follow = item.children[1].children[2].children[0].children[2];
-    follow.addEventListener("click", function(e) {
-        e.stopPropagation();
-        follow.classList.toggle("following");
-        if (follow.classList.contains("following")) {
-            follow.innerHTML = "Following";
-        } else {
-            follow.innerHTML = "Follow";
-        }
-
-    });
-});
 
 /**************************search+notif-section **************************/
 //search section notif
@@ -126,23 +66,135 @@ not_follow.forEach(item => {
 /**************************comments **************************/
 
 //comments
-let replay_com = document.querySelector(".comments .responses");
-let show_replay = document.querySelector(".comments .see_comment");
-let hide_com = document.querySelector(".comments .see_comment .hide_com");
-let show_com = document.querySelector(".comments .see_comment .show_c");
-if (replay_com) {
-    replay_com.classList.add("hide");
-    hide_com.classList.add("hide");
-    show_replay.addEventListener("click", function() {
-        replay_com.classList.toggle("hide");
-        show_com.classList.toggle("hide");
-        hide_com.classList.toggle("hide");
-    });
+
+function hideShowReply() {
+
+    let show_replay = document.querySelectorAll(".comments .see_comment");
+
+    show_replay.forEach(element => {
+        let comments = element.closest('.comments');
+        let hide_com = element.querySelector(" .see_comment .hide_com");
+        let show_com = element.querySelector(" .see_comment .show_c");
+        let replay_com = comments.querySelectorAll(" .responses");
+        let replyCount=show_com.children[1]
+        replyCount.textContent=replay_com.length;
+        element.addEventListener("click", function() {
+            replay_com.forEach(item => {
+
+                item.classList.toggle('hide')
+            })
+            console.log(show_com)
+            show_com.classList.toggle("hide");
+            hide_com.classList.toggle("hide");
+        });
+    })
+
 }
 
+function hideModal(cloneModal) {
+
+    window.addEventListener('mouseup', event => {
+        let modal = event.target.closest('.modal');
+        let closeBtn;
+        if (modal != null) {
+            closeBtn = modal.querySelector('.btn-close');
+
+        }
+
+        if (event.target == closeBtn || !event.target.closest('.modal-content') && modal != null) {
+            let modalBack = document.querySelector('.modal-backdrop')
+            modalBack.remove();
+            modal.remove();
+
+        }
+    })
+}
+let messageButtons = document.querySelectorAll('.chat button');
+async function getComments(modalClone, postId) {
+    let modalBody = modalClone.querySelector('.modal-body')
+    let commentsSection = modalBody.querySelector('.comments-clone')
+    let commentSection = commentsSection.querySelector('.comment')
+    const accessToken = await getToken()
+
+    const response = await fetch(`http://localhost:8000/api/post/${postId}/comments`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        },
+
+    })
+    const data = await response.json()
+
+    if (response.ok) {
+        if (data.length > 0) {
+
+            data.forEach(item => {
+
+                //comment not reply to comment
+                //clone comments and use that
+                if (item.main_comment == null) {
+                    let comment = commentsSection.cloneNode(true)
+                    comment.className = 'comments'
+                    comment.setAttribute('data-comment', item.id)
+                    let content = comment.querySelector('.content')
+                    let time = content.querySelector('span');
+                    let userName = content.querySelector('h4');
+                    let image = comment.querySelector('.comment img')
+                    let contentText = content.querySelector('p');
+                    contentText.textContent = item.comment;
+                    time.textContent = item.created;
+                    userName.textContent = item.author.username;
+                    image.src = item.author.profile.profile_image
+                    modalBody.append(comment)
+                } else {
+                    //reply 
+                    //find comment that reply to that
+                    let comment = modalBody.querySelector(`.comments[data-comment="${item.main_comment}"]`)
+
+                    let responsesClone = comment.querySelector('.responses-clone');
+                    let response = responsesClone.cloneNode(true)
+                    response.className = 'responses hide'
+                    let image = response.querySelector('img')
+                    image.src = item.author.profile.profile_image
+                    let content = response.querySelector('.content')
+                    let userName = content.querySelector('h4');
+                    let time = content.querySelector('span');
+                    userName.textContent = item.author.username;
+                    time.textContent = item.created;
+                    let replyText = content.querySelector('p');
+                    replyText.textContent = item.comment
+                    comment.append(response)
 
 
+                }
+            })
+        }else{
+          modalBody.textContent='No comments yet!'
+        }
+        hideShowReply()
+    }
+}
+messageButtons.forEach(element => {
+    element.addEventListener('click', () => {
+        let post = element.closest('.post')
+        let postId = post.getAttribute('data-post');
+        let modal = document.querySelector('#message_modal_clone')
+        let modalBack = document.createElement('div')
+        modalBack.className = 'modal-backdrop fade show'
+        document.body.appendChild(modalBack)
+        let modalClone = modal.cloneNode(true)
+        modalClone.id = 'message_modal'
+        getComments(modalClone, postId)
+        modal.parentNode.insertBefore(modalClone, modal)
+        modalClone.classList.add('show');
+        modalClone.style.display = 'block';
+        console.log('click on messages button')
 
+
+    })
+})
+
+hideModal()
 /**********Upload post*************/
 const form = document.getElementById('upload-form');
 const img_container = document.querySelector("#image-container");
@@ -188,7 +240,7 @@ function handleNext(imageFile) {
     }
 }
 
-function addPostHome(data){
+function addPostHome(data) {
     let post = document.querySelector('.post');
     let postClone = post.cloneNode(true);
     let image = postClone.querySelector('.image img');
@@ -214,26 +266,26 @@ function addPostHome(data){
     postClone.classList.remove('hide')
 }
 
-function addPostProfile(data){
-  let postsSection=document.getElementById('posts_sec');
-  let div=document.createElement('div');
-  div.className='item';
-  let image=document.createElement('img');
-  image.src=data.image;
-  image.className='img-fluid item_img';
-  div.appendChild(image);
-  postsSection.prepend(div);
+function addPostProfile(data) {
+    let postsSection = document.getElementById('posts_sec');
+    let div = document.createElement('div');
+    div.className = 'item';
+    let image = document.createElement('img');
+    image.src = data.image;
+    image.className = 'img-fluid item_img';
+    div.appendChild(image);
+    postsSection.prepend(div);
 
 }
 //post published
 function addPost(data) {
     //add post in home 
-    let pathName=window.location.pathname;
-    if(pathName=='/'){
-      addPostHome(data)
+    let pathName = window.location.pathname;
+    if (pathName == '/') {
+        addPostHome(data)
     }
-    if(pathName=='/profile/'){
-      addPostProfile(data)
+    if (pathName == '/profile/') {
+        addPostProfile(data)
     }
 
 
@@ -259,7 +311,7 @@ function completed(imageFile) {
             body: formData
         })
         const data = await response.json()
-        
+
         if (response.ok) {
             modal_dialog.classList.add("modal_complete");
             post_published.classList.remove("hide_img");
@@ -278,7 +330,7 @@ function deletePost(element) {
         let deleteBtn = document.getElementById('delete-post')
         let post = event.target.closest('.post');
         let postId = post.getAttribute('data-post')
-        console.log(event)
+
         deleteBtn.addEventListener('click', async () => {
             const accessToken = await getToken()
             const response = await fetch(`http://localhost:8000/api/post/${postId}`, {
@@ -294,7 +346,7 @@ function deletePost(element) {
                 let btnClose = document.querySelector('#submit_delete_modal .btn-close');
 
                 btnClose.click()
-                console.log('btnClose')
+
             }
         })
 
@@ -307,7 +359,7 @@ document.querySelectorAll('.more').forEach((element) => {
 
 document.querySelector('#create-btn').addEventListener('click', (event) => {
     event.preventDefault();
-    console.log('clicked')
+
     let modal = document.querySelector('#create_modal_clone')
     let modalBack = document.createElement('div')
     modalBack.className = 'modal-backdrop fade show'
@@ -320,21 +372,10 @@ document.querySelector('#create-btn').addEventListener('click', (event) => {
 
     const form = document.querySelector('#upload-form');
 
-    console.log('start')
+
     let next_btn_post = document.querySelector(".next_btn_post");
     next_btn_post.addEventListener('click', handleNext);
     form.addEventListener('change', handleSubmit);
+    hideModal(modalClone)
 
-})
-window.addEventListener('mouseup', (event) => {
-    if (document.contains(document.querySelector('.modal-backdrop'))) {
-
-        if (!event.target.closest('.modal-content') && !event.target.closest('#create-btn')) {
-            console.log('if condition')
-            document.querySelector('.modal-backdrop').remove()
-            document.querySelector('#create_modal').remove()
-
-
-        }
-    }
 })

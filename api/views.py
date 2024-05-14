@@ -3,7 +3,7 @@ from rest_framework.parsers import FormParser,MultiPartParser
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 
-from .serializers import PostSerializer,UserSerializer,ContactSerializer,LikeSerializer,ProfileSerializer
+from .serializers import PostSerializer,UserSerializer,ContactSerializer,LikeSerializer,ProfileSerializer,CommentSerializer
 from social.models import Message,Like
 from account.models import Contact,Profile
 UserModel=get_user_model()
@@ -71,3 +71,10 @@ class ProfileDetailApiView(generics.RetrieveUpdateDestroyAPIView):
 		else:
 			return Response(serializer.errors, status=400)
 
+class CommentApiView(generics.ListCreateAPIView):
+	serializer_class=CommentSerializer
+
+	def get_queryset(self):
+		message_id = self.kwargs['message_id']
+		post=Message.objects.get(id=message_id)
+		return post.comment.all()

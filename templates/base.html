@@ -111,17 +111,17 @@
                         <div class="dropdown">
                             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
-                                <img class="logo" src="./images/logo_menu.png">
+                                <img class="logo" src="{% static 'images/logo_menu.png' %}">
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#">
                                         <span>Following</span>
-                                        <img src="./images/add-friend.png">
+                                        <img src="{%static 'images/add-friend.png' %}">
                                     </a>
                                 </li>
                                 <li><a class="dropdown-item" href="#">
                                         <span>Favorites</span>
-                                        <img src="./images/star.png">
+                                        <img src="{%static 'images/star.png' %}">
                                     </a>
                                 </li>
                             </ul>
@@ -131,7 +131,7 @@
                                 <div class="input-group">
                                     <div class="form-outline">
                                         <div>
-                                            <img src="./images/search.png" alt="search">
+                                            <img src="{%static 'images/search.png' %}" alt="search">
                                         </div>
                                         <input type="search" id="form1" class="form-control" placeholder="Search" />
                                     </div>
@@ -139,7 +139,7 @@
                             </div>
                             <div class="notifications notification_icon">
                                 <a href="./notification.html">
-                                    <img src="./images/love.png">
+                                    <img src="{%static 'images/love.png' %}">
                                 </a>
                             </div>
 
@@ -152,24 +152,24 @@
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                            <img class="logo" src="./images/logo_menu.png">
+                            <img class="logo" src="{% static 'images/logo_menu.png' %}">
                         </button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">
                                     <span>Following</span>
-                                    <img src="./images/add-friend.png">
+                                    <img src="{% static 'images/add-friend.png' %}">
                                 </a></li>
                             <li><a class="dropdown-item" href="#">
                                     <span>Favorites</span>
-                                    <img src="./images/star.png">
+                                    <img src="{% static 'images/star.png' %}">
                                 </a></li>
                         </ul>
                     </div>
                     <div class="left">
 
-                        <img src="./images/send.png">
+                        <img src="{% static 'images/send.png' %}">
                         <a href="./notification.html">
-                            <img class="notification_icon" src="./images/love.png">
+                            <img class="notification_icon" src="{% static 'images/love.png' %}">
                         </a>
 
                     </div>
@@ -177,11 +177,9 @@
             </div>
             <!-- menu in the botton for smal screen  -->
             <div class="nav_bottom">
-                <a href="{% url 'home'%}"><img src="./images/accueil.png"></a>
-                <a href="./explore.html"><img src="./images/compass.png"></a>
-                <a href="./reels.html"><img src="./images/video.png"></a>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#create_modal"><img src="./images/tab.png"></a>
-                <a href="{%url 'profile'  %}"><img class="circle story" src="./images/profile_img.jpg"></a>
+                <a href="{% url 'home'%}"><img src="{% static 'images/accueil.png' %}"></a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#create_modal"><img src="{% static 'images/tab.png' %}"></a>
+                <a href="{%url 'profile'  %}"><img class="circle story" src=""></a>
             </div>
         </div>
         <!-- search  -->
@@ -199,7 +197,7 @@
                     <div class="cart">
                         <div>
                             <div class="img">
-                                <img src="./images/profile_img.jpg" alt="">
+                                <img src="" alt="">
                             </div>
                             <div class="info">
                                 <p class="name">Zineb_essoussi</p>
@@ -258,28 +256,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="notif story_notif">
-                    <div class="cart">
-                        <div>
-                            <div class="img">
-                                <img src="./images/profile_img.jpg" alt="">
-                            </div>
-                            <div class="info">
-                                <div class="info">
-                                    <p class="name">
-                                        Zineb_essoussi
-                                        <span class="desc">liked your story.</span>
-                                        <span class="time">2d</span>
-                                    </p>
 
-                                </div>
-                            </div>
-                        </div>
-                        <div class="story_like">
-                            <img src="./images/img2.jpg" alt="">
-                        </div>
-                    </div>
-                </div>
                 <div class="notif follow_notif">
                     <div class="cart">
                         <div>
@@ -300,28 +277,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="notif story_notif">
-                    <div class="cart">
-                        <div>
-                            <div class="img">
-                                <img src="./images/profile_img.jpg" alt="">
-                            </div>
-                            <div class="info">
-                                <div class="info">
-                                    <p class="name">
-                                        Zineb_essoussi
-                                        <span class="desc">liked your story.</span>
-                                        <span class="time">2d</span>
-                                    </p>
 
-                                </div>
-                            </div>
-                        </div>
-                        <div class="story_like">
-                            <img src="./images/img2.jpg" alt="">
-                        </div>
-                    </div>
-                </div>
                 <div class="notif follow_notif">
                     <div class="cart">
                         <div>
@@ -483,13 +439,98 @@
             </div>
         </div>
 
+        <!-- Modal for add messages-->
+        <div class="modal fade" id="message_modal_clone" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Comments</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="comments-clone hide">
+                            <div class="comment" >
+                                <div class="d-flex">
+                                    <div class="img">
+                                        <img src="" alt="">
+                                    </div>
+                                    <div class="content">
+                                        <div class="person">
+                                            <h4>namePerson</h4>
+                                            <span>3j</span>
+                                        </div>
+                                        <p>Wow amzing shot</p>
+                                        <div class="replay">
+                                            <button class="replay">replay</button>
+                                            
+                                        </div>
+                                        <div class="answers">
+                                            <button class="see_comment">
+                                                <span class="hide_com hide">Hide all responses</span>
+                                                <span class="show_c"> <span class="line"></span> See the <span> 1
+                                                    </span> answers</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="like">
+                                    <img class="not_loved" src="{% static 'images/love.png' %}" alt="">
+                                    <img class="loved" src="{% static 'images/heart.png' %}" alt="">
+                                    <p> 55</p>
+                                </div>
+                            </div>
+                            <div class="responses-clone hide">
+                                <div class="response comment">
+                                    <div class="d-flex">
+                                        <div class="img">
+                                            <img src="" alt="">
+                                        </div>
+                                        <div class="content">
+                                            <div class="person">
+                                                <h4>namePerson</h4>
+                                                <span>3j</span>
+                                            </div>
+                                            <p>Wow amzing shot</p>
+                                            <div class="replay">
+                                                <button>replay</button>
+                                                
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="like">
+                                        <img class="not_loved" src="{% static 'images/love.png' %}" alt="">
+                                        <img class="loved" src="{% static 'images/heart.png' %}" alt="">
+                                        <p> 55</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <form method="post">
+                            <div class="input">
+                                <img src="" alt="">
+                                <input type="text" id="emoji_comment" placeholder="Add a comment..." />
+                            </div>
+                            <!-- <div class="emogi">
+                                <img src="./images/emogi.png" alt="">
+                            </div> -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js" integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ" crossorigin="anonymous"></script>
     <!-- <script src="{% static 'owlcarousel/jquery.min.js' %}"></script> -->
     <!-- <script src="{% static 'owlcarousel/owl.carousel.min.js' %}"></script> -->
     <!-- <script src="{% static 'js/carousel.js' %}"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js"></script> -->
     <script type="module" src="{% static 'js/main.js' %}"></script>
     <!-- <script src="{% static 'js/days.js' %}"></script> -->
     <script type="module" src="{% static 'js/form-modal.js' %}"></script>

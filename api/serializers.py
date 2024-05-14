@@ -3,11 +3,11 @@ from django.utils.timesince import timesince
 
 
 from rest_framework import serializers
-from social.models import Message
+from social.models import Message,Like,Comment
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from account.models import Contact,Profile
-from social.models import Like
+
 
 UserModel=get_user_model()
 
@@ -79,8 +79,6 @@ class ProfileSerializer(serializers.ModelSerializer):
 		model=Profile
 		fields=['id','user','profile_image','birth_day']
 
-
-
 	def update(self,instance,validated_data):
 		instance_user=instance.user
 		user=validated_data.get('user')
@@ -96,4 +94,23 @@ class ProfileSerializer(serializers.ModelSerializer):
 		return instance
 
 
+class profileSerializerReadOnly(serializers.ModelSerializer):
+	class Meta:
+		model=Profile
+		fields=['profile_image']
 
+class UserProfileSerializer(serializers.ModelSerializer):
+	profile=profileSerializerReadOnly()
+	class Meta:
+		model=get_user_model()
+		fields=['username','profile']
+
+
+class CommentSerializer(serializers.ModelSerializer):
+	def get_time(self,obj):
+		return timesince(obj.created).split(',')[0]
+	author=UserProfileSerializer()
+	created=serializers.SerializerMethodField('get_time')
+	class Meta:
+		model=Comment
+		fields=['id','comment','object_id','author','parent','main_comment','created']

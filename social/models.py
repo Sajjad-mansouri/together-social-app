@@ -36,7 +36,11 @@ class Like(models.Model):
 
 
 class Comment(models.Model):
+	author=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+	parent=models.ForeignKey('self',on_delete=models.CASCADE,null=True,blank=True,related_name='comments')
+	main_comment=models.ForeignKey('self',on_delete=models.CASCADE,null=True,blank=True,related_name='main_comments')
 	comment=models.TextField()
+	created=models.DateTimeField(auto_now_add=True)
 	limit=models.Q(app_label='social',model='message')
 	content_type=models.ForeignKey(ContentType,on_delete=models.CASCADE,limit_choices_to=limit)
 	object_id=models.PositiveIntegerField()
