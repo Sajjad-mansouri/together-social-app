@@ -100,10 +100,13 @@ class profileSerializerReadOnly(serializers.ModelSerializer):
 		fields=['profile_image']
 
 class UserProfileSerializer(serializers.ModelSerializer):
-	profile=profileSerializerReadOnly()
+	profile=profileSerializerReadOnly(read_only=True)
 	class Meta:
 		model=get_user_model()
 		fields=['username','profile']
+
+
+
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -111,6 +114,30 @@ class CommentSerializer(serializers.ModelSerializer):
 		return timesince(obj.created).split(',')[0]
 	author=UserProfileSerializer()
 	created=serializers.SerializerMethodField('get_time')
+
+	def to_internal_value(self,data):
+		user=self._context['request'].user.id
+		data['author']={'username':user}
+		print(data)
+		return super().to_internal_value(data)
+
+	def create(self,validated_data):
+		author=validated_data.pop('author')
+		print('********data******')
+		object_id=validated_data['object_id']
+		username=int(author['username'])
+		comment=validated_data['comment']
+		user=get_user_model().objects.get(id=username)
+		message=Message.objects.get(id=object_id)
+		return Comment.objects.create(content_object=message,author=user,comment=comment)
+
+
+		
+
+	def is_valid(self,raise_exception=False):
+		valid=super().is_valid(raise_exception=False)
+		print(self.errors)
+		return valid
 	class Meta:
 		model=Comment
 		fields=['id','comment','object_id','author','parent','main_comment','created']
