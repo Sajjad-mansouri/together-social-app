@@ -122,14 +122,21 @@ class CommentSerializer(serializers.ModelSerializer):
 		return super().to_internal_value(data)
 
 	def create(self,validated_data):
+		print('validated_data',validated_data)
 		author=validated_data.pop('author')
-		print('********data******')
 		object_id=validated_data['object_id']
 		username=int(author['username'])
 		comment=validated_data['comment']
+		try:
+			main_comment=validated_data['main_comment']
+			parent=validated_data['parent']
+		except:
+			main_comment=None
+			parent=None
+
 		user=get_user_model().objects.get(id=username)
 		message=Message.objects.get(id=object_id)
-		return Comment.objects.create(content_object=message,author=user,comment=comment)
+		return Comment.objects.create(content_object=message,author=user,comment=comment,parent=parent,main_comment=main_comment)
 
 
 		

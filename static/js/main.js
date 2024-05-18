@@ -67,38 +67,36 @@ not_follow.forEach(item => {
 
 //comments
 
-function hideShowReply() {
+function hideShowReply(modalBody,post=false,comments=null,response=null) {
+   if(post){
+        console.log('create with post')
+        let seeComment=comments.querySelector('.comment .see_comment');
+        let replies=comments.querySelectorAll('.responses');
+        replies.forEach(item=>{
+          item.classList.remove('hide')
+        })
+        seeComment.addEventListener('click',()=>{
+          
+            response.classList.toggle('hide')
+          
+        })
 
-    let show_replay = document.querySelectorAll(".comments .see_comment");
 
-    show_replay.forEach(element => {
-        let comments = element.closest('.comments');
+   }else{
+      console.log('create with getComments')
+      let comments=modalBody.querySelectorAll('.comments')
+      comments.forEach(element=>{
+        let seeComment=element.querySelector('.comment .see_comment');
+        let replies=element.querySelectorAll('.responses')
+        seeComment.addEventListener('click',()=>{
+          replies.forEach(item=>{
+            item.classList.toggle('hide')
+          })
+        })
 
-        let hide_com = element.querySelector(" .see_comment .hide_com");
-        let show_com = element.querySelector(" .see_comment .show_c");
-        let replay_com = comments.querySelectorAll(" .responses");
-        let replyCount = show_com.children[1]
-        replyCount.textContent = replay_com.length;
-
-        if (replay_com.length == 0) {
-
-            element.remove()
-        } else {
-
-            element.addEventListener("click", function() {
-                replay_com.forEach(item => {
-
-                    item.classList.toggle('hide')
-                })
-                console.log(show_com)
-                show_com.classList.toggle("hide");
-                hide_com.classList.toggle("hide");
-            });
-        }
-    })
-
+  })
+   }
 }
-
 function hideModal(cloneModal) {
 
     window.addEventListener('mouseup', event => {
@@ -117,9 +115,21 @@ function hideModal(cloneModal) {
         }
     })
 }
+function replyListener(replyBtn,replyTO,commentUser,mainComment){
+  replyBtn.addEventListener('click',()=>{
+    console.log('reply btn listener')
+    let input=document.querySelector('#message_modal input')
 
-function createCommentElement(modalBody, commentsSection, item) {
+    input.focus()
+    input.value=`@${commentUser} `
+    input.setAttribute('data-mainComment',mainComment);
+    input.setAttribute('data-replyTo',replyTO);
 
+  })
+}
+
+function createCommentElement(modalBody, commentsSection, item,post=false) {
+  console.log(item)
     if (item.main_comment == null) {
         let comment = commentsSection.cloneNode(true)
         comment.className = 'comments'
@@ -134,14 +144,27 @@ function createCommentElement(modalBody, commentsSection, item) {
         userName.textContent = item.author.username;
         image.src = item.author.profile.profile_image
         modalBody.append(comment)
+
+        let replyBtn=comment.querySelector('.reply-btn');
+        let replyTO=item.id
+        let commentUser=item.author.username;
+        let mainComment=item.id
+        replyListener(replyBtn,replyTO,commentUser,mainComment)
     } else {
         //reply 
         //find comment that reply to that
+      
         let comment = modalBody.querySelector(`.comments[data-comment="${item.main_comment}"]`)
-
+        let show_reply=comment.querySelector('.see_comment')
+        
         let responsesClone = comment.querySelector('.responses-clone');
         let response = responsesClone.cloneNode(true)
-        response.className = 'responses hide'
+        if(post){
+
+        response.className = 'responses'
+        }else{
+          response.className = 'responses hide'
+        }
         response.setAttribute('data-comment',item.id)
         let image = response.querySelector('img')
         image.src = item.author.profile.profile_image
@@ -153,7 +176,15 @@ function createCommentElement(modalBody, commentsSection, item) {
         let replyText = content.querySelector('p');
         replyText.textContent = item.comment
         comment.append(response)
+        let replyBtn=response.querySelector('.reply-btn');
+        let replyTO=item.id
+        let commentUser=item.author.username;
 
+        let mainComment=item.main_comment
+        replyListener(replyBtn,replyTO,commentUser,mainComment)
+        if(post){
+          hideShowReply(modalBody,post,comment,response)
+        }
 
     }
 }
@@ -184,9 +215,13 @@ async function getComments(modalClone, postId) {
                 createCommentElement(modalBody, commentsSection, item)
             })
         } else {
-            modalBody.textContent = 'No comments yet!'
+          let empty=document.createElement('div')
+          empty.className='empty'
+          empty.textContent='No comments yet!'
+            modalBody.append (empty)
         }
-        hideShowReply()
+
+        hideShowReply(modalBody)
     }
 }
 messageButtons.forEach(element => {
@@ -205,8 +240,9 @@ messageButtons.forEach(element => {
         modalClone.style.display = 'block';
 
         let input = modalClone.querySelector('.modal-footer input');
-        console.log(input)
+
         writeComment(input, postId)
+       
 
     })
 })
@@ -216,11 +252,19 @@ hideModal()
 //write comment
 
 
-async function postComment(postId, comment) {
+async function postComment(postId, comment,replyTO,mainComment) {
     let formData = new FormData()
     formData.append('comment', comment)
+    if(replyTO!=null){
+    formData.append('parent',replyTO)
 
+    }
+    if(mainComment!=null){
+    formData.append('main_comment',mainComment)
+
+    }
     formData.append('object_id', postId)
+    
     const accessToken = await getToken()
 
     const response = await fetch(`http://localhost:8000/api/post/${postId}/comments`, {
@@ -233,22 +277,31 @@ async function postComment(postId, comment) {
         body: JSON.stringify(Object.fromEntries(formData))
     })
     const item = await response.json()
+    console.log('item in postComment',item)
     if (response.ok) {
         let modalBody = document.querySelector('#message_modal .modal-body');
         console.log(modalBody)
         let commentSection = modalBody.querySelector('.comments-clone')
-        createCommentElement(modalBody,commentSection,item)
+        let post=true;
+        if(document.contains(document.querySelector('.empty'))){
+          document.querySelector('.empty').remove()
+        }
+        createCommentElement(modalBody,commentSection,item,post)
+        
+
     }
 }
 
 function writeComment(input, postId) {
     let form = input.closest('form')
 
-
     form.addEventListener('submit', (event) => {
         event.preventDefault()
         let inputValue = input.value;
-        postComment(postId, inputValue)
+        let comment=inputValue.replace(/@\w+\s/,'');
+        let replyTO=input.getAttribute('data-replyTo');
+        let mainComment=input.getAttribute('data-mainComment');
+        postComment(postId, comment,replyTO,mainComment)
     })
 
 
