@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{% static 'owlcarousel/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.css">
     <link rel="stylesheet" href="{% static 'sass/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 
   <body>
@@ -439,6 +440,8 @@
             </div>
         </div>
 
+
+
         <!-- Modal for add messages-->
         <div class="modal fade" id="message_modal_clone" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -461,8 +464,16 @@
                                         </div>
                                         <p>Wow amzing shot</p>
                                         <div class="replay">
-                                            <button class="replay reply-btn">replay</button>
-                                            ...
+                                            <button class="replay reply-btn">reply</button>
+                                            <div id='drop-down'>
+                                                
+                                                <button class='delete-comment' >...</button>
+                                                <div class="drop-down-content">
+                                                    <a class='delete-btn-comment'href="">delete</a>
+                                                    <a href="">cancel</a>
+                                                </div>
+                                            </div>
+             
                                             
                                         </div>
                                         <div class="answers">
@@ -493,7 +504,16 @@
                                             </div>
                                             <p>Wow amzing shot</p>
                                             <div class="replay">
-                                                <button class='reply-btn'>replay</button>
+                                                <button class='reply-btn'>reply</button>
+                                                                                            <div id='drop-down'>
+                                                
+                                                <button class='delete-comment' >...</button>
+                                                <div class="drop-down-content">
+                                                    <a class='delete-btn-comment'href="">delete</a>
+                                                    <a href="">cancel</a>
+                                                </div>
+                                            </div>
+
                                          
                                             </div>
 

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 
 from .serializers import PostSerializer,UserSerializer,ContactSerializer,LikeSerializer,ProfileSerializer,CommentSerializer
-from social.models import Message,Like
+from social.models import Message,Like,Comment
 from account.models import Contact,Profile
 UserModel=get_user_model()
 
@@ -78,3 +78,7 @@ class CommentApiView(generics.ListCreateAPIView):
 		message_id = self.kwargs['message_id']
 		post=Message.objects.get(id=message_id)
 		return post.comment.all()
+
+class CommentDetailApiView(generics.RetrieveDestroyAPIView):
+	serializer_class=CommentSerializer
+	queryset=Comment.objects.all()

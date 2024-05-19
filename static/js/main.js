@@ -99,7 +99,7 @@ function hideShowReply(modalBody,post=false,comments=null,response=null) {
 }
 function hideModal(cloneModal) {
 
-    window.addEventListener('mouseup', event => {
+    window.addEventListener('click', event => {
         let modal = event.target.closest('.modal');
         let closeBtn;
         if (modal != null) {
@@ -128,12 +128,14 @@ function replyListener(replyBtn,replyTO,commentUser,mainComment){
   })
 }
 
+
 function createCommentElement(modalBody, commentsSection, item,post=false) {
   console.log(item)
     if (item.main_comment == null) {
         let comment = commentsSection.cloneNode(true)
         comment.className = 'comments'
         comment.setAttribute('data-comment', item.id)
+        comment.setAttribute('data-is_user_comment',item.is_user_comment)
         let content = comment.querySelector('.content')
         let time = content.querySelector('span');
         let userName = content.querySelector('h4');
@@ -150,6 +152,7 @@ function createCommentElement(modalBody, commentsSection, item,post=false) {
         let commentUser=item.author.username;
         let mainComment=item.id
         replyListener(replyBtn,replyTO,commentUser,mainComment)
+        deleteComment(comment)
     } else {
         //reply 
         //find comment that reply to that
@@ -166,6 +169,7 @@ function createCommentElement(modalBody, commentsSection, item,post=false) {
           response.className = 'responses hide'
         }
         response.setAttribute('data-comment',item.id)
+        response.setAttribute('data-is_user_comment',item.is_user_comment)
         let image = response.querySelector('img')
         image.src = item.author.profile.profile_image
         let content = response.querySelector('.content')
@@ -185,6 +189,8 @@ function createCommentElement(modalBody, commentsSection, item,post=false) {
         if(post){
           hideShowReply(modalBody,post,comment,response)
         }
+        let responseComment=true
+        deleteComment(response,responseComment)
 
     }
 }
@@ -220,9 +226,9 @@ async function getComments(modalClone, postId) {
           empty.textContent='No comments yet!'
             modalBody.append (empty)
         }
-
+        hideModal(modalBody)
         hideShowReply(modalBody)
-    }
+}
 }
 messageButtons.forEach(element => {
     element.addEventListener('click', () => {
@@ -247,7 +253,7 @@ messageButtons.forEach(element => {
     })
 })
 
-hideModal()
+
 
 //write comment
 
@@ -309,8 +315,44 @@ function writeComment(input, postId) {
 }
 
 //delete comment
-function deleteComment() {
-    document.querySelector('.comments')
+async function fetechDeleteComment(comment,responseComment){
+    console.log(comment)
+    const modalBody=comment.closest('.modal-body')
+    const accessToken = await getToken();
+    const commentId=comment.getAttribute('data-comment');
+    const response=await fetch(`http://localhost:8000/api/comment/${commentId}`,{
+        method:'DELETE',
+        headers:{
+            'Authorization':`Bearer ${accessToken}`
+        }
+    })
+
+    if(response.ok){
+
+            comment.remove()
+            if(!responseComment){
+              let empty=document.createElement('div')
+          empty.className='empty'
+          empty.textContent='No comments yet!'
+            modalBody.append (empty)
+            }
+    }
+}
+function deleteComment(comment,responseComment=false) {
+    let deleteComment=comment.querySelector('.delete-comment')
+    let dropDownContent=comment.querySelector('.drop-down-content')
+    deleteComment.addEventListener('click',()=>{
+        dropDownContent.classList.toggle('show-drop')
+    })
+    window.addEventListener('click',(event)=>{
+        if(event.target==comment.querySelector('.delete-btn-comment')){
+            event.preventDefault()
+            fetechDeleteComment(comment,responseComment)
+        }
+        if(!event.target.matches('.delete-comment')){
+            dropDownContent.classList.remove('show-drop')
+        }
+    })
 }
 /**********Upload post*************/
 const form = document.getElementById('upload-form');

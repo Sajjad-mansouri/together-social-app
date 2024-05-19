@@ -1,215 +1,35 @@
 
 
-body{
-  font-family: Montserrat, sans-serif;
-  background: #28223f;
-}
-.container{
-  user-select: none;
-  margin: 50px auto;
-  background: #231e39;
-  color: #b3b8cd;
-  border-radius: 5px;
-/*  width: 350px;*/
-  width: 80%;
-  text-align: center;
-  box-shadow: 0 10px 20px -10px rgba(0,0,0,.75);
+#drop-down{
+  display: inline-block;
   position: relative;
 }
 
-.cover-photo{
-  background: url(https://images.unsplash.com/photo-1540228232483-1b64a7024923?ixlib=rb-1.2.1&auto=format&fit=crop&w=967&q=80);
-  height: 160px;
-  width: 100%;
-  border-radius: 5px 5px 0 0;
+#drop-down .delete-comment{
 
 }
-.profile{
-  height: 120px;
-  width: 120px;
-  border-radius: 50%;
-  margin: 93px 0 0 -175px;
-  border: 1px solid #1f1a32;
-  padding: 7px;
-  background: #292343;
+
+#drop-down .drop-down-content{
+    display: none;
     position: absolute;
-
-}
-.profile-name{
-  font-size: 25px;
-  font-weight: bold;
-  margin: 27px 0 0 120px;
-}
-.about{
-  margin-top: 35px;
-  line-height: 21px;
-}
-button{
-  margin: 10px 0 10px 0;
-}
-.msg-btn, .btn{
-  background: #03bfbc;
-  border: 1px solid #03bfbc;
-  padding: 10px 25px;
-  color: #231e39;
-  border-radius: 3px;
-  font-family: Montserrat, sans-serif;
-  cursor: pointer;
-}
-.btn{
-  margin-left: 10px;
-  background: transparent;
-  color: #02899c;
-}
-.btn:hover{
-  color: #231e39;
-  background: #03bfbc;
-  transition: .5s;
-}
-.btn-active{
-  color: #231e39;
-  background: #03bfbc;
-
-}
-
-.container i{
-  padding-left: 20px;
-  font-size: 20px;
-  margin-bottom: 20px;
-  cursor: pointer;
-  transition: .5s;
-}
-.container i:hover{
-  color: #03bfbc;
-}
-
-/*my css*/
-
-.content{
-  margin-top: 20px;
-}
-
-.card{
-  margin-top: 5px;
-  padding: 5px;
-}
-.footer{
-  position: fixed;
-  width: 20px;
-  bottom: 5px;
-
-}
-
-/* Small devices such as large phones (640px and up) */
-@media only screen and (max-width: 640px) {
-.footer{
-  position: fixed;
-  bottom: 5px;
-  left: 100px;
-  width: 100%;
-}
+    background-color: #f1f1f1;
+    min-width: 100%;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
 
 }
 
 
-/*form*/
+  /* Links inside the dropdown */
+  .drop-down-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
 
-.form-modal{
-    position: fixed;
-  left: 50%;
-  top:50%;
-  transform: translate(-50%, -50%);
-    text-align: center;
-  padding: 1rem;
-  background-color: hsl(0, 0%, 100%);
-  border: 4px solid hsl(0, 0%, 90%);
-}
-.add-form{
-  width: 600px;
+  /* Change color of dropdown links on hover */
+  .drop-down-content a:hover {background-color: #ddd;}
 
-
-  
-}
-form div{
-  margin-top: 5px;
-
-}
-
-textarea,
-input,
-button{
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-color: transparent;
-  border: 2px solid #333;
-  background-color: white;
-  border-radius: 0.25rem;
-  box-sizing: border-box;
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  margin: 2px 0;
-  font: 1.25rem / 1.5 sans-serif;
-}
-
-label{
-  font: 1.25rem / 1.5 sans-serif;
-}
-
-textarea{
-  max-height: 10rem;
-}
-
-input::placeholder,
-textarea::placeholder{
-  opacity: 1;
-/*  color: hsl(213, 73%, 50%);*/
-}
-
-input::file-selector-button{
-  color:red;
-}
-
-.hidden{
-  display: none;
-}
-
-
-.search{
-  height: 500px;
-  width: 600px;
-
-}
-
-.liked{
-  color: red;
-}
-
-.setting{
-  position: relative;
-}
-.menu{
-  position: absolute;
-  right: 0px;
-  top: 0;
-
-  color: black;
-}
-.menu svg{
-  font-size: 2rem;
-}
-.menu div{
-  position: absolute;
-
-  right: 0;
-  z-index: 1;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 15px;
-}
-.menu div button{
-  width: 100px;
-  box-sizing: border-box;
-}
-.menu div button:hover{
-  background-color: #ffc595;
-}
-
+  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+  #drop-down .show-drop {display:block;}

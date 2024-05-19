@@ -112,9 +112,16 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
 	def get_time(self,obj):
 		return timesince(obj.created).split(',')[0]
+
+	def user_comment(self,obj):
+		user=self._context['request'].user.username
+		if obj.author.username==user:
+			return True
+		else:
+			return False
 	author=UserProfileSerializer()
 	created=serializers.SerializerMethodField('get_time')
-
+	is_user_comment=serializers.SerializerMethodField('user_comment')
 	def to_internal_value(self,data):
 		user=self._context['request'].user.id
 		data['author']={'username':user}
@@ -136,7 +143,11 @@ class CommentSerializer(serializers.ModelSerializer):
 
 		user=get_user_model().objects.get(id=username)
 		message=Message.objects.get(id=object_id)
-		return Comment.objects.create(content_object=message,author=user,comment=comment,parent=parent,main_comment=main_comment)
+		return Comment.objects.create(content_object=message,
+										author=user,
+										comment=comment,
+										parent=parent,
+										main_comment=main_comment,)
 
 
 		
@@ -147,4 +158,5 @@ class CommentSerializer(serializers.ModelSerializer):
 		return valid
 	class Meta:
 		model=Comment
-		fields=['id','comment','object_id','author','parent','main_comment','created']
+		fields=['id','comment','object_id','author','parent','main_comment','created','is_user_comment']
+		# read_only_fields=['is_user_comment']
