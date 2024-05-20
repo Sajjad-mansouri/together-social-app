@@ -9,7 +9,7 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def liked(context,post):
 	user=context['user']
-	if post in user.likes.values_list('post',flat=True):
+	if post in user.like_set.values_list('post',flat=True):
 
 		return True
 	else:

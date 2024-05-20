@@ -25,18 +25,23 @@ class Message(models.Model):
 		ordering=['-created']
 
 
-
-class Like(models.Model):
-	user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='likes')
-	post=models.ForeignKey(Message,on_delete=models.CASCADE,related_name='likes')
+class LikeAbstract(models.Model):
+	user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 	created=models.DateTimeField(auto_now_add=True)
 
 	class Meta:
+		abstract=True
+
+class Like(LikeAbstract):
+	post=models.ForeignKey(Message,on_delete=models.CASCADE,related_name='likes')
+	
+	class Meta:
 		unique_together=['user','post']
+		
 
 
 class Comment(models.Model):
-	author=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+	author=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='author_comments')
 	parent=models.ForeignKey('self',on_delete=models.CASCADE,null=True,blank=True,related_name='comments')
 	main_comment=models.ForeignKey('self',on_delete=models.CASCADE,null=True,blank=True,related_name='main_comments')
 	comment=models.TextField()
@@ -45,9 +50,15 @@ class Comment(models.Model):
 	content_type=models.ForeignKey(ContentType,on_delete=models.CASCADE,limit_choices_to=limit)
 	object_id=models.PositiveIntegerField()
 	content_object=GenericForeignKey('content_type','object_id')
+	like=models.ManyToManyField(settings.AUTH_USER_MODEL,through='LikeComment')
 
 	class Meta:
 		indexes=[
 			models.Index(fields=['content_type','object_id'])
 		]
 
+class LikeComment(LikeAbstract):
+	comment=models.ForeignKey(Comment,on_delete=models.CASCADE)
+
+	class Meta:
+		unique_together=['user','comment']

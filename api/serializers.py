@@ -3,7 +3,7 @@ from django.utils.timesince import timesince
 
 
 from rest_framework import serializers
-from social.models import Message,Like,Comment
+from social.models import Message,Like,Comment,LikeComment
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from account.models import Contact,Profile
@@ -119,9 +119,26 @@ class CommentSerializer(serializers.ModelSerializer):
 			return True
 		else:
 			return False
+	def like(self,obj):
+		user=self._context['request'].user.id
+		like_count=obj.like.count()
+		data={}
+		try:
+			
+			liked=obj.likecomment_set.get(user_id=user)
+			
+			data.update({"is_liked":True,"id":liked.id})
+		except Exception as e:
+			print(e)
+			data.update({'is_liked':False})
+		data.update({'like_count':like_count})
+
+		return data
+
 	author=UserProfileSerializer()
 	created=serializers.SerializerMethodField('get_time')
 	is_user_comment=serializers.SerializerMethodField('user_comment')
+	like_info=serializers.SerializerMethodField('like')
 	def to_internal_value(self,data):
 		user=self._context['request'].user.id
 		data['author']={'username':user}
@@ -158,5 +175,21 @@ class CommentSerializer(serializers.ModelSerializer):
 		return valid
 	class Meta:
 		model=Comment
-		fields=['id','comment','object_id','author','parent','main_comment','created','is_user_comment']
+		fields=['id','comment','object_id','author','parent','main_comment','created','is_user_comment','like_info']
 		# read_only_fields=['is_user_comment']
+
+
+class LikeCommentSerializer(serializers.ModelSerializer):
+	class Meta:
+		model=LikeComment
+		fields=['id','user','comment']
+
+	def to_internal_value(self,data):
+		print('++++++++++++=')
+		print(type(data))
+		user=self._context['request'].user.id
+		print('*********')
+		data['user']=user
+		print(data)
+		return super().to_internal_value(data)
+

@@ -27,6 +27,11 @@ urlpatterns=[
     path('post/<int:message_id>/comments',views.CommentApiView.as_view(),name='comments'),
     path('comment/<int:pk>',views.CommentDetailApiView.as_view(),name='comment'),
 
+    path('comments/likes/',views.LikeCommentApiView.as_view(),name='comments-likes'),
+    path('comment/likes/<int:pk>',views.LikeCommentDetailApiView.as_view(),name='comment-likes'),
+
+
+
 
 	
 ]

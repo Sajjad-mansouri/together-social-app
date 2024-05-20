@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Message,Like,Comment
+from .models import Message,Like,Comment,LikeComment
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
@@ -12,3 +12,7 @@ class LikeAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
 	list_display=['comment','content_type','object_id']
+
+@admin.register(LikeComment)
+class LikeCommentAdmin(admin.ModelAdmin):
+	list_display=['user','comment']

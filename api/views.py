@@ -3,8 +3,16 @@ from rest_framework.parsers import FormParser,MultiPartParser
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 
-from .serializers import PostSerializer,UserSerializer,ContactSerializer,LikeSerializer,ProfileSerializer,CommentSerializer
-from social.models import Message,Like,Comment
+from .serializers import (
+						PostSerializer,
+						UserSerializer,
+						ContactSerializer,
+						LikeSerializer,
+						ProfileSerializer,
+						CommentSerializer,
+						LikeCommentSerializer
+						)
+from social.models import Message,Like,Comment,LikeComment
 from account.models import Contact,Profile
 UserModel=get_user_model()
 
@@ -82,3 +90,12 @@ class CommentApiView(generics.ListCreateAPIView):
 class CommentDetailApiView(generics.RetrieveDestroyAPIView):
 	serializer_class=CommentSerializer
 	queryset=Comment.objects.all()
+
+
+class LikeCommentApiView(generics.ListCreateAPIView):
+	serializer_class=LikeCommentSerializer
+	queryset=LikeComment.objects.all()
+
+class LikeCommentDetailApiView(generics.RetrieveDestroyAPIView):
+	serializer_class=LikeCommentSerializer
+	queryset=LikeComment.objects.all()

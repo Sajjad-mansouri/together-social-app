@@ -2,7 +2,7 @@ import { getToken, login } from './get-token.js'
 import { addEventListeners } from './form-modal.js'
 /***************Post**************************/
 const posts = document.querySelector(".posts");
-
+const baseUrl = window.location.origin
 
 
 
@@ -142,12 +142,13 @@ function replyListener(replyBtn,replyTO,commentUser,mainComment){
 
 
 function createCommentElement(modalBody, commentsSection, item,postId,post=false) {
-  
+    console.log(item)
     if (item.main_comment == null) {
         let comment = commentsSection.cloneNode(true)
         comment.className = 'comments'
         comment.setAttribute('data-comment', item.id)
         comment.setAttribute('data-is_user_comment',item.is_user_comment)
+
         let content = comment.querySelector('.content')
         let time = content.querySelector('span');
         let userName = content.querySelector('h4');
@@ -179,6 +180,11 @@ function createCommentElement(modalBody, commentsSection, item,postId,post=false
 
         replyListener(replyBtn,replyTO,commentUser,mainComment)
         deleteComment(comment,postId)
+        commentLikeInfo(comment,item.like_info)
+        let likeCommentDiv=comment.querySelector('.like')
+        likeCommentDiv.addEventListener('click',()=>{
+            likeComment(comment,item.like_info)
+        })
     } else {
         //reply 
         //find comment that reply to that
@@ -221,11 +227,16 @@ function createCommentElement(modalBody, commentsSection, item,postId,post=false
         }
         let responseComment=true
         deleteComment(response,postId,responseComment)
-
+        commentLikeInfo(response,item.like_info)
+        let likeCommentDiv=response.querySelector('.like')
+        likeCommentDiv.addEventListener('click',()=>{
+            likeComment(response,item.like_info)
+        })
     }
 }
 
 let messageButtons = document.querySelectorAll('.chat button');
+let viewComments=document.querySelectorAll('.view-comments')
 async function getComments(modalClone, postId) {
     let modalBody = modalClone.querySelector('.modal-body')
     let commentsSection = modalBody.querySelector('.comments-clone')
@@ -260,8 +271,12 @@ async function getComments(modalClone, postId) {
         hideShowReply(modalBody)
 }
 }
-messageButtons.forEach(element => {
-    element.addEventListener('click', () => {
+messageAddEvnetListener(messageButtons)
+messageAddEvnetListener(viewComments)
+function messageAddEvnetListener(messageElement){
+messageElement.forEach(element => {
+    element.addEventListener('click', (event) => {
+        event.preventDefault();
         let post = element.closest('.post')
         let postId = post.getAttribute('data-post');
         let modal = document.querySelector('#message_modal_clone')
@@ -282,6 +297,8 @@ messageButtons.forEach(element => {
 
     })
 })
+}
+
 
 
 
@@ -579,3 +596,69 @@ document.querySelector('#create-btn').addEventListener('click', (event) => {
     hideModal(modalClone)
 
 })
+
+//like comment and reply
+
+// like and dislike
+async function likeComment(div,like_info) {
+
+    const likeDiv=div.querySelector('.like')
+    const commentId=div.getAttribute('data-comment')
+    let lovedImg=likeDiv.querySelector('.loved')
+    let notLovedimg=likeDiv.querySelector('.not_loved')
+    let p=likeDiv.querySelector('p')
+    const accessToken = await getToken()
+    if (like_info.is_liked ) {
+
+        const response = await fetch(baseUrl + `/api/comment/likes/${like_info.id}`, {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+
+        if (response.ok) {
+            like_info.is_liked=false
+            lovedImg.classList.remove('display')
+            notLovedimg.classList.remove('hide')
+            p.textContent=Number(p.textContent)-1
+
+
+        }
+
+    } else  {
+
+        const body = { 'comment': commentId }
+
+        const response = await fetch(baseUrl + '/api/comments/likes/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+        
+        const data=await response.json()
+        if (response.ok) {
+            like_info.is_liked=true
+            like_info.id=data.id
+            lovedImg.classList.add('display')
+            notLovedimg.classList.add('hide')
+            p.textContent=Number(p.textContent)+1
+        }
+
+    }
+}
+function commentLikeInfo(div,like_info){
+    let likeDiv=div.querySelector('.like')
+    let lovedImg=likeDiv.querySelector('.loved')
+    let notLovedimg=likeDiv.querySelector('.not_loved')
+    let p=likeDiv.querySelector('p')
+    p.textContent=like_info.like_count
+    if(like_info.is_liked){
+        lovedImg.classList.add('display')
+        notLovedimg.classList.add('hide')
+    }
+
+}
