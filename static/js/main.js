@@ -72,9 +72,15 @@ function hideShowReply(modalBody,post=false,comments=null,response=null) {
         console.log('create with post')
         let seeComment=comments.querySelector('.comment .see_comment');
         let replies=comments.querySelectorAll('.responses');
+        let showComment=seeComment.querySelector('.show_c');
+        let hideComment=seeComment.querySelector('.hide_com')
         replies.forEach(item=>{
           item.classList.remove('hide')
+          showComment.classList.add('hide');
+          hideComment.classList.remove('hide')
         })
+        let previousReplies=showComment.children[1].textContent
+        showComment.children[1].textContent=Number(previousReplies)+1;
         seeComment.addEventListener('click',()=>{
           
             response.classList.toggle('hide')
@@ -86,9 +92,15 @@ function hideShowReply(modalBody,post=false,comments=null,response=null) {
       console.log('create with getComments')
       let comments=modalBody.querySelectorAll('.comments')
       comments.forEach(element=>{
+
         let seeComment=element.querySelector('.comment .see_comment');
         let replies=element.querySelectorAll('.responses')
+        let showComment=seeComment.querySelector('.show_c');
+        let hideComment=seeComment.querySelector('.hide_com')
+        showComment.children[1].textContent=replies.length
         seeComment.addEventListener('click',()=>{
+            showComment.classList.toggle('hide')
+            hideComment.classList.toggle('hide')
           replies.forEach(item=>{
             item.classList.toggle('hide')
           })
@@ -129,8 +141,8 @@ function replyListener(replyBtn,replyTO,commentUser,mainComment){
 }
 
 
-function createCommentElement(modalBody, commentsSection, item,post=false) {
-  console.log(item)
+function createCommentElement(modalBody, commentsSection, item,postId,post=false) {
+  
     if (item.main_comment == null) {
         let comment = commentsSection.cloneNode(true)
         comment.className = 'comments'
@@ -151,8 +163,22 @@ function createCommentElement(modalBody, commentsSection, item,post=false) {
         let replyTO=item.id
         let commentUser=item.author.username;
         let mainComment=item.id
+        let postElement=document.querySelector(`[data-post="${postId}"]`)
+        let viewComments=postElement.querySelector('.view-comments')
+        if(post && viewComments.children.length==0){
+            let a=document.createElement('a');
+            a.classList.add('gray')
+            a.href='#'
+            a.innerHTML='View all <span>1</span> comments'
+            viewComments.append(a)
+        }else if(post){
+            console.log(post)
+            let span=viewComments.querySelector('span')
+            span.textContent=Number(span.textContent)+1;
+        }
+
         replyListener(replyBtn,replyTO,commentUser,mainComment)
-        deleteComment(comment)
+        deleteComment(comment,postId)
     } else {
         //reply 
         //find comment that reply to that
@@ -186,11 +212,15 @@ function createCommentElement(modalBody, commentsSection, item,post=false) {
 
         let mainComment=item.main_comment
         replyListener(replyBtn,replyTO,commentUser,mainComment)
+        let postElement=document.querySelector(`[data-post="${postId}"]`)
+        let viewComments=postElement.querySelector('.view-comments')
         if(post){
           hideShowReply(modalBody,post,comment,response)
+            let span=viewComments.querySelector('span')
+            span.textContent=Number(span.textContent)+1;
         }
         let responseComment=true
-        deleteComment(response,responseComment)
+        deleteComment(response,postId,responseComment)
 
     }
 }
@@ -218,7 +248,7 @@ async function getComments(modalClone, postId) {
 
                 //comment not reply to comment
                 //clone comments and use that
-                createCommentElement(modalBody, commentsSection, item)
+                createCommentElement(modalBody, commentsSection, item,postId)
             })
         } else {
           let empty=document.createElement('div')
@@ -292,7 +322,7 @@ async function postComment(postId, comment,replyTO,mainComment) {
         if(document.contains(document.querySelector('.empty'))){
           document.querySelector('.empty').remove()
         }
-        createCommentElement(modalBody,commentSection,item,post)
+        createCommentElement(modalBody,commentSection,item,postId,post)
         
 
     }
@@ -315,7 +345,7 @@ function writeComment(input, postId) {
 }
 
 //delete comment
-async function fetechDeleteComment(comment,responseComment){
+async function fetechDeleteComment(comment,postId,responseComment){
     console.log(comment)
     const modalBody=comment.closest('.modal-body')
     const accessToken = await getToken();
@@ -328,17 +358,28 @@ async function fetechDeleteComment(comment,responseComment){
     })
 
     if(response.ok){
-
+            console.log(postId)
+            let postElement=document.querySelector(`[data-post="${postId}"]`)
+            let viewComments=postElement.querySelector('.view-comments')
             comment.remove()
-            if(!responseComment){
+            let comments=modalBody.querySelectorAll('.comments')
+
+            if(!responseComment && comments.length==0){
               let empty=document.createElement('div')
           empty.className='empty'
           empty.textContent='No comments yet!'
             modalBody.append (empty)
+            viewComments.textContent=''
+
+            }else{
+                let span=viewComments.querySelector('span')
+                span.textContent=Number(span.textContent)-1;
+
             }
     }
 }
-function deleteComment(comment,responseComment=false) {
+function deleteComment(comment,postId,responseComment=false) {
+    console.log(postId)
     let deleteComment=comment.querySelector('.delete-comment')
     let dropDownContent=comment.querySelector('.drop-down-content')
     deleteComment.addEventListener('click',()=>{
@@ -347,7 +388,7 @@ function deleteComment(comment,responseComment=false) {
     window.addEventListener('click',(event)=>{
         if(event.target==comment.querySelector('.delete-btn-comment')){
             event.preventDefault()
-            fetechDeleteComment(comment,responseComment)
+            fetechDeleteComment(comment,postId,responseComment)
         }
         if(!event.target.matches('.delete-comment')){
             dropDownContent.classList.remove('show-drop')

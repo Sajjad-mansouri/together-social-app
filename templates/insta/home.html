@@ -55,7 +55,7 @@
                                 <span>{{post.text}}</span>
                                 
                             </p>
-                            <p><a class="gray" href="#">View all 2 comments</a></p>
+                            <p class='view-comments'><a class="gray" href="#">View all <span>2</span> comments</a></p>
                             <input type="text" placeholder="Add a comments...">
                         </div>
                     </div>
@@ -109,7 +109,10 @@
                                 <a class="bold" href="#">{{post.user}}</a>
                                 <span>{{post.text}}</span>
                             </p>
-                            <p><a class="gray" href="#">View all 2 comments</a></p>
+                            
+                            <p class='view-comments'>{%if post.comment.count != 0 %}<a class="gray" href="#">View all <span>{{post.comment.count}}</span> comments
+                            </a>{%endif%}</p>
+                            
                             <input type="text" placeholder="Add a comments...">
                         </div>
                     </div>

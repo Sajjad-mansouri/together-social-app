@@ -16,9 +16,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 
-  <body>
-        <div class="post_page">
-                    <!--***** nav menu start ****** -->
+<body>
+    <div class="post_page">
+        <!--***** nav menu start ****** -->
         <div class="nav_menu">
             <div class="fix_top">
                 <!-- nav for big->medium screen -->
@@ -43,8 +43,6 @@
                                     <span class="d-none d-lg-block search">Search </span>
                                 </a>
                             </li>
-
-
                             <li class="notification_icon">
                                 <a href="#">
                                     <img src="{% static 'images/love.png' %}">
@@ -56,7 +54,6 @@
                                     <img src="{% static 'images/tab.png' %}">
                                     <span class="d-none d-lg-block ">Create</span>
                                 </a>
-
                             </li>
                             <li>
                                 <a href="{%url 'profile' %}">
@@ -68,8 +65,7 @@
                     </div>
                     <div class="more">
                         <div class="btn-group dropup">
-                            <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                            <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="{% static 'images/menu.png' %}">
                                 <span class="d-none d-lg-block ">More</span>
                             </button>
@@ -103,15 +99,13 @@
                             </ul>
                         </div>
                         <!--  -->
-
                     </div>
                 </div>
                 <!-- nav for small screen  -->
                 <div class="nav_sm">
                     <div class="content">
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img class="logo" src="{% static 'images/logo_menu.png' %}">
                             </button>
                             <ul class="dropdown-menu">
@@ -143,16 +137,13 @@
                                     <img src="{%static 'images/love.png' %}">
                                 </a>
                             </div>
-
                         </div>
                     </div>
                 </div>
-
                 <!-- nav for ex-small screen  -->
                 <div class="nav_xm">
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <img class="logo" src="{% static 'images/logo_menu.png' %}">
                         </button>
                         <ul class="dropdown-menu">
@@ -167,12 +158,10 @@
                         </ul>
                     </div>
                     <div class="left">
-
                         <img src="{% static 'images/send.png' %}">
                         <a href="./notification.html">
                             <img class="notification_icon" src="{% static 'images/love.png' %}">
                         </a>
-
                     </div>
                 </div>
             </div>
@@ -229,7 +218,6 @@
                                     <span class="desc">started following you.</span>
                                     <span class="time">2h</span>
                                 </p>
-
                             </div>
                         </div>
                         <div class="follow_you">
@@ -249,7 +237,6 @@
                                     <span class="desc">started following you.</span>
                                     <span class="time">2h</span>
                                 </p>
-
                             </div>
                         </div>
                         <div class="follow_you">
@@ -257,7 +244,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="notif follow_notif">
                     <div class="cart">
                         <div>
@@ -270,7 +256,6 @@
                                     <span class="desc">started following you.</span>
                                     <span class="time">2h</span>
                                 </p>
-
                             </div>
                         </div>
                         <div class="follow_you">
@@ -278,7 +263,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="notif follow_notif">
                     <div class="cart">
                         <div>
@@ -291,7 +275,6 @@
                                     <span class="desc">started following you.</span>
                                     <span class="time">2h</span>
                                 </p>
-
                             </div>
                         </div>
                         <div class="follow_you">
@@ -302,25 +285,40 @@
             </div>
         </div>
         <!--***** nav menu end ****** -->
-{%block content%}
-{%endblock%}
-
-    <!-- Modal for sending posts-->
-    <div class="modal fade" id="send_message_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Share</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="send">
-                        <div class="search_person">
-                            <p>To:</p>
-                            <input type="text" placeholder="Search">
-                        </div>
-                        <p>Suggested</p>
-                        <div class="poeple">
+        {%block content%}
+        {%endblock%}
+        <!-- Modal for sending posts-->
+        <div class="modal fade" id="send_message_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Share</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="send">
+                            <div class="search_person">
+                                <p>To:</p>
+                                <input type="text" placeholder="Search">
+                            </div>
+                            <p>Suggested</p>
+                            <div class="poeple">
+                                <div class="person">
+                                    <div class="d-flex">
+                                        <div class="img">
+                                            <img src="./images/profile_img.jpg" alt="">
+                                        </div>
+                                        <div class="content">
+                                            <div class="person">
+                                                <h4>namePerson</h4>
+                                                <span>zim ess</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <di class="circle">
+                                        <span></span>
+                                </div>
+                            </div>
                             <div class="person">
                                 <div class="d-flex">
                                     <div class="img">
@@ -333,42 +331,24 @@
                                         </div>
                                     </div>
                                 </div>
-                                <di class="circle">
+                                <div class="circle">
                                     <span></span>
-                            </div>
-                        </div>
-                        <div class="person">
-                            <div class="d-flex">
-                                <div class="img">
-                                    <img src="./images/profile_img.jpg" alt="">
                                 </div>
-                                <div class="content">
-                                    <div class="person">
-                                        <h4>namePerson</h4>
-                                        <span>zim ess</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="circle">
-                                <span></span>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary">Send</button>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary">Send</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
         <!--Create model-->
         <div class="modal fade" id="create_modal_clone" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title w-100 fs-5 d-flex align-items-end justify-content-between"
-                            id="exampleModalLabel">
+                        <h1 class="modal-title w-100 fs-5 d-flex align-items-end justify-content-between" id="exampleModalLabel">
                             <span class="title_create">Create new post</span>
                             <button class="next_btn_post btn_link"></button>
                         </h1>
@@ -410,7 +390,7 @@
                 </div>
             </div>
         </div>
-            <!-- Modal for  deleting post -->
+        <!-- Modal for  deleting post -->
         <div class="modal fade" id="delete_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -434,14 +414,11 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-danger " id='delete-post' >Delete</button>
+                        <button type="button" class="btn btn-danger " id='delete-post'>Delete</button>
                     </div>
                 </div>
             </div>
         </div>
-
-
-
         <!-- Modal for add messages-->
         <div class="modal fade" id="message_modal_clone" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -452,7 +429,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="comments-clone hide">
-                            <div class="comment" >
+                            <div class="comment">
                                 <div class="d-flex">
                                     <div class="img">
                                         <img src="" alt="">
@@ -466,15 +443,12 @@
                                         <div class="replay">
                                             <button class="replay reply-btn">reply</button>
                                             <div id='drop-down'>
-                                                
-                                                <button class='delete-comment' >...</button>
+                                                <button class='delete-comment'>...</button>
                                                 <div class="drop-down-content">
-                                                    <a class='delete-btn-comment'href="">delete</a>
+                                                    <a class='delete-btn-comment' href="">delete</a>
                                                     <a href="">cancel</a>
                                                 </div>
                                             </div>
-             
-                                            
                                         </div>
                                         <div class="answers">
                                             <button class="see_comment">
@@ -505,18 +479,14 @@
                                             <p>Wow amzing shot</p>
                                             <div class="replay">
                                                 <button class='reply-btn'>reply</button>
-                                                                                            <div id='drop-down'>
-                                                
-                                                <button class='delete-comment' >...</button>
-                                                <div class="drop-down-content">
-                                                    <a class='delete-btn-comment'href="">delete</a>
-                                                    <a href="">cancel</a>
+                                                <div id='drop-down'>
+                                                    <button class='delete-comment'>...</button>
+                                                    <div class="drop-down-content">
+                                                        <a class='delete-btn-comment' href="">delete</a>
+                                                        <a href="">cancel</a>
+                                                    </div>
                                                 </div>
                                             </div>
-
-                                         
-                                            </div>
-
                                         </div>
                                     </div>
                                     <div class="like">
@@ -526,12 +496,10 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
                     <div class="modal-footer">
-                        <form >
+                        <form>
                             <div class="input">
                                 <img src="" alt="">
                                 <input type="text" id="emoji_comment" placeholder="Add a comment..." />
@@ -544,10 +512,9 @@
                 </div>
             </div>
         </div>
-
-</div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js" integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js" integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ" crossorigin="anonymous"></script>
     <!-- <script src="{% static 'owlcarousel/jquery.min.js' %}"></script> -->
     <!-- <script src="{% static 'owlcarousel/owl.carousel.min.js' %}"></script> -->
     <!-- <script src="{% static 'js/carousel.js' %}"></script> -->
@@ -555,10 +522,6 @@
     <script type="module" src="{% static 'js/main.js' %}"></script>
     <!-- <script src="{% static 'js/days.js' %}"></script> -->
     <script type="module" src="{% static 'js/form-modal.js' %}"></script>
+</body>
 
-
-
-
-
-  </body>
 </html>

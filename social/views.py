@@ -53,6 +53,8 @@ class Home(LoginRequiredMixin,ListView):
 		following=self.request.user.rel_from.values_list('to_user',flat=True)
 		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user))
 
+
+
 class Setting(LoginRequiredMixin,TemplateView):
 	template_name='transfer/settings.html'
 
