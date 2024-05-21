@@ -1,5 +1,5 @@
 import { getToken, login } from './get-token.js'
-import { addEventListeners } from './form-modal.js'
+
 /***************Post**************************/
 const posts = document.querySelector(".posts");
 const baseUrl = window.location.origin
@@ -67,48 +67,49 @@ not_follow.forEach(item => {
 
 //comments
 
-function hideShowReply(modalBody,post=false,comments=null,response=null) {
-   if(post){
+function hideShowReply(modalBody, post = false, comments = null, response = null) {
+    if (post) {
         console.log('create with post')
-        let seeComment=comments.querySelector('.comment .see_comment');
-        let replies=comments.querySelectorAll('.responses');
-        let showComment=seeComment.querySelector('.show_c');
-        let hideComment=seeComment.querySelector('.hide_com')
-        replies.forEach(item=>{
-          item.classList.remove('hide')
-          showComment.classList.add('hide');
-          hideComment.classList.remove('hide')
+        let seeComment = comments.querySelector('.comment .see_comment');
+        let replies = comments.querySelectorAll('.responses');
+        let showComment = seeComment.querySelector('.show_c');
+        let hideComment = seeComment.querySelector('.hide_com')
+        replies.forEach(item => {
+            item.classList.remove('hide')
+            showComment.classList.add('hide');
+            hideComment.classList.remove('hide')
         })
-        let previousReplies=showComment.children[1].textContent
-        showComment.children[1].textContent=Number(previousReplies)+1;
-        seeComment.addEventListener('click',()=>{
-          
+        let previousReplies = showComment.children[1].textContent
+        showComment.children[1].textContent = Number(previousReplies) + 1;
+        seeComment.addEventListener('click', () => {
+
             response.classList.toggle('hide')
-          
+
         })
 
 
-   }else{
-      console.log('create with getComments')
-      let comments=modalBody.querySelectorAll('.comments')
-      comments.forEach(element=>{
+    } else {
+        console.log('create with getComments')
+        let comments = modalBody.querySelectorAll('.comments')
+        comments.forEach(element => {
 
-        let seeComment=element.querySelector('.comment .see_comment');
-        let replies=element.querySelectorAll('.responses')
-        let showComment=seeComment.querySelector('.show_c');
-        let hideComment=seeComment.querySelector('.hide_com')
-        showComment.children[1].textContent=replies.length
-        seeComment.addEventListener('click',()=>{
-            showComment.classList.toggle('hide')
-            hideComment.classList.toggle('hide')
-          replies.forEach(item=>{
-            item.classList.toggle('hide')
-          })
+            let seeComment = element.querySelector('.comment .see_comment');
+            let replies = element.querySelectorAll('.responses')
+            let showComment = seeComment.querySelector('.show_c');
+            let hideComment = seeComment.querySelector('.hide_com')
+            showComment.children[1].textContent = replies.length
+            seeComment.addEventListener('click', () => {
+                showComment.classList.toggle('hide')
+                hideComment.classList.toggle('hide')
+                replies.forEach(item => {
+                    item.classList.toggle('hide')
+                })
+            })
+
         })
-
-  })
-   }
+    }
 }
+
 function hideModal(cloneModal) {
 
     window.addEventListener('click', event => {
@@ -127,27 +128,28 @@ function hideModal(cloneModal) {
         }
     })
 }
-function replyListener(replyBtn,replyTO,commentUser,mainComment){
-  replyBtn.addEventListener('click',()=>{
-    console.log('reply btn listener')
-    let input=document.querySelector('#message_modal input')
 
-    input.focus()
-    input.value=`@${commentUser} `
-    input.setAttribute('data-mainComment',mainComment);
-    input.setAttribute('data-replyTo',replyTO);
+function replyListener(replyBtn, replyTO, commentUser, mainComment) {
+    replyBtn.addEventListener('click', () => {
+        console.log('reply btn listener')
+        let input = document.querySelector('#message_modal input')
 
-  })
+        input.focus()
+        input.value = `@${commentUser} `
+        input.setAttribute('data-mainComment', mainComment);
+        input.setAttribute('data-replyTo', replyTO);
+
+    })
 }
 
 
-function createCommentElement(modalBody, commentsSection, item,postId,post=false) {
+function createCommentElement(modalBody, commentsSection, item, postId, post = false) {
     console.log(item)
     if (item.main_comment == null) {
         let comment = commentsSection.cloneNode(true)
         comment.className = 'comments'
         comment.setAttribute('data-comment', item.id)
-        comment.setAttribute('data-is_user_comment',item.is_user_comment)
+        comment.setAttribute('data-is_user_comment', item.is_user_comment)
 
         let content = comment.querySelector('.content')
         let time = content.querySelector('span');
@@ -160,48 +162,48 @@ function createCommentElement(modalBody, commentsSection, item,postId,post=false
         image.src = item.author.profile.profile_image
         modalBody.append(comment)
 
-        let replyBtn=comment.querySelector('.reply-btn');
-        let replyTO=item.id
-        let commentUser=item.author.username;
-        let mainComment=item.id
-        let postElement=document.querySelector(`[data-post="${postId}"]`)
-        let viewComments=postElement.querySelector('.view-comments')
-        if(post && viewComments.children.length==0){
-            let a=document.createElement('a');
+        let replyBtn = comment.querySelector('.reply-btn');
+        let replyTO = item.id
+        let commentUser = item.author.username;
+        let mainComment = item.id
+        let postElement = document.querySelector(`[data-post="${postId}"]`)
+        let viewComments = postElement.querySelector('.view-comments')
+        if (post && viewComments.children.length == 0) {
+            let a = document.createElement('a');
             a.classList.add('gray')
-            a.href='#'
-            a.innerHTML='View all <span>1</span> comments'
+            a.href = '#'
+            a.innerHTML = 'View all <span>1</span> comments'
             viewComments.append(a)
-        }else if(post){
+        } else if (post) {
             console.log(post)
-            let span=viewComments.querySelector('span')
-            span.textContent=Number(span.textContent)+1;
+            let span = viewComments.querySelector('span')
+            span.textContent = Number(span.textContent) + 1;
         }
 
-        replyListener(replyBtn,replyTO,commentUser,mainComment)
-        deleteComment(comment,postId)
-        commentLikeInfo(comment,item.like_info)
-        let likeCommentDiv=comment.querySelector('.like')
-        likeCommentDiv.addEventListener('click',()=>{
-            likeComment(comment,item.like_info)
+        replyListener(replyBtn, replyTO, commentUser, mainComment)
+        deleteComment(comment, postId)
+        commentLikeInfo(comment, item.like_info)
+        let likeCommentDiv = comment.querySelector('.like')
+        likeCommentDiv.addEventListener('click', () => {
+            likeComment(comment, item.like_info)
         })
     } else {
         //reply 
         //find comment that reply to that
-      
+
         let comment = modalBody.querySelector(`.comments[data-comment="${item.main_comment}"]`)
-        let show_reply=comment.querySelector('.see_comment')
-        
+        let show_reply = comment.querySelector('.see_comment')
+
         let responsesClone = comment.querySelector('.responses-clone');
         let response = responsesClone.cloneNode(true)
-        if(post){
+        if (post) {
 
-        response.className = 'responses'
-        }else{
-          response.className = 'responses hide'
+            response.className = 'responses'
+        } else {
+            response.className = 'responses hide'
         }
-        response.setAttribute('data-comment',item.id)
-        response.setAttribute('data-is_user_comment',item.is_user_comment)
+        response.setAttribute('data-comment', item.id)
+        response.setAttribute('data-is_user_comment', item.is_user_comment)
         let image = response.querySelector('img')
         image.src = item.author.profile.profile_image
         let content = response.querySelector('.content')
@@ -212,31 +214,30 @@ function createCommentElement(modalBody, commentsSection, item,postId,post=false
         let replyText = content.querySelector('p');
         replyText.textContent = item.comment
         comment.append(response)
-        let replyBtn=response.querySelector('.reply-btn');
-        let replyTO=item.id
-        let commentUser=item.author.username;
+        let replyBtn = response.querySelector('.reply-btn');
+        let replyTO = item.id
+        let commentUser = item.author.username;
 
-        let mainComment=item.main_comment
-        replyListener(replyBtn,replyTO,commentUser,mainComment)
-        let postElement=document.querySelector(`[data-post="${postId}"]`)
-        let viewComments=postElement.querySelector('.view-comments')
-        if(post){
-          hideShowReply(modalBody,post,comment,response)
-            let span=viewComments.querySelector('span')
-            span.textContent=Number(span.textContent)+1;
+        let mainComment = item.main_comment
+        replyListener(replyBtn, replyTO, commentUser, mainComment)
+        let postElement = document.querySelector(`[data-post="${postId}"]`)
+        let viewComments = postElement.querySelector('.view-comments')
+        if (post) {
+            hideShowReply(modalBody, post, comment, response)
+            let span = viewComments.querySelector('span')
+            span.textContent = Number(span.textContent) + 1;
         }
-        let responseComment=true
-        deleteComment(response,postId,responseComment)
-        commentLikeInfo(response,item.like_info)
-        let likeCommentDiv=response.querySelector('.like')
-        likeCommentDiv.addEventListener('click',()=>{
-            likeComment(response,item.like_info)
+        let responseComment = true
+        deleteComment(response, postId, responseComment)
+        commentLikeInfo(response, item.like_info)
+        let likeCommentDiv = response.querySelector('.like')
+        likeCommentDiv.addEventListener('click', () => {
+            likeComment(response, item.like_info)
         })
     }
 }
 
-let messageButtons = document.querySelectorAll('.chat button');
-let viewComments=document.querySelectorAll('.view-comments')
+
 async function getComments(modalClone, postId) {
     let modalBody = modalClone.querySelector('.modal-body')
     let commentsSection = modalBody.querySelector('.comments-clone')
@@ -259,65 +260,85 @@ async function getComments(modalClone, postId) {
 
                 //comment not reply to comment
                 //clone comments and use that
-                createCommentElement(modalBody, commentsSection, item,postId)
+                createCommentElement(modalBody, commentsSection, item, postId)
             })
         } else {
-          let empty=document.createElement('div')
-          empty.className='empty'
-          empty.textContent='No comments yet!'
-            modalBody.append (empty)
+            let empty = document.createElement('div')
+            empty.className = 'empty'
+            empty.textContent = 'No comments yet!'
+            modalBody.append(empty)
         }
         hideModal(modalBody)
         hideShowReply(modalBody)
+    }
 }
-}
-messageAddEvnetListener(messageButtons)
-messageAddEvnetListener(viewComments)
-function messageAddEvnetListener(messageElement){
-messageElement.forEach(element => {
-    element.addEventListener('click', (event) => {
-        event.preventDefault();
-        let post = element.closest('.post')
-        let postId = post.getAttribute('data-post');
-        let modal = document.querySelector('#message_modal_clone')
-        let modalBack = document.createElement('div')
-        modalBack.className = 'modal-backdrop fade show'
-        document.body.appendChild(modalBack)
-        let modalClone = modal.cloneNode(true)
-        modalClone.id = 'message_modal'
-        getComments(modalClone, postId)
-        modal.parentNode.insertBefore(modalClone, modal)
-        modalClone.classList.add('show');
-        modalClone.style.display = 'block';
 
-        let input = modalClone.querySelector('.modal-footer input');
+//display comment modal by click on message buttons
 
-        writeComment(input, postId)
-       
+function messageAddEvnetListener(messageElement) {
 
+    messageElement.forEach(element => {
+        element.addEventListener('click', (event) => {
+            event.preventDefault();
+            let post = element.closest('.post')
+            let postId = post.getAttribute('data-post');
+            let modal = document.querySelector('#message_modal_clone')
+            let modalBack = document.createElement('div')
+            modalBack.className = 'modal-backdrop fade show'
+            document.body.appendChild(modalBack)
+            let modalClone = modal.cloneNode(true)
+            modalClone.id = 'message_modal'
+            getComments(modalClone, postId)
+            modal.parentNode.insertBefore(modalClone, modal)
+            modalClone.classList.add('show');
+            modalClone.style.display = 'block';
+
+            let input = modalClone.querySelector('.modal-footer input');
+
+            writeComment(input, postId)
+
+
+        })
     })
-})
 }
 
 
 
 
-//write comment
+//comment
 
 
-async function postComment(postId, comment,replyTO,mainComment) {
+//get value of input in comment modal 
+//pass values to postComment 
+function writeComment(input, postId) {
+    let form = input.closest('form')
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault()
+        let inputValue = input.value;
+        let comment = inputValue.replace(/@\w+\s/, '');
+        let replyTO = input.getAttribute('data-replyTo');
+        let mainComment = input.getAttribute('data-mainComment');
+        postComment(postId, comment, replyTO, mainComment)
+    })
+
+}
+
+//fetch post comment
+//then use data that recieved pass in createCommentElement function
+async function postComment(postId, comment, replyTO, mainComment) {
     let formData = new FormData()
     formData.append('comment', comment)
-    if(replyTO!=null){
-    formData.append('parent',replyTO)
+    if (replyTO != null) {
+        formData.append('parent', replyTO)
 
     }
-    if(mainComment!=null){
-    formData.append('main_comment',mainComment)
+    if (mainComment != null) {
+        formData.append('main_comment', mainComment)
 
     }
     formData.append('object_id', postId)
-    
+
     const accessToken = await getToken()
 
     const response = await fetch(`http://localhost:8000/api/post/${postId}/comments`, {
@@ -330,84 +351,69 @@ async function postComment(postId, comment,replyTO,mainComment) {
         body: JSON.stringify(Object.fromEntries(formData))
     })
     const item = await response.json()
-    console.log('item in postComment',item)
+    console.log('item in postComment', item)
     if (response.ok) {
         let modalBody = document.querySelector('#message_modal .modal-body');
         console.log(modalBody)
         let commentSection = modalBody.querySelector('.comments-clone')
-        let post=true;
-        if(document.contains(document.querySelector('.empty'))){
-          document.querySelector('.empty').remove()
+        let post = true;
+        if (document.contains(document.querySelector('.empty'))) {
+            document.querySelector('.empty').remove()
         }
-        createCommentElement(modalBody,commentSection,item,postId,post)
-        
+        createCommentElement(modalBody, commentSection, item, postId, post)
+
 
     }
-}
-
-function writeComment(input, postId) {
-    let form = input.closest('form')
-
-    form.addEventListener('submit', (event) => {
-        event.preventDefault()
-        let inputValue = input.value;
-        let comment=inputValue.replace(/@\w+\s/,'');
-        let replyTO=input.getAttribute('data-replyTo');
-        let mainComment=input.getAttribute('data-mainComment');
-        postComment(postId, comment,replyTO,mainComment)
-    })
-
-
-
 }
 
 //delete comment
-async function fetechDeleteComment(comment,postId,responseComment){
+async function fetechDeleteComment(comment, postId, responseComment) {
     console.log(comment)
-    const modalBody=comment.closest('.modal-body')
+    const modalBody = comment.closest('.modal-body')
     const accessToken = await getToken();
-    const commentId=comment.getAttribute('data-comment');
-    const response=await fetch(`http://localhost:8000/api/comment/${commentId}`,{
-        method:'DELETE',
-        headers:{
-            'Authorization':`Bearer ${accessToken}`
+    const commentId = comment.getAttribute('data-comment');
+    const response = await fetch(`http://localhost:8000/api/comment/${commentId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
         }
     })
 
-    if(response.ok){
-            console.log(postId)
-            let postElement=document.querySelector(`[data-post="${postId}"]`)
-            let viewComments=postElement.querySelector('.view-comments')
-            comment.remove()
-            let comments=modalBody.querySelectorAll('.comments')
+    if (response.ok) {
+        console.log(postId)
+        let postElement = document.querySelector(`[data-post="${postId}"]`)
+        let viewComments = postElement.querySelector('.view-comments')
+        comment.remove()
+        let comments = modalBody.querySelectorAll('.comments')
 
-            if(!responseComment && comments.length==0){
-              let empty=document.createElement('div')
-          empty.className='empty'
-          empty.textContent='No comments yet!'
-            modalBody.append (empty)
-            viewComments.textContent=''
+        if (!responseComment && comments.length == 0) {
+            let empty = document.createElement('div')
+            empty.className = 'empty'
+            empty.textContent = 'No comments yet!'
+            modalBody.append(empty)
+            viewComments.textContent = ''
 
-            }else{
-                let span=viewComments.querySelector('span')
-                span.textContent=Number(span.textContent)-1;
+        } else {
+            let span = viewComments.querySelector('span')
+            span.textContent = Number(span.textContent) - 1;
 
-            }
+        }
     }
 }
-function deleteComment(comment,postId,responseComment=false) {
+
+function deleteComment(comment, postId, responseComment = false) {
     console.log(postId)
-    let deleteComment=comment.querySelector('.delete-comment')
-    let dropDownContent=comment.querySelector('.drop-down-content')
-    deleteComment.addEventListener('click',()=>{
+    let deleteComment = comment.querySelector('.delete-comment')
+    let dropDownContent = comment.querySelector('.drop-down-content')
+    deleteComment.addEventListener('click', () => {
         dropDownContent.classList.toggle('show-drop')
     })
-    window.addEventListener('click',(event)=>{
-        if(event.target==comment.querySelector('.delete-btn-comment')){
+    window.addEventListener('click', (event) => {
+        if (event.target == comment.querySelector('.delete-btn-comment')) {
             event.preventDefault()
-            fetechDeleteComment(comment,postId,responseComment)
+            fetechDeleteComment(comment, postId, responseComment)
         }
-        if(!event.target.matches('.delete-comment')){
+        if (!event.target.matches('.delete-comment')) {
             dropDownContent.classList.remove('show-drop')
         }
     })
@@ -429,8 +435,6 @@ function handleSubmit(event) {
     img_url = imageURL;
     handleNext(imageFile)
 }
-
-/////button submit
 
 
 //add a description + click btn to share post
@@ -481,6 +485,7 @@ function addPostHome(data) {
     post.parentNode.insertBefore(postClone, post.nextSibling)
     deletePost(more)
     postClone.classList.remove('hide')
+    addEventListeners(postClone)
 }
 
 function addPostProfile(data) {
@@ -508,6 +513,7 @@ function addPost(data) {
 
 }
 
+//fetch post and recieved data if response be ok ,pass data to addPost function
 function completed(imageFile) {
     const share_btn_post = document.querySelector(".share_btn_post");
     const post_published = document.querySelector('.post_published');
@@ -534,7 +540,7 @@ function completed(imageFile) {
             post_published.classList.remove("hide_img");
             share_btn_post.innerHTML = ""
             addPost(data)
-            addEventListeners()
+
         }
 
 
@@ -570,9 +576,7 @@ function deletePost(element) {
     })
 }
 
-document.querySelectorAll('.more').forEach((element) => {
-    deletePost(element)
-})
+
 
 document.querySelector('#create-btn').addEventListener('click', (event) => {
     event.preventDefault();
@@ -600,15 +604,15 @@ document.querySelector('#create-btn').addEventListener('click', (event) => {
 //like comment and reply
 
 // like and dislike
-async function likeComment(div,like_info) {
+async function likeComment(div, like_info) {
 
-    const likeDiv=div.querySelector('.like')
-    const commentId=div.getAttribute('data-comment')
-    let lovedImg=likeDiv.querySelector('.loved')
-    let notLovedimg=likeDiv.querySelector('.not_loved')
-    let p=likeDiv.querySelector('p')
+    const likeDiv = div.querySelector('.like')
+    const commentId = div.getAttribute('data-comment')
+    let lovedImg = likeDiv.querySelector('.loved')
+    let notLovedimg = likeDiv.querySelector('.not_loved')
+    let p = likeDiv.querySelector('p')
     const accessToken = await getToken()
-    if (like_info.is_liked ) {
+    if (like_info.is_liked) {
 
         const response = await fetch(baseUrl + `/api/comment/likes/${like_info.id}`, {
             method: "DELETE",
@@ -618,15 +622,15 @@ async function likeComment(div,like_info) {
         })
 
         if (response.ok) {
-            like_info.is_liked=false
+            like_info.is_liked = false
             lovedImg.classList.remove('display')
             notLovedimg.classList.remove('hide')
-            p.textContent=Number(p.textContent)-1
+            p.textContent = Number(p.textContent) - 1
 
 
         }
 
-    } else  {
+    } else {
 
         const body = { 'comment': commentId }
 
@@ -638,27 +642,155 @@ async function likeComment(div,like_info) {
             },
             body: JSON.stringify(body)
         })
-        
-        const data=await response.json()
+
+        const data = await response.json()
         if (response.ok) {
-            like_info.is_liked=true
-            like_info.id=data.id
+            like_info.is_liked = true
+            like_info.id = data.id
             lovedImg.classList.add('display')
             notLovedimg.classList.add('hide')
-            p.textContent=Number(p.textContent)+1
+            p.textContent = Number(p.textContent) + 1
         }
 
     }
 }
-function commentLikeInfo(div,like_info){
-    let likeDiv=div.querySelector('.like')
-    let lovedImg=likeDiv.querySelector('.loved')
-    let notLovedimg=likeDiv.querySelector('.not_loved')
-    let p=likeDiv.querySelector('p')
-    p.textContent=like_info.like_count
-    if(like_info.is_liked){
+
+function commentLikeInfo(div, like_info) {
+    let likeDiv = div.querySelector('.like')
+    let lovedImg = likeDiv.querySelector('.loved')
+    let notLovedimg = likeDiv.querySelector('.not_loved')
+    let p = likeDiv.querySelector('p')
+    p.textContent = like_info.like_count
+    if (like_info.is_liked) {
         lovedImg.classList.add('display')
         notLovedimg.classList.add('hide')
     }
 
 }
+
+
+
+
+//**********like post**************
+// like and dislike
+async function like(div) {
+    console.log('liked')
+    const dataType = div.getAttribute('data-type');
+
+    const dataPost = div.getAttribute('data-post');
+    const dataLike = div.getAttribute('data-like');
+
+    const accessToken = await getToken()
+    if (dataType === 'True') {
+
+        const response = await fetch(baseUrl + `/api/like/${dataLike}`, {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+        console.log(response)
+        if (response.ok) {
+            let post = div.closest('.post');
+            let liked = post.querySelector('.liked')
+            let span = liked.querySelector('span');
+            let likeCount = Number(liked.getAttribute('data-likeCount')) - 1;
+            span.textContent = likeCount;
+            liked.setAttribute('data-likeCount', likeCount)
+            if (likeCount == 0) {
+                liked.textContent = ''
+            } else if (likeCount == 1) {
+                span.nextSibling.textContent = ' like'
+            }
+            div.setAttribute('data-type', 'False')
+            div.classList.remove('love')
+            let not_loved = div.children[0];
+            let loved = div.children[1];
+            not_loved.classList.remove('hide_img')
+            loved.classList.remove('display')
+
+
+
+        }
+
+    } else if (dataType === 'False') {
+        const body = { 'post': dataPost }
+
+        const response = await fetch(baseUrl + '/api/like/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+        console.log(response)
+
+        if (response.ok) {
+            const data = await response.json()
+
+
+            div.setAttribute('data-type', 'True')
+            let post = div.closest('.post')
+            let liked = post.querySelector('.liked')
+            let likeCount = Number(liked.getAttribute('data-likeCount')) + 1
+            liked.setAttribute('data-likeCount', likeCount)
+
+            if (likeCount == 1) {
+
+                liked.innerHTML = '<span>1</span> like'
+            } else {
+                let span = liked.querySelector('span')
+                span.textContent = likeCount;
+                span.nextSibling.textContent = ' likes'
+            }
+
+            div.setAttribute('data-like', data.id)
+            div.classList.add('love')
+            let not_loved = div.children[0];
+            let loved = div.children[1];
+            not_loved.classList.add('hide_img')
+            loved.classList.add('display')
+        }
+
+    }
+}
+
+function addEventListeners(newPost = false) {
+    console.log(newPost)
+    if (newPost) {
+        let postLikeButton = newPost.querySelector('.like')
+        postLikeButton.addEventListener('click', ()=>like(postLikeButton))
+
+        let messageButtons = newPost.querySelectorAll('.chat button');
+        let viewComments = newPost.querySelectorAll('.view-comments');
+
+        messageAddEvnetListener(messageButtons)
+        messageAddEvnetListener(viewComments)
+
+        deletePost(newPost)
+
+    } else {
+
+        document.querySelectorAll('.like').forEach(div => {
+            div.addEventListener('click', (event) => {
+                like(div)
+
+            })
+        })
+
+        let messageButtons = document.querySelectorAll('.chat button');
+        let viewComments = document.querySelectorAll('.view-comments');
+
+        messageAddEvnetListener(messageButtons)
+        messageAddEvnetListener(viewComments)
+
+        document.querySelectorAll('.more').forEach((element) => {
+            deletePost(element)
+        })
+    }
+
+
+
+}
+addEventListeners()
