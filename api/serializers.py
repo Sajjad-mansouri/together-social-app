@@ -3,7 +3,7 @@ from django.utils.timesince import timesince
 
 
 from rest_framework import serializers
-from social.models import Message,Like,Comment,LikeComment
+from social.models import Message,Like,Comment,LikeComment,SavePost
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from account.models import Contact,Profile
@@ -72,6 +72,16 @@ class LikeSerializer(serializers.ModelSerializer):
 		print(data)
 		return super().to_internal_value(data)
 
+class SavedPostSerializer(serializers.ModelSerializer):
+	class Meta:
+		model=SavePost
+		fields=['id','user','post']
+
+	def to_internal_value(self,data):
+		user=self._context['request'].user.id
+		data['user']=user
+		print(data)
+		return super().to_internal_value(data)
 
 class ProfileSerializer(serializers.ModelSerializer):
 	user=UserSerializer()

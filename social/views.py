@@ -54,7 +54,6 @@ class Home(LoginRequiredMixin,ListView):
 		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user))
 
 
-
 class Setting(LoginRequiredMixin,TemplateView):
 	template_name='transfer/settings.html'
 

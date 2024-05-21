@@ -31,17 +31,7 @@ notification_icon.forEach((notif) => {
 //love btn
 
 
-//save btn
-let save_icon = document.querySelectorAll(".save");
-save_icon.forEach(function(save) {
-    save.addEventListener("click", function() {
-        let not_save = save.children[1];
-        let saved = save.children[0];
-        not_save.classList.toggle("hide");
-        saved.classList.toggle("hide");
 
-    })
-})
 
 //notification follow 
 let not_follow = document.querySelectorAll("#notification .notif.follow_notif")
@@ -462,8 +452,9 @@ function handleNext(imageFile) {
 }
 
 function addPostHome(data) {
-    let post = document.querySelector('.post');
+    let post = document.querySelector('.post-clone');
     let postClone = post.cloneNode(true);
+    postClone.className='post'
     let image = postClone.querySelector('.image img');
     let personInfo = postClone.querySelector('.info .person');
     let profileImage = personInfo.querySelector('img');
@@ -756,6 +747,59 @@ async function like(div) {
     }
 }
 
+//save post
+function savePost(element){
+    
+        let postId=element.getAttribute('data-post')
+        let saveIcon=element.querySelector('.save');
+
+        let saved=saveIcon.querySelector('.saved')
+        let notSaved=saveIcon.querySelector('.not_saved')
+        saveIcon.addEventListener('click',async function(){
+            let status=saveIcon.getAttribute('data-status');
+            let savedId=saveIcon.getAttribute('data-saved')
+            let accessToken=await getToken()
+            if (status=='True'){
+                //delete post from saved posts
+
+                const response=await fetch(baseUrl + `/api/saved/${savedId}`,{
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+
+                    },
+    
+                        })
+                if(response.ok){
+                    saveIcon.setAttribute('data-status','False');
+                    saveIcon.setAttribute('data-saved','None')
+                    saved.classList.add('hide')
+                    notSaved.classList.remove('hide')
+                }
+            }else{
+                //add post to saved posts
+                const body = { 'post': postId }
+                const response=await fetch(baseUrl+'/api/saved/',{
+                    method:'POST',
+                    headers:{
+                        'Authorization':`Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body:JSON.stringify(body)
+                })
+                const data=await response.json()
+                if(response.ok){
+                    saveIcon.setAttribute('data-status','True');
+                    saveIcon.setAttribute('data-saved',data.id)
+                    saved.classList.remove('hide')
+                    notSaved.classList.add('hide')   
+                }
+            }
+            
+        })
+    
+}
+
 function addEventListeners(newPost = false) {
     console.log(newPost)
     if (newPost) {
@@ -769,9 +813,11 @@ function addEventListeners(newPost = false) {
         messageAddEvnetListener(viewComments)
 
         deletePost(newPost)
+        savePost(newPost)
 
     } else {
 
+        let posts=document.querySelectorAll('.post')
         document.querySelectorAll('.like').forEach(div => {
             div.addEventListener('click', (event) => {
                 like(div)
@@ -787,6 +833,15 @@ function addEventListeners(newPost = false) {
 
         document.querySelectorAll('.more').forEach((element) => {
             deletePost(element)
+        })
+
+        //save post
+        
+        posts.forEach(div => {
+
+                savePost(div)
+
+
         })
     }
 

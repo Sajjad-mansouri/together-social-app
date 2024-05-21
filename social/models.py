@@ -17,22 +17,29 @@ class Message(models.Model):
 	created=models.DateTimeField(auto_now_add=True)
 	updated=models.DateTimeField(auto_now=True)
 	like=models.ManyToManyField(settings.AUTH_USER_MODEL,through='Like')
+	saved_post=models.ManyToManyField(settings.AUTH_USER_MODEL,through='SavePost',related_name='save_messages')
 	comment=GenericRelation('Comment')
 	def __str__(self):
-		return f'{self.user}'
+		return f'{self.id}'
 
 	class Meta:
 		ordering=['-created']
 
 
-class LikeAbstract(models.Model):
+
+class LikeSaveAbstract(models.Model):
 	user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 	created=models.DateTimeField(auto_now_add=True)
 
 	class Meta:
 		abstract=True
+class SavePost(LikeSaveAbstract):
 
-class Like(LikeAbstract):
+	post=models.ForeignKey(Message,on_delete=models.CASCADE,related_name='saved_posts')
+	class Meta:
+		unique_together=['user','post']
+
+class Like(LikeSaveAbstract):
 	post=models.ForeignKey(Message,on_delete=models.CASCADE,related_name='likes')
 	
 	class Meta:
@@ -57,7 +64,7 @@ class Comment(models.Model):
 			models.Index(fields=['content_type','object_id'])
 		]
 
-class LikeComment(LikeAbstract):
+class LikeComment(LikeSaveAbstract):
 	comment=models.ForeignKey(Comment,on_delete=models.CASCADE)
 
 	class Meta:

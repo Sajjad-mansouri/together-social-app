@@ -10,9 +10,10 @@ from .serializers import (
 						LikeSerializer,
 						ProfileSerializer,
 						CommentSerializer,
-						LikeCommentSerializer
+						LikeCommentSerializer,
+						SavedPostSerializer
 						)
-from social.models import Message,Like,Comment,LikeComment
+from social.models import Message,Like,Comment,LikeComment,SavePost
 from account.models import Contact,Profile
 UserModel=get_user_model()
 
@@ -52,7 +53,14 @@ class LikeDetailApiView(generics.RetrieveDestroyAPIView):
 	serializer_class=LikeSerializer
 	queryset=Like.objects.all()
 
+class SavedPostApiView(generics.ListCreateAPIView):
+	serializer_class=SavedPostSerializer
+	queryset=SavePost.objects.all()
 
+
+class SavedPostDetailApiView(generics.RetrieveDestroyAPIView):
+	serializer_class=SavedPostSerializer
+	queryset=SavePost.objects.all()
 class ProfileApiView(generics.ListCreateAPIView):
 	serializer_class=ProfileSerializer
 	queryset=Profile.objects.all()

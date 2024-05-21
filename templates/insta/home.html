@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="posts">
-                <div class='post hide' data-post>
+                <div class='post-clone hide' data-post>
                     <div class="info">
                         <div class="person">
                             <img src="">
@@ -92,9 +92,10 @@
                                 </div>
 
                             </div>
-                            <div class="save not_saved">
-                                <img class="hide saved" src="{% static 'images/save_black.png' %}">
-                                <img class="not_saved" src="{% static 'images/save-instagram.png' %}">
+                            {% is_saved post_id as status%} 
+                            <div class="save not_saved" data-status={{status}} data-saved={%saved_post_id post_id %}>
+                                <img class="{%if not status%}hide{%endif%} saved" src="{% static 'images/save_black.png' %}">
+                                <img class="not_saved{%if status%} hide{%endif%}" src="{% static 'images/save-instagram.png' %}">
                             </div>
                         </div>
                         {%count_like post_id as likes%}

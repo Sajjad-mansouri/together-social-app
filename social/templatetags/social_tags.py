@@ -30,3 +30,22 @@ def count_like(post_id):
 	post=Message.objects.get(pk=post_id)
 	fn=Like.objects.aggregate(like_count=Count('pk',filter=Q(post=post)))
 	return fn['like_count']
+
+@register.simple_tag(takes_context=True)
+def is_saved(context,post_id):
+	user=context['user']
+	try:
+		message=Message.objects.get(id=post_id)
+		return user in message.saved_post.all() 
+
+	except  Exception as e:
+		print(e)
+
+@register.simple_tag(takes_context=True)
+def saved_post_id(context,post_id):
+	user=context['user']
+	try:
+		message=Message.objects.get(id=post_id)
+		return message.saved_posts.get(user=user).id
+	except Exception as e:
+		print(e)

@@ -256,101 +256,12 @@ document.querySelectorAll('.btn').forEach(btn => {
 
 })
 
-// like and dislike
-async function like(div) {
-    console.log('liked')
-    const dataType = div.getAttribute('data-type');
-
-    const dataPost = div.getAttribute('data-post');
-    const dataLike = div.getAttribute('data-like');
-
-    const accessToken = await getToken()
-    if (dataType === 'True') {
-
-        const response = await fetch(baseUrl + `/api/like/${dataLike}`, {
-            method: "DELETE",
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
-        })
-        console.log(response)
-        if (response.ok) {
-            let post = div.closest('.post');
-            let liked = post.querySelector('.liked')
-            let span = liked.querySelector('span');
-            let likeCount = Number(liked.getAttribute('data-likeCount')) - 1;
-            span.textContent = likeCount;
-            liked.setAttribute('data-likeCount', likeCount)
-            if (likeCount == 0) {
-                liked.textContent = ''
-            } else if (likeCount == 1) {
-                span.nextSibling.textContent = ' like'
-            }
-            div.setAttribute('data-type', 'False')
-            div.classList.remove('love')
-            let not_loved = div.children[0];
-            let loved = div.children[1];
-            not_loved.classList.remove('hide_img')
-            loved.classList.remove('display')
 
 
 
-        }
-
-    } else if (dataType === 'False') {
-        const body = { 'post': dataPost }
-
-        const response = await fetch(baseUrl + '/api/like/', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        })
-        console.log(response)
-
-        if (response.ok) {
-            const data = await response.json()
-
-
-            div.setAttribute('data-type', 'True')
-            let post = div.closest('.post')
-            let liked = post.querySelector('.liked')
-            let likeCount = Number(liked.getAttribute('data-likeCount')) + 1
-            liked.setAttribute('data-likeCount', likeCount)
-
-            if (likeCount == 1) {
-
-                liked.innerHTML = '<span>1</span> like'
-            } else {
-                let span = liked.querySelector('span')
-                span.textContent = likeCount;
-                span.nextSibling.textContent = ' likes'
-            }
-
-            div.setAttribute('data-like', data.id)
-            div.classList.add('love')
-            let not_loved = div.children[0];
-            let loved = div.children[1];
-            not_loved.classList.add('hide_img')
-            loved.classList.add('display')
-        }
-
-    }
-}
 
 
 
-export function addEventListeners() {
-    document.querySelectorAll('.like').forEach(div => {
-        div.addEventListener('click', (event) => {
-            like(div)
-
-        })
-    })
-}
-addEventListeners()
 
 // console.log(window.location.pathname)
 // if (window.location.pathname === '/profile/') {

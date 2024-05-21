@@ -30,6 +30,9 @@ urlpatterns=[
     path('comments/likes/',views.LikeCommentApiView.as_view(),name='comments-likes'),
     path('comment/likes/<int:pk>',views.LikeCommentDetailApiView.as_view(),name='comment-likes'),
 
+    path('saved/',views.SavedPostApiView.as_view(),name='saved'),
+	path('saved/<int:pk>/',views.SavedPostDetailApiView.as_view(),name='saved-detail'),
+
 
 
 
