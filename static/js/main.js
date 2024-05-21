@@ -497,6 +497,12 @@ function addPostProfile(data,saved=false) {
     div.appendChild(image);
     postsSection.prepend(div);
 
+    let generalInfo=document.querySelector('.profile_info .general_info')
+    console.log(generalInfo)
+    let postInfo=generalInfo.children[0].querySelector('span')
+    console.log(postInfo)
+    postInfo.textContent=Number(postInfo.textContent)+1
+
 }
 //post published
 function addPost(data) {
