@@ -21,11 +21,21 @@ class PostListApiView(generics.ListCreateAPIView):
 
 	serializer_class=PostSerializer
 	parser_classes=[FormParser,MultiPartParser]
-	queryset=Message.objects.all()
+	def get_queryset(self):
+		user=self.request.user
+		print(self.request.path)
+		if self.request.path=='/api/posts/saved/':
+
+			queryset=Message.objects.filter(saved_posts__user=user)
+		else:
+			queryset=Message.objects.filter(user=user)
+		return queryset
+
 
 class PostRetrieveDestroyAPIView(generics.RetrieveDestroyAPIView):
 	serializer_class=ProfileSerializer
 	queryset=Message.objects.all()
+
 
 class UserListAPiView(generics.ListAPIView):
 	serializer_class=UserSerializer
@@ -53,9 +63,11 @@ class LikeDetailApiView(generics.RetrieveDestroyAPIView):
 	serializer_class=LikeSerializer
 	queryset=Like.objects.all()
 
-class SavedPostApiView(generics.ListCreateAPIView):
+class AddSavedApiView(generics.CreateAPIView):
 	serializer_class=SavedPostSerializer
-	queryset=SavePost.objects.all()
+	
+	def get_queryset(self):
+		return SavePost.objects.filter(user=self.request.user)
 
 
 class SavedPostDetailApiView(generics.RetrieveDestroyAPIView):

@@ -479,8 +479,16 @@ function addPostHome(data) {
     addEventListeners(postClone)
 }
 
-function addPostProfile(data) {
-    let postsSection = document.getElementById('posts_sec');
+function addPostProfile(data,saved=false) {
+    let postsSection;
+    if(saved){
+    postsSection = document.getElementById('saved_sec');
+
+
+    }else{
+
+    postsSection = document.getElementById('posts_sec');
+    }
     let div = document.createElement('div');
     div.className = 'item';
     let image = document.createElement('img');
@@ -848,4 +856,33 @@ function addEventListeners(newPost = false) {
 
 
 }
-addEventListeners()
+if(window.location.pathname==''){
+
+    addEventListeners()
+}
+
+//saved post tab
+console.log(window.location.pathname)
+if(window.location.pathname=='/profile/'){
+    let savedBtn=document.getElementById('pills-saved-tab');
+    savedBtn.addEventListener('click',async function(){
+        console.log(savedBtn)
+
+        const accessToken=await getToken()
+        const response=await fetch(baseUrl+'/api/posts/saved/',{
+            method:'GET',
+            headers:{
+                'Authorization':`Bearer ${accessToken}`
+            }
+        })
+        const datas=await response.json();
+        if(response.ok){
+            let postsSection = document.getElementById('saved_sec');
+            postsSection.textContent=''
+            datas.forEach(data=>{
+
+                addPostProfile(data,true)
+            })
+        }
+    })
+}
