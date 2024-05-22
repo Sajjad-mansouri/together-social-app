@@ -945,7 +945,7 @@ search_icon.addEventListener("click", function() {
          findDiv.querySelectorAll('.account').forEach(element=>{
                 element.remove()
             })
-         
+
         const searchValue=event.target.value.trim();
         if(searchValue!=''){
             searchUser(findDiv,searchValue)
@@ -965,3 +965,67 @@ notification_icon.forEach((notif) => {
         notification.classList.toggle("show");
     })
 })
+
+//follow and unfollow
+async function  contact(){
+    let btn=document.querySelector('.contact')
+    let generalInfo=document.querySelector('.general_info');
+    let followers=generalInfo.children[1].querySelector('span')
+    let func=btn.getAttribute('data-btn');
+    const accessToken=await getToken()
+    if (func=='unfollow'){
+
+        
+        const contactId=btn.getAttribute('data-contact');
+
+        const response=await fetch(baseUrl+`/api/contact/${contactId}`,{
+            method:'DELETE',
+            headers:{
+                'Authorization':`Bearer ${accessToken}`
+            }
+        })
+
+        if (response.ok){
+            btn.setAttribute('data-function','follow')
+            btn.setAttribute('data-btn','follow')
+            btn.textContent='follow'
+
+            followers.textContent=Number(followers.textContent)-1
+        }
+    }else if(func=='follow'){
+        let owner=btn.getAttribute('data-owner')
+        let datas={to_user:owner}
+        const response=await fetch(baseUrl+`/api/contact/`,{
+            method:'POST',
+            headers:{
+                'Authorization':`Bearer ${accessToken}`,
+                'Content-Type':'application/json'
+
+            },
+            body:JSON.stringify(datas)
+        })
+
+        const data=await response.json()
+        if (response.ok){
+            btn.setAttribute('data-btn','unfollow')
+            btn.setAttribute('data-contact',data.id)
+            btn.textContent='unfollow'
+
+
+            followers.textContent=Number(followers.textContent)+1
+        }
+    }
+}
+
+
+if(document.contains(document.querySelector('.contact'))){
+    let contactBtn=document.querySelector('.contact')
+    
+    contactBtn.addEventListener('click',()=>{
+    console.log('listener')
+
+            
+            contact()
+        
+    })
+}

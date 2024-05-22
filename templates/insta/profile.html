@@ -11,9 +11,21 @@
                         <div class="info">
                             <p class="name">
                                 {{user.username}}
+                                {%if owner == user%}
                                 <button class="edit_profile">
                                     Edit profile 
                                 </button>
+                                {%else%}
+                                {% if access%}
+                                <button class="contact" data-btn='unfollow' data-contact={{contact_id}} data-owner={{owner.id}}>
+                                    unfollow
+                                </button>
+                                {%else%}
+                                <button class="contact" data-btn='follow' data-owner={{owner.id}}>
+                                    follow
+                                </button>
+                                {%endif%}
+                                {%endif%}
                             </p>
                             <div class="general_info">
                                 <p><span>{{total_post}}</span> post</p>
