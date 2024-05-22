@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from .serializers import (
 						PostSerializer,
 						UserSerializer,
+						SearchSerializer,
 						ContactSerializer,
 						LikeSerializer,
 						ProfileSerializer,
@@ -38,12 +39,12 @@ class PostRetrieveDestroyAPIView(generics.RetrieveDestroyAPIView):
 
 
 class UserListAPiView(generics.ListAPIView):
-	serializer_class=UserSerializer
+	serializer_class=SearchSerializer
 	
 	def get_queryset(self):
 
 		search=self.request.query_params.get('search')
-		return UserModel.objects.filter(username__istartswith=search).exclude(username=self.request.user)
+		return UserModel.objects.filter(username__istartswith=search).exclude(username=self.request.user).select_related('profile')
 
 class ContactApiView(generics.ListCreateAPIView):
 	serializer_class=ContactSerializer

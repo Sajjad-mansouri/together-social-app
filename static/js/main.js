@@ -9,20 +9,7 @@ const baseUrl = window.location.origin
 /**************************video**************************/
 
 /**************************search+notif-section **************************/
-//search section notif
-let search = document.getElementById("search");
-let search_icon = document.getElementById("search_icon");
-search_icon.addEventListener("click", function() {
-    search.classList.toggle("show");
-});
 
-let notification = document.getElementById("notification");
-let notification_icon = document.querySelectorAll(".notification_icon");
-notification_icon.forEach((notif) => {
-    notif.addEventListener('click', function() {
-        notification.classList.toggle("show");
-    })
-})
 
 
 /**************************icons+text change **************************/
@@ -495,7 +482,13 @@ function addPostProfile(data,saved=false) {
     image.src = data.image;
     image.className = 'img-fluid item_img';
     div.appendChild(image);
+    if(saved){
+
+    postsSection.append(div);
+}else{
     postsSection.prepend(div);
+
+}
 
     let generalInfo=document.querySelector('.profile_info .general_info')
     console.log(generalInfo)
@@ -802,6 +795,7 @@ function savePost(element){
                     body:JSON.stringify(body)
                 })
                 const data=await response.json()
+                console.log(data)
                 if(response.ok){
                     saveIcon.setAttribute('data-status','True');
                     saveIcon.setAttribute('data-saved',data.id)
@@ -862,7 +856,8 @@ function addEventListeners(newPost = false) {
 
 
 }
-if(window.location.pathname==''){
+console.log(window.location.pathname)
+if(window.location.pathname=='/'){
 
     addEventListeners()
 }
@@ -892,3 +887,81 @@ if(window.location.pathname=='/profile/'){
         }
     })
 }
+
+
+//search
+
+//search section 
+async function searchUser(findDiv,searchValue){
+
+    const accessToken=await getToken()
+    const response=await fetch(`http://localhost:8000/api/users/?search=${searchValue}`, {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`
+                        }
+                    })
+    const datas=await response.json()
+    if(response.ok){
+
+        let accountDiv=findDiv.querySelector('.account-clone');
+        datas.forEach(data=>{
+            let account=accountDiv.cloneNode(true);
+            account.className='account'
+
+            let a=account.querySelector('a')
+            a.href=`${baseUrl}/profile/${data.username}`
+            let imageDiv=account.querySelector('.img');
+            let image=document.createElement('img')
+            image.src=data.profile_image
+            imageDiv.append(image)
+
+            let username=account.querySelector('.username')
+            username.textContent=data.username;
+
+            let name=account.querySelector('.name')
+            name.textContent=data.first_name
+            findDiv.append(account)
+        })
+    }
+}
+
+
+let search_icon = document.getElementById("search_icon");
+let search = document.getElementById("search");
+
+let searchForm=search.querySelector('form')
+searchForm.addEventListener('submit',event=>{
+    event.preventDefault();
+
+})
+
+search_icon.addEventListener("click", function() {
+
+    let findDiv=search.querySelector('.find')
+    search.classList.toggle("show");
+    let searchInput=search.querySelector('input');
+    searchInput.addEventListener('input',event=>{
+         findDiv.querySelectorAll('.account').forEach(element=>{
+                element.remove()
+            })
+         
+        const searchValue=event.target.value.trim();
+        if(searchValue!=''){
+            searchUser(findDiv,searchValue)
+        }else{
+            findDiv.querySelectorAll('.account').forEach(element=>{
+                element.remove()
+            })
+        }
+    })
+
+});
+
+let notification = document.getElementById("notification");
+let notification_icon = document.querySelectorAll(".notification_icon");
+notification_icon.forEach((notif) => {
+    notif.addEventListener('click', function() {
+        notification.classList.toggle("show");
+    })
+})

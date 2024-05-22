@@ -45,11 +45,17 @@ class PostSerializer(serializers.ModelSerializer):
 		read_only_fields=['owner']
 
 
-
-class UserSerializer(serializers.ModelSerializer):
+class SearchSerializer(serializers.ModelSerializer):
+	profile_image=serializers.ImageField(source='profile.profile_image')
 	class Meta:
 		model=get_user_model()
-		fields=['first_name','last_name','email','username']
+		fields=['first_name','last_name','username','profile_image']
+
+class UserSerializer(serializers.ModelSerializer):
+	profile_image=serializers.ImageField(source='profile.profile_image')
+	class Meta:
+		model=get_user_model()
+		fields=['first_name','last_name','email','username','profile_image']
 
 class ContactSerializer(serializers.ModelSerializer):
 	class Meta:
