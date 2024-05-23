@@ -9,7 +9,7 @@ from .models import Message
 
 UserModel=get_user_model()
 class Index(TemplateView):
-	template_name='insta/home.html'
+	template_name='insta/login.html'
 
 class Profile(LoginRequiredMixin,ListView):
 	template_name='insta/profile.html'

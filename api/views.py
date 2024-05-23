@@ -14,6 +14,8 @@ from .serializers import (
 						LikeCommentSerializer,
 						SavedPostSerializer
 						)
+
+from .permissions import AuthorDeletePermission
 from social.models import Message,Like,Comment,LikeComment,SavePost
 from account.models import Contact,Profile
 UserModel=get_user_model()
@@ -35,6 +37,7 @@ class PostListApiView(generics.ListCreateAPIView):
 
 class PostRetrieveDestroyAPIView(generics.RetrieveDestroyAPIView):
 	serializer_class=ProfileSerializer
+	permission_classes=[AuthorDeletePermission]
 	queryset=Message.objects.all()
 
 
@@ -52,6 +55,7 @@ class ContactApiView(generics.ListCreateAPIView):
 
 
 class ContactDetailApiView(generics.RetrieveDestroyAPIView):
+	permission_classes=[AuthorDeletePermission]
 	serializer_class=ContactSerializer
 	queryset=Contact.objects.all()
 
@@ -61,6 +65,7 @@ class LikeApiView(generics.ListCreateAPIView):
 
 
 class LikeDetailApiView(generics.RetrieveDestroyAPIView):
+	permission_classes=[AuthorDeletePermission]
 	serializer_class=LikeSerializer
 	queryset=Like.objects.all()
 
@@ -72,6 +77,7 @@ class AddSavedApiView(generics.CreateAPIView):
 
 
 class SavedPostDetailApiView(generics.RetrieveDestroyAPIView):
+	permission_classes=[AuthorDeletePermission]
 	serializer_class=SavedPostSerializer
 	queryset=SavePost.objects.all()
 class ProfileApiView(generics.ListCreateAPIView):
@@ -109,6 +115,7 @@ class CommentApiView(generics.ListCreateAPIView):
 		return post.comment.all()
 
 class CommentDetailApiView(generics.RetrieveDestroyAPIView):
+	permission_classes=[AuthorDeletePermission]
 	serializer_class=CommentSerializer
 	queryset=Comment.objects.all()
 
@@ -118,5 +125,6 @@ class LikeCommentApiView(generics.ListCreateAPIView):
 	queryset=LikeComment.objects.all()
 
 class LikeCommentDetailApiView(generics.RetrieveDestroyAPIView):
+	Apermission_classes=[AuthorDeletePermission]
 	serializer_class=LikeCommentSerializer
 	queryset=LikeComment.objects.all()

@@ -121,12 +121,13 @@ function replyListener(replyBtn, replyTO, commentUser, mainComment) {
 
 
 function createCommentElement(modalBody, commentsSection, item, postId, post = false) {
-    console.log(item)
+    let owner=document.getElementById('owner').textContent.match(/\w+(?=")/)
     if (item.main_comment == null) {
         let comment = commentsSection.cloneNode(true)
         comment.className = 'comments'
         comment.setAttribute('data-comment', item.id)
         comment.setAttribute('data-is_user_comment', item.is_user_comment)
+
 
         let content = comment.querySelector('.content')
         let time = content.querySelector('span');
@@ -158,7 +159,14 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
         }
 
         replyListener(replyBtn, replyTO, commentUser, mainComment)
-        deleteComment(comment, postId)
+
+        if(owner==item.author.username){
+
+            deleteComment(comment, postId)
+        }else{
+            let dropDown=comment.querySelector('#drop-down')
+            dropDown.remove()
+        }
         commentLikeInfo(comment, item.like_info)
         let likeCommentDiv = comment.querySelector('.like')
         likeCommentDiv.addEventListener('click', () => {
@@ -205,7 +213,13 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
             span.textContent = Number(span.textContent) + 1;
         }
         let responseComment = true
-        deleteComment(response, postId, responseComment)
+        if(owner==item.author.username){
+
+            deleteComment(response, postId)
+        }else{
+                    let dropDown=response.querySelector('#drop-down')
+            dropDown.remove()
+    }
         commentLikeInfo(response, item.like_info)
         let likeCommentDiv = response.querySelector('.like')
         likeCommentDiv.addEventListener('click', () => {
