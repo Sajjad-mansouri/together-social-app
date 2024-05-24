@@ -1043,3 +1043,12 @@ if(document.contains(document.querySelector('.contact'))){
         
     })
 }
+
+//logout
+let logoutBtn=document.querySelector('.logout')
+let logoutForm=logoutBtn.querySelector('form')
+logoutBtn.addEventListener('click',event=>{
+    event.preventDefault();
+    logoutForm.submit()
+
+})

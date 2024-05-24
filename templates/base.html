@@ -74,27 +74,18 @@
                                         <span>Settings</span>
                                         <img src="{% static 'images/reglage.png' %}">
                                     </a></li>
-                                <li><a class="dropdown-item" href="#">
-                                        <span>Your activity</span>
-                                        <img src="{% static 'images/history.png' %}">
-                                    </a></li>
-                                <li><a class="dropdown-item" href="#">
-                                        <span>Saved</span>
-                                        <img src="{% static 'images/save-instagram.png' %}">
-                                    </a></li>
-                                <li><a class="dropdown-item" href="#">
-                                        <span>Switch apperance</span>
-                                        <img src="{% static 'images/moon.png' %}">
-                                    </a></li>
+
+
                                 <li><a class="dropdown-item" href="#">
                                         <span>Report a problem</span>
                                         <img src="{% static 'images/problem.png' %}">
                                     </a></li>
-                                <li><a class="dropdown-item bold_border" href="#">
-                                        <span>Switch accounts</span>
-                                    </a></li>
-                                <li><a class="dropdown-item" href="./login.html">
+
+                                <li><a class="dropdown-item logout" href="#">
                                         <span>Log out</span>
+                                    <form method="POST" action="/account/logout/">
+                                        {%csrf_token%}
+                                    </form>
                                     </a></li>
                             </ul>
                         </div>

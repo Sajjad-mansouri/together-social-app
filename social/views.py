@@ -2,14 +2,16 @@ from django.shortcuts import render
 from django.views.generic import TemplateView,ListView,UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404,redirect,render
 from django.db.models import Q
+
 
 from .models import Message
 
 UserModel=get_user_model()
 class Index(TemplateView):
 	template_name='insta/login.html'
+
 
 class Profile(LoginRequiredMixin,ListView):
 	template_name='insta/profile.html'
@@ -47,8 +49,14 @@ class Search(LoginRequiredMixin,ListView):
 	def get_queryset(self):
 		return UserModel.objects.all()
 
-class Home(LoginRequiredMixin,ListView):
+class Home(ListView):
 	template_name='insta/home.html'
+
+	def get(self,request,*args,**kwargs):
+		if request.user.is_authenticated:
+			return super().get(request,*args,**kwargs)
+		else:
+			return render(request,'insta/login.html')
 	def get_queryset(self):
 		following=self.request.user.rel_from.values_list('to_user',flat=True)
 		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user))
