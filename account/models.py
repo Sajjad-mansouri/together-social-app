@@ -5,6 +5,7 @@ from django.conf import settings
 class MyUser(AbstractUser):
 	email=models.EmailField(unique=True)
 
+
 class Profile(models.Model):
 	user=models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 	profile_image=models.ImageField(upload_to='profile_image/%Y/',null=True,blank=True)

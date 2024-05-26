@@ -63,7 +63,7 @@ class Home(ListView):
 
 
 class Setting(LoginRequiredMixin,TemplateView):
-	template_name='transfer/settings.html'
+	template_name='insta/settings.html'
 
 
 class LikedPost(LoginRequiredMixin,ListView):

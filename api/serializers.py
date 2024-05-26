@@ -86,26 +86,38 @@ class SavedPostSerializer(serializers.ModelSerializer):
 	def to_internal_value(self,data):
 		user=self._context['request'].user.id
 		data['user']=user
-		print(data)
+		
 		return super().to_internal_value(data)
 
 class ProfileSerializer(serializers.ModelSerializer):
 	user=UserSerializer()
 	class Meta:
 		model=Profile
-		fields=['id','user','profile_image','birth_day']
+		fields=['id','user','profile_image','birth_day','bio']
+	def is_valid(self,raise_exception=False):
+		valid=super().is_valid(raise_exception=False)
+		print('errors',self.errors)
+		return valid
+	def to_internal_value(self,data):
+		print('to_internal_value',data)
+		print(self._context['request'].content_type)
+		return super().to_internal_value(data)
+
 
 	def update(self,instance,validated_data):
 		instance_user=instance.user
 		user=validated_data.get('user')
 		instance.profile_image=validated_data.get('profile_image',instance.profile_image)
-		
+		instance.birth_day=validated_data.get('birth_day',instance.birth_day)
+		instance.bio=validated_data.get('bio',instance.bio)
 		if user:
 			instance_user.first_name=user.get('first_name',instance_user.first_name)
 			instance_user.last_name=user.get('last_name',instance_user.last_name)
 			instance_user.email=user.get('email',instance_user.email)
 			instance_user.username=user.get('username',instance_user.username)
+			
 			instance_user.save()
+		print('user',user)
 		instance.save()
 		return instance
 

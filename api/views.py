@@ -1,5 +1,5 @@
 from rest_framework import generics
-from rest_framework.parsers import FormParser,MultiPartParser
+from rest_framework.parsers import FormParser,MultiPartParser,JSONParser
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 
@@ -87,7 +87,7 @@ class ProfileApiView(generics.ListCreateAPIView):
 class ProfileDetailApiView(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class=ProfileSerializer
 	queryset=Profile.objects.all()
-
+	parser_classes=[FormParser,MultiPartParser,JSONParser]
 	def update(self,request,*args,**kwargs):
 		partial = kwargs.pop('partial', False)
 		instance =self.get_object()

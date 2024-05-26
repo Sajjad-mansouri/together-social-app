@@ -1,0 +1,88 @@
+{%extends 'base.html'%}
+{%load static%}
+{%block content%}
+        <div class="tab-menu">
+            <div class="tab">
+                <div>Settings</div>
+                <button class='tablinks ' data-tab='edit-profile'>Edit profile</button>
+                <button class='tablinks' data-tab='personal-detail'>Personal details</button>
+                <button class='tablinks' data-tab='account-privacy'>Account Privacy</button>
+                <button class='tablinks' data-tab='security'>Password and Security</button>
+
+            </div>
+            <div class="tab-content container"> 
+
+                <div id='edit-profile' class="row hide">
+                            <div class="title hide">
+                                <img src="{% static 'images/back.png' %}" width=20 class="back">
+                                <h1>Edit profile</h1>
+                            </div>
+                            <div class="message">
+                                
+                            </div>
+                            <form method="POST" class="profile-form">
+                               <div class='col image-container'>
+                                    <img id='profile_image'src="" >
+                                    <input type="file" name="profile_image" style="display:none" id='image-input'>
+                                    <button id='imgBtn'>change profile image</button>
+                               </div>     
+                               <div class='col'>
+                                    <label for="name">Name</label>
+                                    <input type="text" name="first_name" id='first_name'>
+                               </div>
+                                <div class='col'>
+                                    <label for="username">Username</label>
+                                    <input type="text" name="username" id='username'>
+                               </div>
+                                <div  class='col'>
+                                    <label for="bio">Bio</label>
+                                    <textarea  name="bio" id='bio' id='bio'></textarea>                               
+                               </div>
+                               <button class="save">save changes</button>
+
+                            </form>
+                        
+
+                </div>
+                <div id="personal-detail" class="row hide">
+                            <div class="title hide">
+                                <img src="{% static 'images/back.png' %}" width=20 class="back">
+                                <h1>personal-detail</h1>
+                            </div>
+                            <form method="POST" class='personal-form'>
+                               <div class='col'>
+                                    <label for="email">email</label>
+                                    <input type="email" name="email" id='email'>
+                               </div>
+                                <div class='col'>
+                                    <label for="birth_day">birthday</label>
+                                    <input type="date" name="birth_day" id='birth_day'>
+                               </div>
+
+                               <button class="save">save changes</button>
+                            </form>
+                </div>
+
+                <div id='account-privacy' class="row hide">
+                                                <div class="title hide">
+                                <img src="{% static 'images/back.png' %}" width=20 class="back">
+                                <h1>Account privacy</h1>
+                            </div>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </div>
+                <div id="security" class='row hide'>
+                                                <div class="title hide">
+                                <img src="{% static 'images/back.png' %}" width=20 class="back">
+                                <h1>Security</h1>
+                            </div>
+                </div>
+            </div>
+
+{{user.profile.id|json_script:'user'}}
+
+{%endblock%}

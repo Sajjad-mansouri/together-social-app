@@ -564,7 +564,8 @@ function deletePost(element) {
     element.addEventListener('click', (event) => {
         let deleteBtn = document.getElementById('delete-post')
         let post = event.target.closest('.post');
-        let postId = post.getAttribute('data-post')
+        
+        let postId = post.getAttribute('data-post');
 
         deleteBtn.addEventListener('click', async () => {
             const accessToken = await getToken()
@@ -1052,3 +1053,187 @@ logoutBtn.addEventListener('click',event=>{
     logoutForm.submit()
 
 })
+
+///settings
+
+
+
+let pathName = window.location.pathname;
+if(pathName=='/settings/'){
+     let tab=document.querySelector('.tab')
+        let tabBtn=document.querySelectorAll('.tablinks')
+        let user=document.getElementById('user').textContent
+        let previousContent
+        let previousBtn
+        tabBtn.forEach(element=>{
+            let dataTab=element.getAttribute('data-tab');
+            element.addEventListener('click',()=>{
+                editInfo(dataTab,user)
+                if(previousBtn!=null){
+                    previousBtn.classList.remove('active')
+                }
+                previousBtn=element
+                element.classList.add('active')
+                showTab(element,dataTab)
+            })
+        })
+        function showTab(element,dataTab){
+            if(previousContent!=null){
+
+            previousContent.classList.add('hide')
+            }
+            let tabContent=document.getElementById(dataTab)
+            previousContent=tabContent            
+            tabContent.classList.remove('hide')
+            
+            if (window.screen.width<=498){
+                let tabContent=document.querySelector('.tab-content')
+                element.classList.remove('active')
+                tab.style.display='none'
+                tabContent.style.display='block'
+            }
+            
+        }
+
+        let backBtn=document.querySelectorAll('.back')
+        backBtn.forEach(element=>{
+            element.addEventListener('click',()=>{
+                let row=element.closest('.row')
+                row.classList.add('hide')
+
+
+                tab.style.display='block'
+            })
+        })
+}
+
+async function editInfo(dataTab,user){
+    let accessToken=await getToken()
+    if(dataTab=='edit-profile' || dataTab=='personal-detail'){
+        let response=await fetch(baseUrl+`/api/profiles/${user}`,{
+            method:'GET',
+            headers:{
+                'Authorization':`Bearer ${accessToken}`,
+            }
+
+        })
+        let data=await response.json()
+        if(response.ok){
+            console.log(data)
+            let name=document.getElementById('first_name')
+            name.setAttribute('data-current',data.user.first_name)
+            name.value=data.user.first_name
+
+            let userName=document.getElementById('username')
+            userName.setAttribute('data-current',data.user.username)
+            userName.value=data.user.username
+
+            let bio=document.getElementById('bio')
+            bio.value=data.bio
+
+            let profileImage=document.getElementById('profile_image')
+            profileImage.src=data.profile_image
+
+            let birthday=document.getElementById('birth_day')
+            birthday.value=data.birth_day
+
+            let email=document.getElementById('email')
+            email.setAttribute('data-current',data.user.email)
+            email.value=data.user.email
+        }
+
+        let profileForm=document.querySelector('.profile-form');
+        profileForm.addEventListener('submit',async function(event){
+            event.preventDefault()
+            let accessToken=await getToken()
+            let username=document.getElementById('username')
+            let name=document.getElementById('first_name')
+            let bio=document.getElementById('bio')
+            
+            let currentUsername=username.getAttribute('data-current')
+            let usernameValue=username.value
+            let nameValue=name.value
+            let bioValue=bio.value
+            let userData={username:usernameValue,first_name:nameValue}
+            
+            if(usernameValue==currentUsername){
+                delete userData.username
+            }
+            let body={user:userData,bio:bioValue}
+
+            console.log(body)
+            let response=await fetch(baseUrl+`/api/profiles/${user}`,{
+                method:'PATCH',
+                headers:{
+                    'Authorization':`Bearer ${accessToken}`,
+                    'Content-Type':'application/json'
+                    
+                },
+                body:JSON.stringify(body)
+            })
+            let data=await response.json()
+            if (response.ok){
+
+            }
+
+
+        })
+
+        let imgBtn=document.getElementById('imgBtn')
+        imgBtn.addEventListener('click',(event)=>{
+            event.preventDefault()
+            let imageInput=document.getElementById('image-input')
+            imageInput.click()
+            imageInput.addEventListener('change',async function(){
+
+                    let formData=new FormData()
+                    let file = imageInput.files[0]
+                    formData.append('profile_image', file)
+                    let response=await fetch(baseUrl + `/api/profiles/${user}`, {
+                        method: "PATCH",
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                        },
+                        body: formData
+                    })
+                    let data=await response.json()
+                    if (response.ok){
+                        let image=document.getElementById('profile_image')
+                        image.src=data.profile_image
+                        let messageDiv=document.querySelector('.message')
+                        messageDiv.textContent='image uploaded'
+                    }
+            }
+                )
+        })
+
+        //personal details
+        let personalForm=document.querySelector('.personal-form')
+        personalForm.addEventListener('submit',async function(event){
+            event.preventDefault()
+            let birthday=document.getElementById('birth_day').value
+            let email=document.getElementById('email').value
+            let currentEmail=document.getElementById('email').getAttribute('data-current')
+            let userData
+            if(email!=currentEmail){
+                userData={'email':email}
+            }
+            let body={'birth_day':birthday,'user':userData}
+            
+            console.log(JSON.stringify(body))
+            let response=await fetch(baseUrl+`/api/profiles/${user}`,{
+                method:'PATCH',
+                headers:{
+                    'Authorization':`Bearer ${accessToken}`,
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(body)
+            })
+            let data=await response.json()
+            if (response.ok){
+                console.log(data)
+            }
+
+        })
+    }
+}
