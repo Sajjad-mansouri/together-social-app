@@ -12,6 +12,7 @@ class Profile(models.Model):
 	contact=models.ManyToManyField('self',through='Contact',symmetrical=False)
 	bio=models.TextField(blank=True)
 	link=models.URLField(blank=True)
+	private=models.BooleanField(default=False)
 	
 	birth_day=models.DateField(blank=True,null=True)
 

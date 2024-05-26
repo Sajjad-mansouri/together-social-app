@@ -93,7 +93,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 	user=UserSerializer()
 	class Meta:
 		model=Profile
-		fields=['id','user','profile_image','birth_day','bio']
+		fields=['id','user','profile_image','birth_day','bio','private']
 	def is_valid(self,raise_exception=False):
 		valid=super().is_valid(raise_exception=False)
 		print('errors',self.errors)
@@ -107,6 +107,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 	def update(self,instance,validated_data):
 		instance_user=instance.user
 		user=validated_data.get('user')
+		instance.private=validated_data.get('private',instance.private)
 		instance.profile_image=validated_data.get('profile_image',instance.profile_image)
 		instance.birth_day=validated_data.get('birth_day',instance.birth_day)
 		instance.bio=validated_data.get('bio',instance.bio)

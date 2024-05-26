@@ -1109,7 +1109,7 @@ if(pathName=='/settings/'){
 
 async function editInfo(dataTab,user){
     let accessToken=await getToken()
-    if(dataTab=='edit-profile' || dataTab=='personal-detail'){
+    if(dataTab=='edit-profile' || dataTab=='personal-detail' || dataTab=='account-privacy'){
         let response=await fetch(baseUrl+`/api/profiles/${user}`,{
             method:'GET',
             headers:{
@@ -1140,6 +1140,10 @@ async function editInfo(dataTab,user){
             let email=document.getElementById('email')
             email.setAttribute('data-current',data.user.email)
             email.value=data.user.email
+
+            let privateInput=document.getElementById('private')
+            console.log(`checked:${data.private}`)
+            privateInput.checked=data.private
         }
 
         let profileForm=document.querySelector('.profile-form');
@@ -1234,6 +1238,26 @@ async function editInfo(dataTab,user){
                 console.log(data)
             }
 
+        })
+    }
+
+    if(dataTab=='account-privacy'){
+        let privateStatus=document.getElementById('private')
+        privateStatus.addEventListener('change',async function(){
+            let accessToken=await getToken()
+            let bodyData={'private':privateStatus.checked}
+            let response=await fetch(baseUrl+`/api/profiles/${user}`,{
+                method:'PATCH',
+                headers:{
+                    'Authorization':`Bearer ${accessToken}`,
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(bodyData)
+            })
+            let data=await response.json()
+            if(response.ok){
+                console.log('changed')
+            }
         })
     }
 }
