@@ -56,7 +56,7 @@ class Home(ListView):
 		if request.user.is_authenticated:
 			return super().get(request,*args,**kwargs)
 		else:
-			return render(request,'insta/login.html')
+			return render(request,'registration/login.html')
 	def get_queryset(self):
 		following=self.request.user.rel_from.values_list('to_user',flat=True)
 		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user))

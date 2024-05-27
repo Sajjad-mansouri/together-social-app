@@ -128,3 +128,13 @@ class LikeCommentDetailApiView(generics.RetrieveDestroyAPIView):
 	Apermission_classes=[AuthorDeletePermission]
 	serializer_class=LikeCommentSerializer
 	queryset=LikeComment.objects.all()
+
+
+# class ChangePasswordView(generics.UpdateAPIView):
+# 	serializer_class=ChangePasswordSerializer
+
+# 	def update(self,request,*args,**kwargs):
+# 		serialier=self.get_serializer(data=request.data)
+# 		serializer.is_valid(raise_exception=True)
+# 		serialier.save()
+# 		return Response(serializer.data)

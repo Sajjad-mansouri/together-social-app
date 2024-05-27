@@ -1261,3 +1261,5 @@ async function editInfo(dataTab,user){
         })
     }
 }
+
+

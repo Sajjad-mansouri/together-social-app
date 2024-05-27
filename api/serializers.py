@@ -222,3 +222,6 @@ class LikeCommentSerializer(serializers.ModelSerializer):
 		print(data)
 		return super().to_internal_value(data)
 
+
+
+# class ChangePasswordSerializer(serializers.Serializer):
