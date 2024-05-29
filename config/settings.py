@@ -177,8 +177,8 @@ REST_FRAMEWORK = {
     )
 
 }
-from datetime import timedelta
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=2),
-    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=1),
-    }
+# from datetime import timedelta
+# SIMPLE_JWT = {
+#     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=2),
+#     "REFRESH_TOKEN_LIFETIME": timedelta(minutes=1),
+#     }

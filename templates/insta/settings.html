@@ -19,7 +19,7 @@
                             </div>
                             <div class="message">
                                 
-                            </div>
+                          </div>
                             <form method="POST" class="profile-form">
                                <div class='col image-container'>
                                     <img id='profile_image'src="" >
@@ -40,7 +40,7 @@
                                </div>
                                <button class="save">save changes</button>
 
-                            </form>
+                            </form>  
                         
 
                 </div>
@@ -88,10 +88,32 @@
 
                 </div>
                 <div id="security" class='row hide'>
-                                                <div class="title hide">
+                            <div class="title hide">
                                 <img src="{% static 'images/back.png' %}" width=20 class="back">
                                 <h1>Security</h1>
                             </div>
+                            <div class="messages">
+                                
+                            </div>
+
+                            <form method="POST" id="change-password-form">
+   
+                               <div class='col'>
+                                    <label for="old_password">old password</label>
+                                    <input type="password" name="old_password" id='old_password'>
+                               </div>
+                                <div class='col'>
+                                    <label for="password1">new password</label>
+                                    <input type="password" name="password1" id='password1'>
+                               </div>
+                                <div class='col'>
+                                    <label for="password2">confirm new password</label>
+                                    <input type="password" name="password2" id='password2'>
+                               </div>
+
+                               <button class="save">change password</button>
+
+                            </form>  
                 </div>
             </div>
 

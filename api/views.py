@@ -12,7 +12,8 @@ from .serializers import (
 						ProfileSerializer,
 						CommentSerializer,
 						LikeCommentSerializer,
-						SavedPostSerializer
+						SavedPostSerializer,
+						ChangePasswordSerializer
 						)
 
 from .permissions import AuthorDeletePermission
@@ -130,11 +131,14 @@ class LikeCommentDetailApiView(generics.RetrieveDestroyAPIView):
 	queryset=LikeComment.objects.all()
 
 
-# class ChangePasswordView(generics.UpdateAPIView):
-# 	serializer_class=ChangePasswordSerializer
+class ChangePasswordView(generics.UpdateAPIView):
+	serializer_class=ChangePasswordSerializer
 
-# 	def update(self,request,*args,**kwargs):
-# 		serialier=self.get_serializer(data=request.data)
-# 		serializer.is_valid(raise_exception=True)
-# 		serialier.save()
-# 		return Response(serializer.data)
+	def update(self,request,*args,**kwargs):
+		serializer=self.get_serializer(data=request.data)
+		print('update ChangePasswordView')
+		a=serializer.is_valid(raise_exception=True)
+		print(a)
+		print('update')
+		serializer.save()
+		return Response(serializer.data)

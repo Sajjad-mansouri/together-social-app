@@ -1260,6 +1260,64 @@ async function editInfo(dataTab,user){
             }
         })
     }
+
+    if(dataTab=='security'){
+        let changePasswordForm=document.getElementById('change-password-form')
+        
+        changePasswordForm.addEventListener('submit',async function(event){
+            event.preventDefault();
+            let formData=new FormData(changePasswordForm);
+            let body=JSON.stringify(Object.fromEntries(formData))
+            let accessToken=await getToken()
+            try{
+
+                let response =await fetch(baseUrl+'/api/change-password/',{
+                    method:'PUT',
+                    headers:{
+                        'Authorization':`Bearer ${accessToken}`,
+                        'Content-Type':'application/json'
+                    },
+                    body:body
+                })
+                let data=await response.json()
+                let messages=document.querySelector('#security .messages')
+                messages.textContent=''
+                if (response.ok){
+                    let message=document.createElement('div')
+                    message.textContent='password changed successfully!'
+                    message.className='alert alert-success'
+                    messages.append(message)
+                    setTimeout(messageTimeOut,10000,message)
+                }else{
+                    console.log(data)
+
+                    if('non_field_errors' in data){
+
+                        data.non_field_errors.forEach(error=>{
+                            let message=document.createElement('div')
+                            message.textContent=error
+                            message.className='alert alert-danger'
+                            messages.append(message)
+                            setTimeout(messageTimeOut,10000,message)
+                        })
+                    }else if('old_password' in data){
+                            let message=document.createElement('div')
+                            message.textContent=data.old_password
+                            message.className='alert alert-danger'
+                            messages.append(message)
+                            setTimeout(messageTimeOut,10000,message)
+                    }
+
+                }
+            }catch(error){
+                console.log(error)
+            }
+        })
+
+        function messageTimeOut(element){
+            element.remove()
+        }
+    }
 }
 
 

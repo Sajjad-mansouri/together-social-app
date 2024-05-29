@@ -1,9 +1,11 @@
 from datetime import timedelta
+
 from django.utils.timesince import timesince
-
-
+from django.core.exceptions import ValidationError
+from django.http import JsonResponse
 from rest_framework import serializers
 from social.models import Message,Like,Comment,LikeComment,SavePost
+from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from account.models import Contact,Profile
@@ -224,4 +226,43 @@ class LikeCommentSerializer(serializers.ModelSerializer):
 
 
 
-# class ChangePasswordSerializer(serializers.Serializer):
+
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+	old_password=serializers.CharField(required=True,write_only=True,max_length=200)
+	password1=serializers.CharField(required=True,write_only=True,max_length=200)
+	password2=serializers.CharField(required=True,write_only=True,max_length=200)
+
+	def to_internal_value(self,data):
+		
+		return super().to_internal_value(data)
+
+	def is_valid(self,raise_exception=False):
+			print('is_valid')
+			valid=super().is_valid(raise_exception=True)
+			print('value in is_valid')
+			return valid
+	def validate_old_password(self,value):
+		print('validate_old_password')
+		user=self._context['request'].user
+		if not user.check_password(value):
+			raise serializers.ValidationError('old password is not correct')
+		return value
+
+	def validate(self,data):
+		print('validate')
+		
+		if data['password1']!=data['password2']:
+			raise serializers.ValidationError('doesnot match passwords')
+
+		validate_password(data['password1'],self._context['request'].user)
+		print('end validate')
+		return data
+
+	def save(self,**kwargs):
+		password=self.validated_data['password1']
+		user=self._context['request'].user
+		user.set_password(password)
+		user.save()
+		return user

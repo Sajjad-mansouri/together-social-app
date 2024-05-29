@@ -34,6 +34,8 @@ urlpatterns=[
     path('saved/',views.AddSavedApiView.as_view(),name='saved'),
 	path('saved/<int:pk>/',views.SavedPostDetailApiView.as_view(),name='saved-detail'),
 
+	path('change-password/',views.ChangePasswordView.as_view(),name='change-password'),
+
 
 
 
