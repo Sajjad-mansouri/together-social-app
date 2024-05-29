@@ -1177,7 +1177,25 @@ async function editInfo(dataTab,user){
             })
             let data=await response.json()
             if (response.ok){
+                
+                    let messages=document.querySelector('#edit-profile .messages')
+                    let message=document.createElement('div')
+                    message.textContent='Saved successfully!'
+                    message.className='alert alert-success'
+                    messages.append(message)
+                    setTimeout(messageTimeOut,10000,message)
+            }else{
 
+                if('username' in data.user){
+                    let messages=document.querySelector('#edit-profile .messages')
+                    let message=document.createElement('div')
+                    message.textContent=data.user.username
+                    message.className='alert alert-danger'
+                    messages.append(message)
+                    setTimeout(messageTimeOut,10000,message)
+
+                    username.value=currentUsername;
+                }
             }
 
 
@@ -1202,10 +1220,23 @@ async function editInfo(dataTab,user){
                     })
                     let data=await response.json()
                     if (response.ok){
-                        let image=document.getElementById('profile_image')
-                        image.src=data.profile_image
-                        let messageDiv=document.querySelector('.message')
-                        messageDiv.textContent='image uploaded'
+                    let messages=document.querySelector('#edit-profile .messages')
+                    let message=document.createElement('div')
+                    message.textContent='Saved successfully!'
+                    message.className='alert alert-success'
+                    messages.append(message)
+                    setTimeout(messageTimeOut,10000,message)
+                    }
+                    else{
+                    let messages=document.querySelector('#edit-profile .messages')
+                    let message=document.createElement('div')
+                    if('profile_image' in data){
+
+                        message.textContent=data.profile_image
+                        message.className='alert alert-danger'
+                        messages.append(message)
+                        setTimeout(messageTimeOut,10000,message)
+                    }
                     }
             }
                 )
@@ -1235,7 +1266,12 @@ async function editInfo(dataTab,user){
             })
             let data=await response.json()
             if (response.ok){
-                console.log(data)
+                    let messages=document.querySelector('#personal-detail .messages')
+                    let message=document.createElement('div')
+                    message.textContent='Saved successfully!'
+                    message.className='alert alert-success'
+                    messages.append(message)
+                    setTimeout(messageTimeOut,10000,message)
             }
 
         })
@@ -1288,6 +1324,7 @@ async function editInfo(dataTab,user){
                     message.className='alert alert-success'
                     messages.append(message)
                     setTimeout(messageTimeOut,10000,message)
+
                 }else{
                     console.log(data)
 
@@ -1309,15 +1346,18 @@ async function editInfo(dataTab,user){
                     }
 
                 }
+                changePasswordForm.querySelectorAll('input').forEach(element=>{
+                        element.value=''
+                    })
             }catch(error){
                 console.log(error)
             }
         })
 
-        function messageTimeOut(element){
-            element.remove()
-        }
+
     }
 }
-
+function messageTimeOut(element){
+    element.remove()
+}
 

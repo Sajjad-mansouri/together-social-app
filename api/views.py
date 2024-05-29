@@ -90,22 +90,21 @@ class ProfileDetailApiView(generics.RetrieveUpdateDestroyAPIView):
 	queryset=Profile.objects.all()
 	parser_classes=[FormParser,MultiPartParser,JSONParser]
 	def update(self,request,*args,**kwargs):
+		print('update')
 		partial = kwargs.pop('partial', False)
 		instance =self.get_object()
 		serializer =self.get_serializer(instance, data=request.data, partial=partial)
-		if serializer.is_valid(raise_exception=False):
+		serializer.is_valid(raise_exception=True)
+		print('update after is_valid')
+		self.perform_update(serializer)
 
-
-			self.perform_update(serializer)
-
-			if getattr(instance, '_prefetched_objects_cache', None):
+		if getattr(instance, '_prefetched_objects_cache', None):
 				# If 'prefetch_related' has been applied to a queryset, we need to
 				# forcibly invalidate the prefetch cache on the instance.
 				instance._prefetched_objects_cache = {}
+		print(serializer.data)
+		return Response(serializer.data)
 
-			return Response(serializer.data)
-		else:
-			return Response(serializer.errors, status=400)
 
 class CommentApiView(generics.ListCreateAPIView):
 	serializer_class=CommentSerializer
@@ -137,8 +136,6 @@ class ChangePasswordView(generics.UpdateAPIView):
 	def update(self,request,*args,**kwargs):
 		serializer=self.get_serializer(data=request.data)
 		print('update ChangePasswordView')
-		a=serializer.is_valid(raise_exception=True)
-		print(a)
-		print('update')
+		serializer.is_valid(raise_exception=True)
 		serializer.save()
 		return Response(serializer.data)

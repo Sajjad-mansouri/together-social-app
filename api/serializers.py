@@ -96,14 +96,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 	class Meta:
 		model=Profile
 		fields=['id','user','profile_image','birth_day','bio','private']
-	def is_valid(self,raise_exception=False):
-		valid=super().is_valid(raise_exception=False)
-		print('errors',self.errors)
-		return valid
-	def to_internal_value(self,data):
-		print('to_internal_value',data)
-		print(self._context['request'].content_type)
-		return super().to_internal_value(data)
+
 
 
 	def update(self,instance,validated_data):
