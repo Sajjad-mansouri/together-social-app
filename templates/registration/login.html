@@ -46,6 +46,15 @@
                     </div>
                     <form method="POST" action='/login/'>
                         {%csrf_token%}
+                            {%if form.non_field_errors%}
+                            <div class="errorlist nonfield">
+                            {%for error in form.non_field_errors%}
+                            <div class="error alert alert-warning">
+                                {{error}}
+                            </div>
+                            {%endfor%}
+                            </div>
+                            {%endif%}
                         <div>
                             <input type="text" name="username" id="username" placeholder="username">
                         </div>
