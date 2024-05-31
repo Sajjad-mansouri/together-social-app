@@ -1,5 +1,5 @@
 from django.core.mail import EmailMessage
-from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import  urlsafe_base64_decode,urlsafe_base64_encode
 from django.utils.encoding import force_bytes
@@ -9,19 +9,34 @@ from django.core.mail import EmailMultiAlternatives
 from django.views.generic import TemplateView
 from django.core.exceptions import  ValidationError
 from django.http import HttpResponseRedirect
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.decorators.debug import sensitive_post_parameters
 from .models import Profile
 UserModel = get_user_model()
 
+class RegisterTokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, user, timestamp):
+        login_timestamp = (
+            ""
+            if user.last_login is None
+            else user.last_login.replace(microsecond=0, tzinfo=None)
+        )
+        email_field = user.get_email_field_name()
+        email = getattr(user, email_field, "") or ""
+        return f"{user.pk}{user.is_active}{login_timestamp}{timestamp}{email}"
+
+default_token_generator=RegisterTokenGenerator()
+
 def send_email(
 
-        subject_template_name,
-        email_template_name,
-        context,
-        from_email,
-        to_email,
-        html_email_template_name=None,
-    ):
+                    subject_template_name,
+                    email_template_name,
+                    context,
+                    from_email,
+                    to_email,
+                    html_email_template_name=None,
+                ):
         """
         Send a django.core.mail.EmailMultiAlternatives to `to_email`.
         """
@@ -132,10 +147,12 @@ class EmailConfirmation:
 
 INTERNAL_RESET_SESSION_TOKEN = "_confirmation_token"
 class EmailConfirmView(TemplateView):
-    template_name = "email/registration/confirmation_done.html"
+    template_name = "registration/login.html"
     reset_url_token = "confirmation-done"
     token_generator = default_token_generator
 
+    @method_decorator(sensitive_post_parameters())
+    @method_decorator(never_cache)
     def dispatch(self, *args, **kwargs):
         if "uidb64" not in kwargs or "token" not in kwargs:
             raise ImproperlyConfigured(
@@ -146,22 +163,29 @@ class EmailConfirmView(TemplateView):
         self.user = self.get_user(kwargs["uidb64"])
 
         if self.user is not None:
+            print('if self.user in dispatch EmailConfirmView')
             token = kwargs["token"]
+            print(token)
             if token == self.reset_url_token:
+                print('if token == self.reset_url_token in dispatch EmailConfirmView')
                 session_token = self.request.session.get(INTERNAL_RESET_SESSION_TOKEN)
                 if self.token_generator.check_token(self.user, session_token):
                     # If the token is valid, display the password reset form.
                     self.validlink = True
+                    self.user.is_active=True
+                    self.user.save()
+                    Profile.objects.get_or_create(user=self.user)
                     return super().dispatch(*args, **kwargs)
             else:
+                print('else in dispatch EmailConfirmView')
                 if self.token_generator.check_token(self.user, token):
+                    print(self.token_generator.check_token(self.user,token))
+                    print('token_generator check_token')
                     # Store the token in the session and redirect to the
                     # password reset form at a URL without the token. That
                     # avoids the possibility of leaking the token in the
                     # HTTP Referer header.
-                    self.user.is_active=True
-                    self.user.save()
-                    Profile.objects.create(user=self.user)
+
 
                     self.request.session[INTERNAL_RESET_SESSION_TOKEN] = token
                     redirect_url = self.request.path.replace(

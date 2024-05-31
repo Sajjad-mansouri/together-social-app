@@ -13,7 +13,7 @@ urlpatterns=[
 
 urlpatterns+=[
 	path(
-        "confirm/<uidb64>/<token>/",
+        "login/<uidb64>/<token>/",
         emailconf.EmailConfirmView.as_view(),
         name="email_confirm",)
 ]

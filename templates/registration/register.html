@@ -1,14 +1,47 @@
 {%extends 'registration/base_registration.html'%}
-{%block title%}register{%endblock%}
-{% load crispy_forms_tags %}
 {%block content%}
-            <h2 class="fw-bold mb-5">Sign up now</h2>
-            <form method="POST">
-                {%csrf_token%}
-                {{form}}
-                <input type="submit" value='register'>
-            </form>
+        <div class="sign_up">
+            <div class="content">
+                <div class="log-on border_insc">
+                    <div class="logo">
+                        <img src="./images/logo.png" alt="Instagram logo">
 
 
+                    </div>
+                    <form action="" method="post">
+                        {%csrf_token%}
 
+                        {%for field in form%}
+                        <div>
+                            {%if field.errors%}
+                            <div class="errorlist">
+                            {%for error in field.errors%}
+                            <div class="alert alert-warning">
+                                {{error}}
+                            </div>
+                            {%endfor%}
+                            </div>
+                            {%endif%}
+                           {{field.label_tag}} {{field}}
+                            
+                        </div>
+                        {%endfor%}
+                        
+
+                   
+                        <button class="log_btn">
+                                Sign Up
+                        </button>
+                    
+                    </form>
+                </div>
+                <div class="sing-in border_insc">
+                    <p>
+                        Have an account? 
+                        <a href="./login.html">Log in</a>
+                    </p>
+                </div>
+
+            </div>
+        </div>
 {%endblock%}

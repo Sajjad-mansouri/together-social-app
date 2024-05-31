@@ -5,6 +5,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import CreateView,UpdateView,DeleteView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
+from django.contrib import messages
 
 from .forms import ProfileForm,UserForm,CustomCreationForm
 from .emailconf import EmailConfirmation
@@ -49,7 +50,7 @@ class Register(CreateView):
 	model=get_user_model()
 	form_class=CustomCreationForm
 	template_name='registration/register.html'
-	success_url=reverse_lazy('index')
+	success_url=reverse_lazy('home')
 
 
 	def form_valid(self,form):
@@ -58,6 +59,7 @@ class Register(CreateView):
 		self.object.save()
 		email_conf=EmailConfirmation(email=self.object.email,request=self.request)
 		email_conf.save()
+		messages.success(self.request, "signed up successfully! please confirm your email")
 		return HttpResponseRedirect(self.get_success_url())
 
 
