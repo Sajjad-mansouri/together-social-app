@@ -8,7 +8,7 @@ class MyUser(AbstractUser):
 
 class Profile(models.Model):
 	user=models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
-	profile_image=models.ImageField(upload_to='profile_image/%Y/',null=True,blank=True)
+	profile_image=models.ImageField(upload_to='profile_image/%Y/',null=True,blank=True,default='profile_image/default/blank-profile.png')
 	contact=models.ManyToManyField('self',through='Contact',symmetrical=False)
 	bio=models.TextField(blank=True)
 	link=models.URLField(blank=True)

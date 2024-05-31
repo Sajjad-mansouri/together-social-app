@@ -57,7 +57,7 @@
                             </li>
                             <li>
                                 <a href="{%url 'profile' %}">
-                                    <img class="circle story" src="{% static 'images/profile_img.jpg' %}">
+                                    <img class="circle story" src="{{user.profile.profile_image.url}}">
                                     <span class="d-none d-lg-block ">Profile</span>
                                 </a>
                             </li>

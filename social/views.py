@@ -59,6 +59,8 @@ class Home(ListView):
 			return render(request,'registration/login.html')
 	def get_queryset(self):
 		following=self.request.user.rel_from.values_list('to_user',flat=True)
+		print(Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user)))
+		print('++++++')
 		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user))
 
 

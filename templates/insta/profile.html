@@ -6,7 +6,7 @@
             <div class="profile_info">
                 <div class="cart">
                         <div class="img">
-                            <img src="{% static 'images/profile_img.jpg' %}" alt="">
+                            <img src="{{owner.profile.profile_image.url}}" alt="">
                         </div>
                         <div class="info">
                             <p class="name">
@@ -32,10 +32,9 @@
                                 <p><span>{{follower_count}}</span> followers</p>
                                 <p><span>{{following_count}}</span> following</p>
                             </div>
-                            <p class="nick_name">{{user.get_full_name}}</p>
+                            <p class="nick_name">{{owner.get_full_name}}</p>
                             <p class="desc">
-                                I'am an engineering student 
-                                ENSAO
+                                {{owner.profile.bio}}
                             </p>
                         </div>
                         <br>
