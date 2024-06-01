@@ -48,11 +48,25 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class SearchSerializer(serializers.ModelSerializer):
+
 	profile_image=serializers.ImageField(source='profile.profile_image')
+
 	class Meta:
 		model=get_user_model()
 		fields=['first_name','last_name','username','profile_image']
 
+class RelationSerializer(serializers.ModelSerializer):
+	def get_relation(self,obj):
+		username=self.context['owner']
+		if self.context['relation']=='following':
+			return obj.rel_to.get(from_user__username=username).id
+		elif self.context['relation']=='follower':
+			return obj.rel_from.get(to_user__username=username).id
+	profile_image=serializers.ImageField(source='profile.profile_image')
+	relation=serializers.SerializerMethodField('get_relation')
+	class Meta:
+		model=get_user_model()
+		fields=['first_name','last_name','username','profile_image','relation']
 class UserSerializer(serializers.ModelSerializer):
 	profile_image=serializers.ImageField(source='profile.profile_image')
 	class Meta:

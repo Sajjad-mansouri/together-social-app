@@ -13,10 +13,12 @@ from .serializers import (
 						CommentSerializer,
 						LikeCommentSerializer,
 						SavedPostSerializer,
-						ChangePasswordSerializer
+						ChangePasswordSerializer,
+						RelationSerializer
+
 						)
 
-from .permissions import AuthorDeletePermission
+from .permissions import AuthorDeletePermission,RelationDeletePermission
 from social.models import Message,Like,Comment,LikeComment,SavePost
 from account.models import Contact,Profile
 UserModel=get_user_model()
@@ -43,8 +45,13 @@ class PostRetrieveDestroyAPIView(generics.RetrieveDestroyAPIView):
 
 
 class UserListAPiView(generics.ListAPIView):
-	serializer_class=SearchSerializer
 	
+	serializer_class=SearchSerializer
+	def get_serializer_class(self):
+		if self.request.query_params.get('relation'):
+			return RelationSerializer
+		else:
+			return SearchSerializer
 	def get_queryset(self):
 
 		queryset=None
@@ -54,24 +61,32 @@ class UserListAPiView(generics.ListAPIView):
 			search=self.request.query_params.get('search')
 			queryset=UserModel.objects.filter(username__istartswith=search).exclude(username=self.request.user).select_related('profile')
 		
-		elif self.request.query_params.get('follower') !=None:
+		elif self.request.query_params.get('relation') == 'follower':
 			print('follower')
-			username=self.request.query_params.get('follower')
+			username=self.request.query_params.get('owner')
 			user=get_object_or_404(UserModel,username=username)
 			queryset = UserModel.objects.filter(rel_from__to_user=user)
 			print(queryset)
 
 			
 		
-		elif self.request.query_params.get('following') !=None:
-			username=self.request.query_params.get('following')
+		elif self.request.query_params.get('relation') == 'following':
+			username=self.request.query_params.get('owner')
 			user=get_object_or_404(UserModel,username=username)
 			queryset = UserModel.objects.filter(rel_to__from_user=user)
 
 
-		
+
 		
 		return queryset
+		
+	def get_serializer_context(self):
+		context = super().get_serializer_context()
+		if self.request.query_params.get('relation'):
+			context['relation']=self.request.query_params.get('relation')
+
+			context["owner"] = self.request.query_params.get('owner')
+		return context
 
 class ContactApiView(generics.ListCreateAPIView):
 	serializer_class=ContactSerializer
@@ -79,9 +94,11 @@ class ContactApiView(generics.ListCreateAPIView):
 
 
 class ContactDetailApiView(generics.RetrieveDestroyAPIView):
-	permission_classes=[AuthorDeletePermission]
+	permission_classes=[RelationDeletePermission]
 	serializer_class=ContactSerializer
 	queryset=Contact.objects.all()
+	
+
 
 class LikeApiView(generics.ListCreateAPIView):
 	serializer_class=LikeSerializer

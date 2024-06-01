@@ -11,3 +11,11 @@ class AuthorDeletePermission(permissions.BasePermission):
 		else:
 
 			return obj.user==request.user
+
+
+class RelationDeletePermission(permissions.BasePermission):
+	def has_object_permission(self,request,view,obj):
+		print(obj.from_user)
+		print(obj.to_user)
+		print(request.user)
+		return obj.from_user==request.user or obj.to_user==request.user

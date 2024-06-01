@@ -920,6 +920,7 @@ async function searchUser(findDiv,searchValue){
     if(response.ok){
 
         let accountDiv=findDiv.querySelector('.account-clone');
+        console.log(datas)
         datas.forEach(data=>{
             let account=accountDiv.cloneNode(true);
             account.className='account'
@@ -944,17 +945,8 @@ async function searchUser(findDiv,searchValue){
 
 let search_icon = document.getElementById("search_icon");
 let search = document.getElementById("search");
-
+let findDiv=search.querySelector('.find')
 let searchForm=search.querySelector('form')
-searchForm.addEventListener('submit',event=>{
-    event.preventDefault();
-
-})
-
-search_icon.addEventListener("click", function() {
-
-    let findDiv=search.querySelector('.find')
-    search.classList.toggle("show");
     let searchInput=search.querySelector('input');
     searchInput.addEventListener('input',event=>{
          findDiv.querySelectorAll('.account').forEach(element=>{
@@ -970,6 +962,16 @@ search_icon.addEventListener("click", function() {
             })
         }
     })
+searchForm.addEventListener('submit',event=>{
+    event.preventDefault();
+
+})
+
+search_icon.addEventListener("click", function() {
+
+    
+    search.classList.toggle("show");
+
 
 });
 
@@ -1362,11 +1364,44 @@ function messageTimeOut(element){
 }
 
 // follower and following list
+
+function connectFunction(div,btn,func){
+    let relationId=div.getAttribute('data-relation')
+    let followingCounter=document.querySelector('.general_info .connections[data-list="following"] span')
+    let followerCounter=document.querySelector('.general_info .connections[data-list="follower"] span')
+
+    console.log(followingCounter)
+    btn.addEventListener('click',async function(){
+        let accessToken=await getToken()
+        
+            let response = await fetch(baseUrl+`/api/contact/${relationId}/`,{
+                method:'DELETE',
+                headers:{
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            })
+            
+            if (response.ok){
+                console.log('successfully removed')
+                div.remove()
+                if(func=='following'){
+
+                followingCounter.textContent=Number(followingCounter.textContent)-1
+            }else if(func=='follower'){
+                followerCounter.textContent=Number(followerCounter.textContent)-1
+
+            }
+            }
+
+    })
+}
 async function connectionList(queryType,username){
     let connectionContainer=document.querySelector('.connection-container')
     connectionContainer.textContent=''
+
+    let owner=document.querySelector('.connections').getAttribute('data-owner')
     const accessToken=await getToken()
-    const response=await fetch(`http://localhost:8000/api/users/?${queryType}=${username}`, {
+    const response=await fetch(`http://localhost:8000/api/users/?relation=${queryType}&owner=${username}`, {
                         method: "GET",
                         headers: {
                             Authorization: `Bearer ${accessToken}`
@@ -1379,6 +1414,7 @@ async function connectionList(queryType,username){
 
             let connectionList=document.createElement('div')
             connectionList.className='connection-list'
+            connectionList.setAttribute('data-relation',data.relation)
 
             let image=document.createElement('img')
             image.src=data.profile_image
@@ -1398,23 +1434,27 @@ async function connectionList(queryType,username){
             userInfo.append(username)
             userInfo.append(name)
 
+            let viewer=document.getElementById('owner').textContent.match(/(?<=")\w+(?=")/)[0]
+            console.log(viewer)
             connectionList.append(userInfo)
+            if(viewer==owner){
 
-            let connectBtn=document.createElement('div')
-            connectBtn.className='connect-button'
+                let connectBtn=document.createElement('div')
+                connectBtn.className='connect-button'
 
-            let button=document.createElement('button')
-            button.className='button-4'
-            button.setAttribute('role','button')
-            if(queryType=='follower'){
+                let button=document.createElement('button')
+                button.className='button-4'
+                button.setAttribute('role','button')
+                if(queryType=='follower'){
 
-            button.textContent='remove'
-            }else{
-                button.textContent='unfollow'
+                button.textContent='remove'
+                }else{
+                    button.textContent='unfollow'
+                }
+                connectBtn.append(button)
+                connectionList.append(connectBtn)
+                connectFunction(connectionList,connectBtn,queryType)
             }
-            connectBtn.append(button)
-            connectionList.append(connectBtn)
-
             connectionContainer.append(connectionList)
             console.log(data)
         })
