@@ -1361,3 +1361,79 @@ function messageTimeOut(element){
     element.remove()
 }
 
+// follower and following list
+async function connectionList(queryType,username){
+    let connectionContainer=document.querySelector('.connection-container')
+    connectionContainer.textContent=''
+    const accessToken=await getToken()
+    const response=await fetch(`http://localhost:8000/api/users/?${queryType}=${username}`, {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`
+                        }
+                    })
+    const datas=await response.json()
+    console.log(datas)
+    if(response.ok){
+        datas.forEach(data=>{
+
+            let connectionList=document.createElement('div')
+            connectionList.className='connection-list'
+
+            let image=document.createElement('img')
+            image.src=data.profile_image
+            connectionList.append(image)
+
+            let userInfo=document.createElement('div')
+            userInfo.className='user-info'
+
+            let username=document.createElement('p')
+            username.className='username'
+            username.textContent=data.username
+
+            let name=document.createElement('p')
+            name.className='name'
+            name.textContent=data.first_name
+
+            userInfo.append(username)
+            userInfo.append(name)
+
+            connectionList.append(userInfo)
+
+            let connectBtn=document.createElement('div')
+            connectBtn.className='connect-button'
+
+            let button=document.createElement('button')
+            button.className='button-4'
+            button.setAttribute('role','button')
+            if(queryType=='follower'){
+
+            button.textContent='remove'
+            }else{
+                button.textContent='unfollow'
+            }
+            connectBtn.append(button)
+            connectionList.append(connectBtn)
+
+            connectionContainer.append(connectionList)
+            console.log(data)
+        })
+    }
+}
+
+if(pathName.includes('profile')){
+    let connectionModal=document.getElementById('connection-modal')
+    let modalTitle=connectionModal.querySelector('.modal-title')
+
+    document.querySelectorAll('.connections').forEach(element=>{
+
+        element.addEventListener('click',()=>{
+            let title=element.getAttribute('data-list')
+            let username=element.getAttribute('data-owner')
+            modalTitle.textContent=title
+            connectionList(title,username)
+
+        })
+    })
+}
+

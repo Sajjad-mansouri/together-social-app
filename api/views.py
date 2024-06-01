@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.parsers import FormParser,MultiPartParser,JSONParser
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
-
+from django.shortcuts import get_object_or_404
 from .serializers import (
 						PostSerializer,
 						UserSerializer,
@@ -47,8 +47,31 @@ class UserListAPiView(generics.ListAPIView):
 	
 	def get_queryset(self):
 
-		search=self.request.query_params.get('search')
-		return UserModel.objects.filter(username__istartswith=search).exclude(username=self.request.user).select_related('profile')
+		queryset=None
+		print(self.request.query_params)
+		if self.request.query_params.get('search') !=None:
+
+			search=self.request.query_params.get('search')
+			queryset=UserModel.objects.filter(username__istartswith=search).exclude(username=self.request.user).select_related('profile')
+		
+		elif self.request.query_params.get('follower') !=None:
+			print('follower')
+			username=self.request.query_params.get('follower')
+			user=get_object_or_404(UserModel,username=username)
+			queryset = UserModel.objects.filter(rel_from__to_user=user)
+			print(queryset)
+
+			
+		
+		elif self.request.query_params.get('following') !=None:
+			username=self.request.query_params.get('following')
+			user=get_object_or_404(UserModel,username=username)
+			queryset = UserModel.objects.filter(rel_to__from_user=user)
+
+
+		
+		
+		return queryset
 
 class ContactApiView(generics.ListCreateAPIView):
 	serializer_class=ContactSerializer

@@ -505,6 +505,36 @@
                 </div>
             </div>
         </div>
+
+        <!-- modal for display following and follower -->
+                <div class="modal fade" id="connection-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="connection-container">
+                            <input type="text" name="search-connection" value="search...">
+                            <div class="connection-list">
+                                <img class="img-responsive img-circle" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="">
+                                <div class="user-info">
+                                    <p class="username">name1</p>
+                                    <p class="name">name1 a</p>
+                                </div>
+                                <div class="connect-button">
+                                    <button class="button-4" role="button">Button 4</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
     {{user.username|json_script:'owner'}}
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE" crossorigin="anonymous"></script>

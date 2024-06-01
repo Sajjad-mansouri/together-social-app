@@ -17,20 +17,20 @@
                                 </button>
                                 {%else%}
                                 {% if access%}
-                                <button class="contact" data-btn='unfollow' data-contact={{contact_id}} data-owner={{owner.id}}>
+                                <button class="contact" data-btn='unfollow' data-contact={{contact_id}} data-owner={{owner.id}} >
                                     unfollow
                                 </button>
                                 {%else%}
-                                <button class="contact" data-btn='follow' data-owner={{owner.id}}>
+                                <button class="contact" data-btn='follow' data-owner={{owner.id}} >
                                     follow
                                 </button>
                                 {%endif%}
                                 {%endif%}
                             </p>
                             <div class="general_info">
-                                <p><span>{{total_post}}</span> post</p>
-                                <p><span>{{follower_count}}</span> followers</p>
-                                <p><span>{{following_count}}</span> following</p>
+                                <p ><span>{{total_post}}</span> post</p>
+                                <p class='connections' data-list='follower' data-owner={{owner.username}} data-bs-toggle="modal" data-bs-target="#connection-modal"><span>{{follower_count}}</span> followers</p>
+                                <p class='connections' data-list='following' data-owner={{owner.username}} data-bs-toggle="modal" data-bs-target="#connection-modal"><span>{{following_count}}</span> following</p>
                             </div>
                             <p class="nick_name">{{owner.get_full_name}}</p>
                             <p class="desc">
