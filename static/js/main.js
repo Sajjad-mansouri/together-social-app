@@ -1416,9 +1416,13 @@ async function connectionList(queryType,username){
             connectionList.className='connection-list'
             connectionList.setAttribute('data-relation',data.relation)
 
+            let link=document.createElement('a')
+            link.href=`${baseUrl}/profile/${data.username}`
+            
             let image=document.createElement('img')
             image.src=data.profile_image
-            connectionList.append(image)
+            link.append(image)
+            connectionList.append(link)
 
             let userInfo=document.createElement('div')
             userInfo.className='user-info'
