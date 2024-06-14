@@ -538,6 +538,7 @@ function addPost(data) {
     }
     if (pathName == '/profile/') {
         addPostProfile(data)
+        addPostHome(data)
     }
 
 
@@ -626,8 +627,7 @@ function deletePost(element, profile = false, deleteBtn = false) {
 }
 
 
-
-document.querySelector('#create-btn').addEventListener('click', (event) => {
+function createPostModal(){
     event.preventDefault();
 
     let modal = document.querySelector('#create_modal_clone')
@@ -647,9 +647,9 @@ document.querySelector('#create-btn').addEventListener('click', (event) => {
     next_btn_post.addEventListener('click', handleNext);
     form.addEventListener('change', handleSubmit);
     hideModal(modalClone)
-
-})
-
+}
+document.querySelector('#create-btn').addEventListener('click',createPostModal)
+document.querySelector('#sm_create_modal').addEventListener('click',createPostModal)
 //like comment and reply
 
 // like and dislike
@@ -1703,7 +1703,7 @@ if (pathName.includes('profile')) {
 
     
     let elements=document.querySelectorAll('.item')
-
+    
     profileDetailPost(elements)
     
 
