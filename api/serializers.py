@@ -27,7 +27,26 @@ class PostSerializer(serializers.ModelSerializer):
 			'profile_image':image_url
 		}
 
+
 	owner=serializers.SerializerMethodField('get_author')
+
+	def liked(self,obj):
+		user=self._context['request'].user
+		
+		try:
+			like_obj=user.like_set.get(post=obj)
+		except:
+			like_obj=None
+
+		like_count=obj.likes.count()
+		if obj.id in user.like_set.values_list('post',flat=True):
+			return (True,like_obj.id, like_count)
+		else:
+		 return (False,None,like_count)
+
+	is_liked=serializers.SerializerMethodField('liked')
+
+	
 
 	def to_internal_value(self,data):
 		print(data)
@@ -43,8 +62,8 @@ class PostSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model=Message
-		fields=['id','text','image','created','owner','user']
-		read_only_fields=['owner']
+		fields=['id','text','image','created','owner','user','is_liked']
+		read_only_fields=['owner','is_liked']
 
 
 class SearchSerializer(serializers.ModelSerializer):
@@ -167,7 +186,6 @@ class CommentSerializer(serializers.ModelSerializer):
 			
 			data.update({"is_liked":True,"id":liked.id})
 		except Exception as e:
-			print(e)
 			data.update({'is_liked':False})
 		data.update({'like_count':like_count})
 

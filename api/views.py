@@ -39,7 +39,7 @@ class PostListApiView(generics.ListCreateAPIView):
 
 
 class PostRetrieveDestroyAPIView(generics.RetrieveDestroyAPIView):
-	serializer_class=ProfileSerializer
+	serializer_class=PostSerializer
 	permission_classes=[AuthorDeletePermission]
 	queryset=Message.objects.all()
 

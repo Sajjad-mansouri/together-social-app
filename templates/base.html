@@ -74,18 +74,15 @@
                                         <span>Settings</span>
                                         <img src="{% static 'images/reglage.png' %}">
                                     </a></li>
-
-
                                 <li><a class="dropdown-item" href="#">
                                         <span>Report a problem</span>
                                         <img src="{% static 'images/problem.png' %}">
                                     </a></li>
-
                                 <li><a class="dropdown-item logout" href="#">
                                         <span>Log out</span>
-                                    <form method="POST" action="/account/logout/">
-                                        {%csrf_token%}
-                                    </form>
+                                        <form method="POST" action="/account/logout/">
+                                            {%csrf_token%}
+                                        </form>
                                     </a></li>
                             </ul>
                         </div>
@@ -166,30 +163,24 @@
         <!-- search  -->
         <div id="search" class="search_section">
             <h2>Search</h2>
-            <form >
+            <form>
                 <input type="text" placeholder="Search">
             </form>
             <div class="find">
-
                 <div class="account-clone">
                     <div class="cart">
                         <div>
-
                             <div class="img">
-                                
                             </div>
                             <div class="info">
                                 <a href="">
-                                    
                                     <p class="username"></p>
                                     <p class="name"></p>
                                 </a>
                             </div>
                         </div>
-
                     </div>
                 </div>
-
             </div>
         </div>
         <!-- search  -->
@@ -279,8 +270,6 @@
         {%block content%}
         {%endblock%}
         <!-- Modal for sending posts-->
-
-
         <div class="modal fade" id="send_message_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -420,7 +409,7 @@
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Comments</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body comment-body">
                         <div class="comments-clone hide">
                             <div class="comment">
                                 <div class="d-flex">
@@ -505,15 +494,13 @@
                 </div>
             </div>
         </div>
-
         <!-- modal for display following and follower -->
-                <div class="modal fade" id="connection-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="connection-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
                     </div>
                     <div class="modal-body">
                         <div class="connection-container">
@@ -528,14 +515,15 @@
                                     <button class="button-4" role="button">Button 4</button>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
+
+
     </div>
+
     {{user.username|json_script:'owner'}}
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js" integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ" crossorigin="anonymous"></script>

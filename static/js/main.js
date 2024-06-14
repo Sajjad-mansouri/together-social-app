@@ -3,20 +3,7 @@ import { getToken, login } from './get-token.js'
 /***************Post**************************/
 const posts = document.querySelector(".posts");
 const baseUrl = window.location.origin
-
-
-
-/**************************video**************************/
-
-/**************************search+notif-section **************************/
-
-
-
-/**************************icons+text change **************************/
-//change the icon when the user click on it
-
-//love btn
-
+let pathName = window.location.pathname;
 
 
 
@@ -46,7 +33,7 @@ not_follow.forEach(item => {
 
 function hideShowReply(modalBody, post = false, comments = null, response = null) {
     if (post) {
-        console.log('create with post')
+        //show replies of post that write reply
         let seeComment = comments.querySelector('.comment .see_comment');
         let replies = comments.querySelectorAll('.responses');
         let showComment = seeComment.querySelector('.show_c');
@@ -66,7 +53,7 @@ function hideShowReply(modalBody, post = false, comments = null, response = null
 
 
     } else {
-        console.log('create with getComments')
+        //add toggle to showComment and hideComment to display and hide replies of comment
         let comments = modalBody.querySelectorAll('.comments')
         comments.forEach(element => {
 
@@ -88,7 +75,7 @@ function hideShowReply(modalBody, post = false, comments = null, response = null
 }
 
 function hideModal(cloneModal) {
-
+    //add event listener when click on screen to close modal
     window.addEventListener('click', event => {
         let modal = event.target.closest('.modal');
         let closeBtn;
@@ -106,10 +93,17 @@ function hideModal(cloneModal) {
     })
 }
 
-function replyListener(replyBtn, replyTO, commentUser, mainComment) {
+function replyListener(modalBody, replyBtn, replyTO, commentUser, mainComment) {
+
+
+    let modalContent = modalBody.closest('.modal-content')
     replyBtn.addEventListener('click', () => {
-        console.log('reply btn listener')
-        let input = document.querySelector('#message_modal input')
+
+
+
+        let input = modalContent.querySelector('input')
+
+
 
         input.focus()
         input.value = `@${commentUser} `
@@ -121,7 +115,9 @@ function replyListener(replyBtn, replyTO, commentUser, mainComment) {
 
 
 function createCommentElement(modalBody, commentsSection, item, postId, post = false) {
-    let owner=document.getElementById('owner').textContent.match(/\w+(?=")/)
+    let owner = document.getElementById('owner').textContent.match(/\w+(?=")/)
+
+
     if (item.main_comment == null) {
         let comment = commentsSection.cloneNode(true)
         comment.className = 'comments'
@@ -130,41 +126,49 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
 
 
         let content = comment.querySelector('.content')
+
         let time = content.querySelector('span');
+        time.textContent = item.created;
+
         let userName = content.querySelector('h4');
+        userName.textContent = item.author.username;
+
         let image = comment.querySelector('.comment img')
+        image.src = item.author.profile.profile_image
+
         let contentText = content.querySelector('p');
         contentText.textContent = item.comment;
-        time.textContent = item.created;
-        userName.textContent = item.author.username;
-        image.src = item.author.profile.profile_image
+
         modalBody.append(comment)
 
         let replyBtn = comment.querySelector('.reply-btn');
         let replyTO = item.id
         let commentUser = item.author.username;
         let mainComment = item.id
-        let postElement = document.querySelector(`[data-post="${postId}"]`)
-        let viewComments = postElement.querySelector('.view-comments')
-        if (post && viewComments.children.length == 0) {
-            let a = document.createElement('a');
-            a.classList.add('gray')
-            a.href = '#'
-            a.innerHTML = 'View all <span>1</span> comments'
-            viewComments.append(a)
-        } else if (post) {
-            console.log(post)
-            let span = viewComments.querySelector('span')
-            span.textContent = Number(span.textContent) + 1;
+        if (window.screen.width <= 498 || pathName == '/') {
+
+            let postElement = document.querySelector(`[data-post="${postId}"]`)
+            let viewComments = postElement.querySelector('.view-comments')
+            if (post && viewComments.children.length == 0) {
+                let a = document.createElement('a');
+                a.classList.add('gray')
+                a.href = '#'
+                a.innerHTML = 'View all <span>1</span> comments'
+                viewComments.append(a)
+            } else if (post) {
+
+                let span = viewComments.querySelector('span')
+                span.textContent = Number(span.textContent) + 1;
+            }
         }
 
-        replyListener(replyBtn, replyTO, commentUser, mainComment)
+        replyListener(modalBody, replyBtn, replyTO, commentUser, mainComment)
 
-        if(owner==item.author.username){
+        if (owner == item.author.username) {
 
             deleteComment(comment, postId)
-        }else{
-            let dropDown=comment.querySelector('#drop-down')
+        } else {
+            let dropDown = comment.querySelector('#drop-down')
             dropDown.remove()
         }
         commentLikeInfo(comment, item.like_info)
@@ -181,6 +185,8 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
 
         let responsesClone = comment.querySelector('.responses-clone');
         let response = responsesClone.cloneNode(true)
+
+        //if create comment or reply post be true ,when creating reply response be displayed
         if (post) {
 
             response.className = 'responses'
@@ -204,7 +210,7 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
         let commentUser = item.author.username;
 
         let mainComment = item.main_comment
-        replyListener(replyBtn, replyTO, commentUser, mainComment)
+        replyListener(modalBody, replyBtn, replyTO, commentUser, mainComment)
         let postElement = document.querySelector(`[data-post="${postId}"]`)
         let viewComments = postElement.querySelector('.view-comments')
         if (post) {
@@ -213,13 +219,13 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
             span.textContent = Number(span.textContent) + 1;
         }
         let responseComment = true
-        if(owner==item.author.username){
+        if (owner == item.author.username) {
 
             deleteComment(response, postId)
-        }else{
-                    let dropDown=response.querySelector('#drop-down')
+        } else {
+            let dropDown = response.querySelector('#drop-down')
             dropDown.remove()
-    }
+        }
         commentLikeInfo(response, item.like_info)
         let likeCommentDiv = response.querySelector('.like')
         likeCommentDiv.addEventListener('click', () => {
@@ -230,9 +236,10 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
 
 
 async function getComments(modalClone, postId) {
-    let modalBody = modalClone.querySelector('.modal-body')
+
+
+    let modalBody = modalClone.querySelector('.comment-body')
     let commentsSection = modalBody.querySelector('.comments-clone')
-    let commentSection = commentsSection.querySelector('.comment')
     const accessToken = await getToken()
 
     const response = await fetch(`http://localhost:8000/api/post/${postId}/comments`, {
@@ -245,6 +252,7 @@ async function getComments(modalClone, postId) {
     const data = await response.json()
 
     if (response.ok) {
+
         if (data.length > 0) {
 
             data.forEach(item => {
@@ -284,9 +292,10 @@ function messageAddEvnetListener(messageElement) {
             modalClone.classList.add('show');
             modalClone.style.display = 'block';
 
+
             let input = modalClone.querySelector('.modal-footer input');
 
-            writeComment(input, postId)
+            writeComment(modalClone, input, postId)
 
 
         })
@@ -301,24 +310,31 @@ function messageAddEvnetListener(messageElement) {
 
 //get value of input in comment modal 
 //pass values to postComment 
-function writeComment(input, postId) {
-    let form = input.closest('form')
+let commentForm = null
 
-    form.addEventListener('submit', (event) => {
+function writeComment(modalClone, input, postId) {
+    let form = input.closest('form')
+    form.removeEventListener('submit', commentForm)
+
+    commentForm = function() {
         event.preventDefault()
         let inputValue = input.value;
         let comment = inputValue.replace(/@\w+\s/, '');
         let replyTO = input.getAttribute('data-replyTo');
         let mainComment = input.getAttribute('data-mainComment');
-        postComment(postId, comment, replyTO, mainComment)
-    })
+
+        postComment(modalClone, postId, comment, replyTO, mainComment)
+
+    }
+    form.addEventListener('submit', commentForm)
 
 }
 
 //fetch post comment
 //then use data that recieved pass in createCommentElement function
-async function postComment(postId, comment, replyTO, mainComment) {
+async function postComment(modalClone, postId, comment, replyTO, mainComment) {
     let formData = new FormData()
+
     formData.append('comment', comment)
     if (replyTO != null) {
         formData.append('parent', replyTO)
@@ -342,10 +358,10 @@ async function postComment(postId, comment, replyTO, mainComment) {
         body: JSON.stringify(Object.fromEntries(formData))
     })
     const item = await response.json()
-    console.log('item in postComment', item)
+
     if (response.ok) {
-        let modalBody = document.querySelector('#message_modal .modal-body');
-        console.log(modalBody)
+        let modalBody = modalClone.querySelector('.modal-body');
+
         let commentSection = modalBody.querySelector('.comments-clone')
         let post = true;
         if (document.contains(document.querySelector('.empty'))) {
@@ -359,7 +375,7 @@ async function postComment(postId, comment, replyTO, mainComment) {
 
 //delete comment
 async function fetechDeleteComment(comment, postId, responseComment) {
-    console.log(comment)
+
     const modalBody = comment.closest('.modal-body')
     const accessToken = await getToken();
     const commentId = comment.getAttribute('data-comment');
@@ -371,7 +387,7 @@ async function fetechDeleteComment(comment, postId, responseComment) {
     })
 
     if (response.ok) {
-        console.log(postId)
+
         let postElement = document.querySelector(`[data-post="${postId}"]`)
         let viewComments = postElement.querySelector('.view-comments')
         comment.remove()
@@ -393,7 +409,7 @@ async function fetechDeleteComment(comment, postId, responseComment) {
 }
 
 function deleteComment(comment, postId, responseComment = false) {
-    console.log(postId)
+
     let deleteComment = comment.querySelector('.delete-comment')
     let dropDownContent = comment.querySelector('.drop-down-content')
     deleteComment.addEventListener('click', () => {
@@ -455,7 +471,7 @@ function handleNext(imageFile) {
 function addPostHome(data) {
     let post = document.querySelector('.post-clone');
     let postClone = post.cloneNode(true);
-    postClone.className='post'
+    postClone.className = 'post'
     let image = postClone.querySelector('.image img');
     let personInfo = postClone.querySelector('.info .person');
     let profileImage = personInfo.querySelector('img');
@@ -480,35 +496,37 @@ function addPostHome(data) {
     addEventListeners(postClone)
 }
 
-function addPostProfile(data,saved=false) {
+function addPostProfile(data, saved = false) {
     let postsSection;
-    if(saved){
-    postsSection = document.getElementById('saved_sec');
+    if (saved) {
+        postsSection = document.getElementById('saved_sec');
 
 
-    }else{
+    } else {
 
-    postsSection = document.getElementById('posts_sec');
+        postsSection = document.getElementById('posts_sec');
     }
     let div = document.createElement('div');
     div.className = 'item';
+    div.setAttribute('data-post',data.id)
     let image = document.createElement('img');
     image.src = data.image;
     image.className = 'img-fluid item_img';
     div.appendChild(image);
-    if(saved){
+    if (saved) {
 
-    postsSection.append(div);
-}else{
-    postsSection.prepend(div);
+        postsSection.append(div);
+    } else {
+        postsSection.prepend(div);
 
-}
+    }
 
-    let generalInfo=document.querySelector('.profile_info .general_info')
-    console.log(generalInfo)
-    let postInfo=generalInfo.children[0].querySelector('span')
-    console.log(postInfo)
-    postInfo.textContent=Number(postInfo.textContent)+1
+    let generalInfo = document.querySelector('.profile_info .general_info')
+
+    let postInfo = generalInfo.children[0].querySelector('span')
+    let divs=[div]
+    postInfo.textContent = Number(postInfo.textContent) + 1
+    profileDetailPost(divs)
 
 }
 //post published
@@ -559,15 +577,27 @@ function completed(imageFile) {
     })
 }
 
-function deletePost(element) {
+let deletePostCallBack = null
+let fetchDeletePost = null
 
-    element.addEventListener('click', (event) => {
-        let deleteBtn = document.getElementById('delete-post')
+function deletePost(element, profile = false, deleteBtn = false) {
+    console.log('delete post function')
+    console.log(element)
+    element.removeEventListener('click', deletePostCallBack)
+    deletePostCallBack = function() {
+        console.log('delete callback')
+        //delebtn inserted to deletePost function in post detail profile
+        if (deleteBtn == false) {
+            deleteBtn = document.getElementById('delete-post')
+        }
+
         let post = event.target.closest('.post');
-        
-        let postId = post.getAttribute('data-post');
 
-        deleteBtn.addEventListener('click', async () => {
+
+        let postId = post.getAttribute('data-post');
+        deleteBtn.removeEventListener('click', fetchDeletePost)
+
+        fetchDeletePost = async function() {
             const accessToken = await getToken()
             const response = await fetch(`http://localhost:8000/api/post/${postId}`, {
                 method: 'Delete',
@@ -577,16 +607,22 @@ function deletePost(element) {
 
             })
             if (response.ok) {
+                if (profile) {
+                    let item = document.querySelector(`.item[data-post="${postId}"]`)
+                    item.remove()
+                } else {
 
-                post.remove()
+                    post.remove()
+                }
                 let btnClose = document.querySelector('#submit_delete_modal .btn-close');
 
                 btnClose.click()
 
             }
-        })
-
-    })
+        }
+        deleteBtn.addEventListener('click', fetchDeletePost)
+    }
+    element.addEventListener('click', deletePostCallBack)
 }
 
 
@@ -687,13 +723,15 @@ function commentLikeInfo(div, like_info) {
 //**********like post**************
 // like and dislike
 async function like(div) {
-    console.log('liked')
+
+
     const dataType = div.getAttribute('data-type');
 
     const dataPost = div.getAttribute('data-post');
     const dataLike = div.getAttribute('data-like');
 
     const accessToken = await getToken()
+
     if (dataType === 'True') {
 
         const response = await fetch(baseUrl + `/api/like/${dataLike}`, {
@@ -702,8 +740,9 @@ async function like(div) {
                 'Authorization': `Bearer ${accessToken}`
             }
         })
-        console.log(response)
+
         if (response.ok) {
+
             let post = div.closest('.post');
             let liked = post.querySelector('.liked')
             let span = liked.querySelector('span');
@@ -737,9 +776,11 @@ async function like(div) {
             },
             body: JSON.stringify(body)
         })
-        console.log(response)
+
 
         if (response.ok) {
+
+
             const data = await response.json()
 
 
@@ -770,64 +811,66 @@ async function like(div) {
 }
 
 //save post
-function savePost(element){
-    
-        let postId=element.getAttribute('data-post')
-        let saveIcon=element.querySelector('.save');
+function savePost(element) {
 
-        let saved=saveIcon.querySelector('.saved')
-        let notSaved=saveIcon.querySelector('.not_saved')
-        saveIcon.addEventListener('click',async function(){
-            let status=saveIcon.getAttribute('data-status');
-            let savedId=saveIcon.getAttribute('data-saved')
-            let accessToken=await getToken()
-            if (status=='True'){
-                //delete post from saved posts
+    let postId = element.getAttribute('data-post')
+    let saveIcon = element.querySelector('.save');
 
-                const response=await fetch(baseUrl + `/api/saved/${savedId}`,{
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
+    let saved = saveIcon.querySelector('.saved')
+    let notSaved = saveIcon.querySelector('.not_saved')
+    saveIcon.addEventListener('click', async function() {
+        let status = saveIcon.getAttribute('data-status');
+        let savedId = saveIcon.getAttribute('data-saved')
+        let accessToken = await getToken()
+        if (status == 'True') {
+            //delete post from saved posts
 
-                    },
-    
-                        })
-                if(response.ok){
-                    saveIcon.setAttribute('data-status','False');
-                    saveIcon.setAttribute('data-saved','None')
-                    saved.classList.add('hide')
-                    notSaved.classList.remove('hide')
-                }
-            }else{
-                //add post to saved posts
-                const body = { 'post': postId }
-                const response=await fetch(baseUrl+'/api/saved/',{
-                    method:'POST',
-                    headers:{
-                        'Authorization':`Bearer ${accessToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body:JSON.stringify(body)
-                })
-                const data=await response.json()
-                console.log(data)
-                if(response.ok){
-                    saveIcon.setAttribute('data-status','True');
-                    saveIcon.setAttribute('data-saved',data.id)
-                    saved.classList.remove('hide')
-                    notSaved.classList.add('hide')   
-                }
+            const response = await fetch(baseUrl + `/api/saved/${savedId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+
+                },
+
+            })
+            if (response.ok) {
+                saveIcon.setAttribute('data-status', 'False');
+                saveIcon.setAttribute('data-saved', 'None')
+                saved.classList.add('hide')
+                notSaved.classList.remove('hide')
             }
-            
-        })
-    
+        } else {
+            //add post to saved posts
+            const body = { 'post': postId }
+            const response = await fetch(baseUrl + '/api/saved/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+            const data = await response.json()
+
+            if (response.ok) {
+                saveIcon.setAttribute('data-status', 'True');
+                saveIcon.setAttribute('data-saved', data.id)
+                saved.classList.remove('hide')
+                notSaved.classList.add('hide')
+            }
+        }
+
+    })
+
 }
 
 function addEventListeners(newPost = false) {
-    console.log(newPost)
+
     if (newPost) {
+        //add listener post that be created
+
         let postLikeButton = newPost.querySelector('.like')
-        postLikeButton.addEventListener('click', ()=>like(postLikeButton))
+        postLikeButton.addEventListener('click', () => like(postLikeButton))
 
         let messageButtons = newPost.querySelectorAll('.chat button');
         let viewComments = newPost.querySelectorAll('.view-comments');
@@ -839,8 +882,9 @@ function addEventListeners(newPost = false) {
         savePost(newPost)
 
     } else {
+        //for existing post add below listeners
 
-        let posts=document.querySelectorAll('.post')
+        let posts = document.querySelectorAll('.posts .post')
         document.querySelectorAll('.like').forEach(div => {
             div.addEventListener('click', (event) => {
                 like(div)
@@ -851,6 +895,7 @@ function addEventListeners(newPost = false) {
         let messageButtons = document.querySelectorAll('.chat button');
         let viewComments = document.querySelectorAll('.view-comments');
 
+        //add listener to post  to user can comment on post or reply on comment
         messageAddEvnetListener(messageButtons)
         messageAddEvnetListener(viewComments)
 
@@ -859,10 +904,10 @@ function addEventListeners(newPost = false) {
         })
 
         //save post
-        
+
         posts.forEach(div => {
 
-                savePost(div)
+            savePost(div)
 
 
         })
@@ -871,72 +916,49 @@ function addEventListeners(newPost = false) {
 
 
 }
-console.log(window.location.pathname)
-if(window.location.pathname=='/'){
+
+
+if (pathName == '/') {
 
     addEventListeners()
 }
 
-//saved post tab
-console.log(window.location.pathname)
-if(window.location.pathname=='/profile/'){
-    let savedBtn=document.getElementById('pills-saved-tab');
-    savedBtn.addEventListener('click',async function(){
-        console.log(savedBtn)
 
-        const accessToken=await getToken()
-        const response=await fetch(baseUrl+'/api/posts/saved/',{
-            method:'GET',
-            headers:{
-                'Authorization':`Bearer ${accessToken}`
-            }
-        })
-        const datas=await response.json();
-        if(response.ok){
-            let postsSection = document.getElementById('saved_sec');
-            postsSection.textContent=''
-            datas.forEach(data=>{
-
-                addPostProfile(data,true)
-            })
-        }
-    })
-}
 
 
 //search
 
 //search section 
-async function searchUser(findDiv,searchValue){
+async function searchUser(findDiv, searchValue) {
 
-    const accessToken=await getToken()
-    const response=await fetch(`http://localhost:8000/api/users/?search=${searchValue}`, {
-                        method: "GET",
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`
-                        }
-                    })
-    const datas=await response.json()
-    if(response.ok){
+    const accessToken = await getToken()
+    const response = await fetch(`http://localhost:8000/api/users/?search=${searchValue}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        }
+    })
+    const datas = await response.json()
+    if (response.ok) {
 
-        let accountDiv=findDiv.querySelector('.account-clone');
-        console.log(datas)
-        datas.forEach(data=>{
-            let account=accountDiv.cloneNode(true);
-            account.className='account'
+        let accountDiv = findDiv.querySelector('.account-clone');
 
-            let a=account.querySelector('a')
-            a.href=`${baseUrl}/profile/${data.username}`
-            let imageDiv=account.querySelector('.img');
-            let image=document.createElement('img')
-            image.src=data.profile_image
+        datas.forEach(data => {
+            let account = accountDiv.cloneNode(true);
+            account.className = 'account'
+
+            let a = account.querySelector('a')
+            a.href = `${baseUrl}/profile/${data.username}`
+            let imageDiv = account.querySelector('.img');
+            let image = document.createElement('img')
+            image.src = data.profile_image
             imageDiv.append(image)
 
-            let username=account.querySelector('.username')
-            username.textContent=data.username;
+            let username = account.querySelector('.username')
+            username.textContent = data.username;
 
-            let name=account.querySelector('.name')
-            name.textContent=data.first_name
+            let name = account.querySelector('.name')
+            name.textContent = data.first_name
             findDiv.append(account)
         })
     }
@@ -945,31 +967,31 @@ async function searchUser(findDiv,searchValue){
 
 let search_icon = document.getElementById("search_icon");
 let search = document.getElementById("search");
-let findDiv=search.querySelector('.find')
-let searchForm=search.querySelector('form')
-    let searchInput=search.querySelector('input');
-    searchInput.addEventListener('input',event=>{
-         findDiv.querySelectorAll('.account').forEach(element=>{
-                element.remove()
-            })
-
-        const searchValue=event.target.value.trim();
-        if(searchValue!=''){
-            searchUser(findDiv,searchValue)
-        }else{
-            findDiv.querySelectorAll('.account').forEach(element=>{
-                element.remove()
-            })
-        }
+let findDiv = search.querySelector('.find')
+let searchForm = search.querySelector('form')
+let searchInput = search.querySelector('input');
+searchInput.addEventListener('input', event => {
+    findDiv.querySelectorAll('.account').forEach(element => {
+        element.remove()
     })
-searchForm.addEventListener('submit',event=>{
+
+    const searchValue = event.target.value.trim();
+    if (searchValue != '') {
+        searchUser(findDiv, searchValue)
+    } else {
+        findDiv.querySelectorAll('.account').forEach(element => {
+            element.remove()
+        })
+    }
+})
+searchForm.addEventListener('submit', event => {
     event.preventDefault();
 
 })
 
 search_icon.addEventListener("click", function() {
 
-    
+
     search.classList.toggle("show");
 
 
@@ -984,73 +1006,73 @@ notification_icon.forEach((notif) => {
 })
 
 //follow and unfollow
-async function  contact(){
-    let btn=document.querySelector('.contact')
-    let generalInfo=document.querySelector('.general_info');
-    let followers=generalInfo.children[1].querySelector('span')
-    let func=btn.getAttribute('data-btn');
-    const accessToken=await getToken()
-    if (func=='unfollow'){
+async function contact() {
+    let btn = document.querySelector('.contact')
+    let generalInfo = document.querySelector('.general_info');
+    let followers = generalInfo.children[1].querySelector('span')
+    let func = btn.getAttribute('data-btn');
+    const accessToken = await getToken()
+    if (func == 'unfollow') {
 
-        
-        const contactId=btn.getAttribute('data-contact');
 
-        const response=await fetch(baseUrl+`/api/contact/${contactId}`,{
-            method:'DELETE',
-            headers:{
-                'Authorization':`Bearer ${accessToken}`
+        const contactId = btn.getAttribute('data-contact');
+
+        const response = await fetch(baseUrl + `/api/contact/${contactId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
             }
         })
 
-        if (response.ok){
-            btn.setAttribute('data-function','follow')
-            btn.setAttribute('data-btn','follow')
-            btn.textContent='follow'
+        if (response.ok) {
+            btn.setAttribute('data-function', 'follow')
+            btn.setAttribute('data-btn', 'follow')
+            btn.textContent = 'follow'
 
-            followers.textContent=Number(followers.textContent)-1
+            followers.textContent = Number(followers.textContent) - 1
         }
-    }else if(func=='follow'){
-        let owner=btn.getAttribute('data-owner')
-        let datas={to_user:owner}
-        const response=await fetch(baseUrl+`/api/contact/`,{
-            method:'POST',
-            headers:{
-                'Authorization':`Bearer ${accessToken}`,
-                'Content-Type':'application/json'
+    } else if (func == 'follow') {
+        let owner = btn.getAttribute('data-owner')
+        let datas = { to_user: owner }
+        const response = await fetch(baseUrl + `/api/contact/`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
 
             },
-            body:JSON.stringify(datas)
+            body: JSON.stringify(datas)
         })
 
-        const data=await response.json()
-        if (response.ok){
-            btn.setAttribute('data-btn','unfollow')
-            btn.setAttribute('data-contact',data.id)
-            btn.textContent='unfollow'
+        const data = await response.json()
+        if (response.ok) {
+            btn.setAttribute('data-btn', 'unfollow')
+            btn.setAttribute('data-contact', data.id)
+            btn.textContent = 'unfollow'
 
 
-            followers.textContent=Number(followers.textContent)+1
+            followers.textContent = Number(followers.textContent) + 1
         }
     }
 }
 
 
-if(document.contains(document.querySelector('.contact'))){
-    let contactBtn=document.querySelector('.contact')
-    
-    contactBtn.addEventListener('click',()=>{
-    console.log('listener')
+if (document.contains(document.querySelector('.contact'))) {
+    let contactBtn = document.querySelector('.contact')
 
-            
-            contact()
-        
+    contactBtn.addEventListener('click', () => {
+
+
+
+        contact()
+
     })
 }
 
 //logout
-let logoutBtn=document.querySelector('.logout')
-let logoutForm=logoutBtn.querySelector('form')
-logoutBtn.addEventListener('click',event=>{
+let logoutBtn = document.querySelector('.logout')
+let logoutForm = logoutBtn.querySelector('form')
+logoutBtn.addEventListener('click', event => {
     event.preventDefault();
     logoutForm.submit()
 
@@ -1060,424 +1082,652 @@ logoutBtn.addEventListener('click',event=>{
 
 
 
-let pathName = window.location.pathname;
-if(pathName=='/settings/'){
-     let tab=document.querySelector('.tab')
-        let tabBtn=document.querySelectorAll('.tablinks')
-        let user=document.getElementById('user').textContent
-        let previousContent
-        let previousBtn
-        tabBtn.forEach(element=>{
-            let dataTab=element.getAttribute('data-tab');
-            element.addEventListener('click',()=>{
-                editInfo(dataTab,user)
-                if(previousBtn!=null){
-                    previousBtn.classList.remove('active')
-                }
-                previousBtn=element
-                element.classList.add('active')
-                showTab(element,dataTab)
-            })
+
+if (pathName == '/settings/') {
+    let tab = document.querySelector('.tab')
+    let tabBtn = document.querySelectorAll('.tablinks')
+    let user = document.getElementById('user').textContent
+    let previousContent
+    let previousBtn
+    tabBtn.forEach(element => {
+        let dataTab = element.getAttribute('data-tab');
+        element.addEventListener('click', () => {
+            editInfo(dataTab, user)
+            if (previousBtn != null) {
+                previousBtn.classList.remove('active')
+            }
+            previousBtn = element
+            element.classList.add('active')
+            showTab(element, dataTab)
         })
-        function showTab(element,dataTab){
-            if(previousContent!=null){
+    })
+
+    function showTab(element, dataTab) {
+        if (previousContent != null) {
 
             previousContent.classList.add('hide')
-            }
-            let tabContent=document.getElementById(dataTab)
-            previousContent=tabContent            
-            tabContent.classList.remove('hide')
-            
-            if (window.screen.width<=498){
-                let tabContent=document.querySelector('.tab-content')
-                element.classList.remove('active')
-                tab.style.display='none'
-                tabContent.style.display='block'
-            }
-            
+        }
+        let tabContent = document.getElementById(dataTab)
+        previousContent = tabContent
+        tabContent.classList.remove('hide')
+
+        if (window.screen.width <= 498) {
+            let tabContent = document.querySelector('.tab-content')
+            element.classList.remove('active')
+            tab.style.display = 'none'
+            tabContent.style.display = 'block'
         }
 
-        let backBtn=document.querySelectorAll('.back')
-        backBtn.forEach(element=>{
-            element.addEventListener('click',()=>{
-                let row=element.closest('.row')
-                row.classList.add('hide')
+    }
+
+    let backBtn = document.querySelectorAll('.back')
+    backBtn.forEach(element => {
+        element.addEventListener('click', () => {
+            let row = element.closest('.row')
+            row.classList.add('hide')
 
 
-                tab.style.display='block'
-            })
+            tab.style.display = 'block'
         })
+    })
 }
 
-async function editInfo(dataTab,user){
-    let accessToken=await getToken()
-    if(dataTab=='edit-profile' || dataTab=='personal-detail' || dataTab=='account-privacy'){
-        let response=await fetch(baseUrl+`/api/profiles/${user}`,{
-            method:'GET',
-            headers:{
-                'Authorization':`Bearer ${accessToken}`,
+async function editInfo(dataTab, user) {
+    let accessToken = await getToken()
+    if (dataTab == 'edit-profile' || dataTab == 'personal-detail' || dataTab == 'account-privacy') {
+        let response = await fetch(baseUrl + `/api/profiles/${user}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
             }
 
         })
-        let data=await response.json()
-        if(response.ok){
-            console.log(data)
-            let name=document.getElementById('first_name')
-            name.setAttribute('data-current',data.user.first_name)
-            name.value=data.user.first_name
+        let data = await response.json()
+        if (response.ok) {
 
-            let userName=document.getElementById('username')
-            userName.setAttribute('data-current',data.user.username)
-            userName.value=data.user.username
+            let name = document.getElementById('first_name')
+            name.setAttribute('data-current', data.user.first_name)
+            name.value = data.user.first_name
 
-            let bio=document.getElementById('bio')
-            bio.value=data.bio
+            let userName = document.getElementById('username')
+            userName.setAttribute('data-current', data.user.username)
+            userName.value = data.user.username
 
-            let profileImage=document.getElementById('profile_image')
-            profileImage.src=data.profile_image
+            let bio = document.getElementById('bio')
+            bio.value = data.bio
 
-            let birthday=document.getElementById('birth_day')
-            birthday.value=data.birth_day
+            let profileImage = document.getElementById('profile_image')
+            profileImage.src = data.profile_image
 
-            let email=document.getElementById('email')
-            email.setAttribute('data-current',data.user.email)
-            email.value=data.user.email
+            let birthday = document.getElementById('birth_day')
+            birthday.value = data.birth_day
 
-            let privateInput=document.getElementById('private')
-            console.log(`checked:${data.private}`)
-            privateInput.checked=data.private
+            let email = document.getElementById('email')
+            email.setAttribute('data-current', data.user.email)
+            email.value = data.user.email
+
+            let privateInput = document.getElementById('private')
+
+            privateInput.checked = data.private
         }
 
-        let profileForm=document.querySelector('.profile-form');
-        profileForm.addEventListener('submit',async function(event){
+        let profileForm = document.querySelector('.profile-form');
+        profileForm.addEventListener('submit', async function(event) {
             event.preventDefault()
-            let accessToken=await getToken()
-            let username=document.getElementById('username')
-            let name=document.getElementById('first_name')
-            let bio=document.getElementById('bio')
-            
-            let currentUsername=username.getAttribute('data-current')
-            let usernameValue=username.value
-            let nameValue=name.value
-            let bioValue=bio.value
-            let userData={username:usernameValue,first_name:nameValue}
-            
-            if(usernameValue==currentUsername){
+            let accessToken = await getToken()
+            let username = document.getElementById('username')
+            let name = document.getElementById('first_name')
+            let bio = document.getElementById('bio')
+
+            let currentUsername = username.getAttribute('data-current')
+            let usernameValue = username.value
+            let nameValue = name.value
+            let bioValue = bio.value
+            let userData = { username: usernameValue, first_name: nameValue }
+
+            if (usernameValue == currentUsername) {
                 delete userData.username
             }
-            let body={user:userData,bio:bioValue}
+            let body = { user: userData, bio: bioValue }
 
-            console.log(body)
-            let response=await fetch(baseUrl+`/api/profiles/${user}`,{
-                method:'PATCH',
-                headers:{
-                    'Authorization':`Bearer ${accessToken}`,
-                    'Content-Type':'application/json'
-                    
+
+            let response = await fetch(baseUrl + `/api/profiles/${user}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+
                 },
-                body:JSON.stringify(body)
+                body: JSON.stringify(body)
             })
-            let data=await response.json()
-            if (response.ok){
-                
-                    let messages=document.querySelector('#edit-profile .messages')
-                    let message=document.createElement('div')
-                    message.textContent='Saved successfully!'
-                    message.className='alert alert-success'
-                    messages.append(message)
-                    setTimeout(messageTimeOut,10000,message)
-            }else{
+            let data = await response.json()
+            if (response.ok) {
 
-                if('username' in data.user){
-                    let messages=document.querySelector('#edit-profile .messages')
-                    let message=document.createElement('div')
-                    message.textContent=data.user.username
-                    message.className='alert alert-danger'
-                    messages.append(message)
-                    setTimeout(messageTimeOut,10000,message)
+                let messages = document.querySelector('#edit-profile .messages')
+                let message = document.createElement('div')
+                message.textContent = 'Saved successfully!'
+                message.className = 'alert alert-success'
+                messages.append(message)
+                setTimeout(messageTimeOut, 10000, message)
+            } else {
 
-                    username.value=currentUsername;
+                if ('username' in data.user) {
+                    let messages = document.querySelector('#edit-profile .messages')
+                    let message = document.createElement('div')
+                    message.textContent = data.user.username
+                    message.className = 'alert alert-danger'
+                    messages.append(message)
+                    setTimeout(messageTimeOut, 10000, message)
+
+                    username.value = currentUsername;
                 }
             }
 
 
         })
 
-        let imgBtn=document.getElementById('imgBtn')
-        imgBtn.addEventListener('click',(event)=>{
+        let imgBtn = document.getElementById('imgBtn')
+        imgBtn.addEventListener('click', (event) => {
             event.preventDefault()
-            let imageInput=document.getElementById('image-input')
+            let imageInput = document.getElementById('image-input')
             imageInput.click()
-            imageInput.addEventListener('change',async function(){
+            imageInput.addEventListener('change', async function() {
 
-                    let formData=new FormData()
-                    let file = imageInput.files[0]
-                    formData.append('profile_image', file)
-                    let response=await fetch(baseUrl + `/api/profiles/${user}`, {
-                        method: "PATCH",
-                        headers: {
-                            'Authorization': `Bearer ${accessToken}`,
-                        },
-                        body: formData
-                    })
-                    let data=await response.json()
-                    if (response.ok){
-                    let messages=document.querySelector('#edit-profile .messages')
-                    let message=document.createElement('div')
-                    message.textContent='Saved successfully!'
-                    message.className='alert alert-success'
+                let formData = new FormData()
+                let file = imageInput.files[0]
+                formData.append('profile_image', file)
+                let response = await fetch(baseUrl + `/api/profiles/${user}`, {
+                    method: "PATCH",
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                    },
+                    body: formData
+                })
+                let data = await response.json()
+                if (response.ok) {
+                    let messages = document.querySelector('#edit-profile .messages')
+                    let message = document.createElement('div')
+                    message.textContent = 'Saved successfully!'
+                    message.className = 'alert alert-success'
                     messages.append(message)
-                    setTimeout(messageTimeOut,10000,message)
-                    }
-                    else{
-                    let messages=document.querySelector('#edit-profile .messages')
-                    let message=document.createElement('div')
-                    if('profile_image' in data){
+                    setTimeout(messageTimeOut, 10000, message)
+                } else {
+                    let messages = document.querySelector('#edit-profile .messages')
+                    let message = document.createElement('div')
+                    if ('profile_image' in data) {
 
-                        message.textContent=data.profile_image
-                        message.className='alert alert-danger'
+                        message.textContent = data.profile_image
+                        message.className = 'alert alert-danger'
                         messages.append(message)
-                        setTimeout(messageTimeOut,10000,message)
+                        setTimeout(messageTimeOut, 10000, message)
                     }
-                    }
-            }
-                )
+                }
+            })
         })
 
         //personal details
-        let personalForm=document.querySelector('.personal-form')
-        personalForm.addEventListener('submit',async function(event){
+        let personalForm = document.querySelector('.personal-form')
+        personalForm.addEventListener('submit', async function(event) {
             event.preventDefault()
-            let birthday=document.getElementById('birth_day').value
-            let email=document.getElementById('email').value
-            let currentEmail=document.getElementById('email').getAttribute('data-current')
+            let birthday = document.getElementById('birth_day').value
+            let email = document.getElementById('email').value
+            let currentEmail = document.getElementById('email').getAttribute('data-current')
             let userData
-            if(email!=currentEmail){
-                userData={'email':email}
+            if (email != currentEmail) {
+                userData = { 'email': email }
             }
-            let body={'birth_day':birthday,'user':userData}
-            
-            console.log(JSON.stringify(body))
-            let response=await fetch(baseUrl+`/api/profiles/${user}`,{
-                method:'PATCH',
-                headers:{
-                    'Authorization':`Bearer ${accessToken}`,
-                    'Content-Type':'application/json'
+            let body = { 'birth_day': birthday, 'user': userData }
+
+
+            let response = await fetch(baseUrl + `/api/profiles/${user}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
                 },
-                body:JSON.stringify(body)
+                body: JSON.stringify(body)
             })
-            let data=await response.json()
-            if (response.ok){
-                    let messages=document.querySelector('#personal-detail .messages')
-                    let message=document.createElement('div')
-                    message.textContent='Saved successfully!'
-                    message.className='alert alert-success'
-                    messages.append(message)
-                    setTimeout(messageTimeOut,10000,message)
+            let data = await response.json()
+            if (response.ok) {
+                let messages = document.querySelector('#personal-detail .messages')
+                let message = document.createElement('div')
+                message.textContent = 'Saved successfully!'
+                message.className = 'alert alert-success'
+                messages.append(message)
+                setTimeout(messageTimeOut, 10000, message)
             }
 
         })
     }
 
-    if(dataTab=='account-privacy'){
-        let privateStatus=document.getElementById('private')
-        privateStatus.addEventListener('change',async function(){
-            let accessToken=await getToken()
-            let bodyData={'private':privateStatus.checked}
-            let response=await fetch(baseUrl+`/api/profiles/${user}`,{
-                method:'PATCH',
-                headers:{
-                    'Authorization':`Bearer ${accessToken}`,
-                    'Content-Type':'application/json'
+    if (dataTab == 'account-privacy') {
+        let privateStatus = document.getElementById('private')
+        privateStatus.addEventListener('change', async function() {
+            let accessToken = await getToken()
+            let bodyData = { 'private': privateStatus.checked }
+            let response = await fetch(baseUrl + `/api/profiles/${user}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
                 },
-                body:JSON.stringify(bodyData)
+                body: JSON.stringify(bodyData)
             })
-            let data=await response.json()
-            if(response.ok){
-                console.log('changed')
+            let data = await response.json()
+            if (response.ok) {
+
             }
         })
     }
 
-    if(dataTab=='security'){
-        let changePasswordForm=document.getElementById('change-password-form')
-        
-        changePasswordForm.addEventListener('submit',async function(event){
+    if (dataTab == 'security') {
+        let changePasswordForm = document.getElementById('change-password-form')
+
+        changePasswordForm.addEventListener('submit', async function(event) {
             event.preventDefault();
-            let formData=new FormData(changePasswordForm);
-            let body=JSON.stringify(Object.fromEntries(formData))
-            let accessToken=await getToken()
-            try{
+            let formData = new FormData(changePasswordForm);
+            let body = JSON.stringify(Object.fromEntries(formData))
+            let accessToken = await getToken()
+            try {
 
-                let response =await fetch(baseUrl+'/api/change-password/',{
-                    method:'PUT',
-                    headers:{
-                        'Authorization':`Bearer ${accessToken}`,
-                        'Content-Type':'application/json'
+                let response = await fetch(baseUrl + '/api/change-password/', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
                     },
-                    body:body
+                    body: body
                 })
-                let data=await response.json()
-                let messages=document.querySelector('#security .messages')
-                messages.textContent=''
-                if (response.ok){
-                    let message=document.createElement('div')
-                    message.textContent='password changed successfully!'
-                    message.className='alert alert-success'
+                let data = await response.json()
+                let messages = document.querySelector('#security .messages')
+                messages.textContent = ''
+                if (response.ok) {
+                    let message = document.createElement('div')
+                    message.textContent = 'password changed successfully!'
+                    message.className = 'alert alert-success'
                     messages.append(message)
-                    setTimeout(messageTimeOut,10000,message)
+                    setTimeout(messageTimeOut, 10000, message)
 
-                }else{
-                    console.log(data)
+                } else {
 
-                    if('non_field_errors' in data){
 
-                        data.non_field_errors.forEach(error=>{
-                            let message=document.createElement('div')
-                            message.textContent=error
-                            message.className='alert alert-danger'
+                    if ('non_field_errors' in data) {
+
+                        data.non_field_errors.forEach(error => {
+                            let message = document.createElement('div')
+                            message.textContent = error
+                            message.className = 'alert alert-danger'
                             messages.append(message)
-                            setTimeout(messageTimeOut,10000,message)
+                            setTimeout(messageTimeOut, 10000, message)
                         })
-                    }else if('old_password' in data){
-                            let message=document.createElement('div')
-                            message.textContent=data.old_password
-                            message.className='alert alert-danger'
-                            messages.append(message)
-                            setTimeout(messageTimeOut,10000,message)
+                    } else if ('old_password' in data) {
+                        let message = document.createElement('div')
+                        message.textContent = data.old_password
+                        message.className = 'alert alert-danger'
+                        messages.append(message)
+                        setTimeout(messageTimeOut, 10000, message)
                     }
 
                 }
-                changePasswordForm.querySelectorAll('input').forEach(element=>{
-                        element.value=''
-                    })
-            }catch(error){
-                console.log(error)
+                changePasswordForm.querySelectorAll('input').forEach(element => {
+                    element.value = ''
+                })
+            } catch (error) {
+
             }
         })
 
 
     }
 }
-function messageTimeOut(element){
+
+function messageTimeOut(element) {
     element.remove()
 }
 
 // follower and following list
 
-function connectFunction(div,btn,func){
-    let relationId=div.getAttribute('data-relation')
-    let followingCounter=document.querySelector('.general_info .connections[data-list="following"] span')
-    let followerCounter=document.querySelector('.general_info .connections[data-list="follower"] span')
+function connectFunction(div, btn, func) {
+    let relationId = div.getAttribute('data-relation')
+    let followingCounter = document.querySelector('.general_info .connections[data-list="following"] span')
+    let followerCounter = document.querySelector('.general_info .connections[data-list="follower"] span')
 
-    console.log(followingCounter)
-    btn.addEventListener('click',async function(){
-        let accessToken=await getToken()
-        
-            let response = await fetch(baseUrl+`/api/contact/${relationId}/`,{
-                method:'DELETE',
-                headers:{
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            })
-            
-            if (response.ok){
-                console.log('successfully removed')
-                div.remove()
-                if(func=='following'){
 
-                followingCounter.textContent=Number(followingCounter.textContent)-1
-            }else if(func=='follower'){
-                followerCounter.textContent=Number(followerCounter.textContent)-1
+    btn.addEventListener('click', async function() {
+        let accessToken = await getToken()
+
+        let response = await fetch(baseUrl + `/api/contact/${relationId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+
+        if (response.ok) {
+
+            div.remove()
+            if (func == 'following') {
+
+                followingCounter.textContent = Number(followingCounter.textContent) - 1
+            } else if (func == 'follower') {
+                followerCounter.textContent = Number(followerCounter.textContent) - 1
 
             }
-            }
+        }
 
     })
 }
-async function connectionList(queryType,username){
-    let connectionContainer=document.querySelector('.connection-container')
-    connectionContainer.textContent=''
+async function connectionList(queryType, username) {
+    let connectionContainer = document.querySelector('.connection-container')
+    connectionContainer.textContent = ''
 
-    let owner=document.querySelector('.connections').getAttribute('data-owner')
-    const accessToken=await getToken()
-    const response=await fetch(`http://localhost:8000/api/users/?relation=${queryType}&owner=${username}`, {
-                        method: "GET",
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`
-                        }
-                    })
-    const datas=await response.json()
-    console.log(datas)
-    if(response.ok){
-        datas.forEach(data=>{
+    let owner = document.querySelector('.connections').getAttribute('data-owner')
+    const accessToken = await getToken()
+    const response = await fetch(`http://localhost:8000/api/users/?relation=${queryType}&owner=${username}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        }
+    })
+    const datas = await response.json()
 
-            let connectionList=document.createElement('div')
-            connectionList.className='connection-list'
-            connectionList.setAttribute('data-relation',data.relation)
+    if (response.ok) {
+        datas.forEach(data => {
 
-            let link=document.createElement('a')
-            link.href=`${baseUrl}/profile/${data.username}`
-            
-            let image=document.createElement('img')
-            image.src=data.profile_image
+            let connectionList = document.createElement('div')
+            connectionList.className = 'connection-list'
+            connectionList.setAttribute('data-relation', data.relation)
+
+            let link = document.createElement('a')
+            link.href = `${baseUrl}/profile/${data.username}`
+
+            let image = document.createElement('img')
+            image.src = data.profile_image
             link.append(image)
             connectionList.append(link)
 
-            let userInfo=document.createElement('div')
-            userInfo.className='user-info'
+            let userInfo = document.createElement('div')
+            userInfo.className = 'user-info'
 
-            let username=document.createElement('p')
-            username.className='username'
-            username.textContent=data.username
+            let username = document.createElement('p')
+            username.className = 'username'
+            username.textContent = data.username
 
-            let name=document.createElement('p')
-            name.className='name'
-            name.textContent=data.first_name
+            let name = document.createElement('p')
+            name.className = 'name'
+            name.textContent = data.first_name
 
             userInfo.append(username)
             userInfo.append(name)
 
-            let viewer=document.getElementById('owner').textContent.match(/(?<=")\w+(?=")/)[0]
-            console.log(viewer)
+            let viewer = document.getElementById('owner').textContent.match(/(?<=")\w+(?=")/)[0]
+
             connectionList.append(userInfo)
-            if(viewer==owner){
+            if (viewer == owner) {
 
-                let connectBtn=document.createElement('div')
-                connectBtn.className='connect-button'
+                let connectBtn = document.createElement('div')
+                connectBtn.className = 'connect-button'
 
-                let button=document.createElement('button')
-                button.className='button-4'
-                button.setAttribute('role','button')
-                if(queryType=='follower'){
+                let button = document.createElement('button')
+                button.className = 'button-4'
+                button.setAttribute('role', 'button')
+                if (queryType == 'follower') {
 
-                button.textContent='remove'
-                }else{
-                    button.textContent='unfollow'
+                    button.textContent = 'remove'
+                } else {
+                    button.textContent = 'unfollow'
                 }
                 connectBtn.append(button)
                 connectionList.append(connectBtn)
-                connectFunction(connectionList,connectBtn,queryType)
+                connectFunction(connectionList, connectBtn, queryType)
             }
             connectionContainer.append(connectionList)
-            console.log(data)
+
         })
     }
 }
 
-if(pathName.includes('profile')){
-    let connectionModal=document.getElementById('connection-modal')
-    let modalTitle=connectionModal.querySelector('.modal-title')
+function profileDetailPost(elements){
+        let run = true
+        elements.forEach(element => {
+        element.addEventListener('click', async function(event) {
 
-    document.querySelectorAll('.connections').forEach(element=>{
+            event.stopPropagation()
 
-        element.addEventListener('click',()=>{
-            let title=element.getAttribute('data-list')
-            let username=element.getAttribute('data-owner')
-            modalTitle.textContent=title
-            connectionList(title,username)
+
+
+            if (window.screen.width > 498) {
+
+                let postId = element.getAttribute('data-post');
+                let accessToken = await getToken()
+                let response = await fetch(baseUrl + `/api/post/${postId}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                })
+                let data = await response.json()
+
+                let container = document.querySelector('.comment-container .post_desc')
+                let post = document.querySelector('.comment-container .post')
+                let likeDiv = post.querySelector('.liked')
+                let likeSpan = likeDiv.querySelector('span')
+                let likeDivIcon = post.querySelector('.icons .like')
+                let loved = likeDivIcon.querySelector('.loved')
+                let notLoved = likeDivIcon.querySelector('.not_loved')
+                let postUser=post.querySelector('.post_desc p a')
+                let postText=post.querySelector('.post_desc p span')
+                let infoUser=post.querySelector('.info .person a')
+                let infoUserImg=post.querySelector('.info .person img')
+                if (response.ok) {
+                    infoUser.textContent=data.owner.username
+                    infoUserImg.src=data.owner.profile_image
+                    postUser.textContent=data.owner.username
+                    postText.textContent=data.text
+
+                    let dialogImg = favDialog.querySelector('.image-container img')
+                    dialogImg.src = data.image
+                    backdrop.style.display = 'block'
+                    favDialog.style.display = 'block'
+
+                    post.setAttribute('data-post', data.id)
+                    let commentsClone = container.querySelector('.comments-clone').cloneNode(true)
+                    let commentBody = container.querySelector('.comment-body')
+
+                    commentBody.textContent = ''
+                    commentBody.append(commentsClone)
+
+                    //like section
+                    likeDivIcon.setAttribute('data-post', data.id)
+                    console.log(data.is_liked[0])
+                    if (data.is_liked[0]) {
+
+                        likeDivIcon.setAttribute('data-type', 'True')
+                        likeDivIcon.setAttribute('data-like', data.is_liked[1])
+                        loved.classList.add('display')
+                        notLoved.classList.add('hide_img')
+                        console.log(likeSpan)
+
+                    } else {
+                        likeDivIcon.setAttribute('data-type', 'False')
+                        loved.classList.remove('display')
+                        notLoved.classList.remove('hide_img')
+
+
+                    }
+                    likeDiv.setAttribute('data-likeCount', data.is_liked[2])
+                    if (likeSpan == null) {
+
+                        likeSpan = document.createElement('span')
+                        likeDiv.append(likeSpan)
+                        if (data.is_liked[2] > 1) {
+                            likeDiv.append(' likes')
+                        } else {
+                            likeDiv.append(' like')
+                        }
+                    }
+
+                    likeSpan.textContent = data.is_liked[2]
+
+
+                }
+
+                getComments(favDialog, postId)
+
+                if (run) {
+                    document.addEventListener('keyup', (event) => {
+
+                        if (event.key == 'Escape') {
+                            backdrop.style.display = 'none'
+                            favDialog.style.display = 'none'
+                        }
+                    })
+
+                    document.addEventListener('click', (event) => {
+
+                        if (!event.target.closest('#favDialog') && favDialog.style.display == 'block' && !event.target.closest('#confirm-delete')) {
+
+                            backdrop.style.display = 'none'
+                            favDialog.style.display = 'none'
+                        }
+                    })
+
+
+                    let moreBtn = favDialog.querySelector('.more')
+
+                    //display and hide dropdown for delete post
+                    let moreDropDown = moreBtn.querySelector('.drop-down-content')
+
+                    moreBtn.addEventListener('click', () => {
+
+                        moreDropDown.classList.toggle('hide')
+                    })
+                    document.addEventListener('click', (event) => {
+                        if (event.target.closest('.drop-down-content') || !event.target.closest('.drop-down')) {
+
+                            moreDropDown.classList.add('hide')
+
+                        }
+                    })
+
+
+                    let postLikeButton = post.querySelector('.icons .like')
+
+                    postLikeButton.addEventListener('click', () => {
+
+                        like(postLikeButton)
+                    })
+                }
+                run = false
+
+                postDetailListener(favDialog, data.id, likeDiv)
+
+
+
+            } else {
+                //for device screen width less than 498 display like home page
+
+                let postId = element.getAttribute('data-post')
+                let profileContainer = document.querySelector('.profile_container')
+                profileContainer.style.display = 'none'
+                let posts = document.querySelector('.posts')
+                let post = posts.querySelector(`.post[data-post="${postId}"]`)
+
+                posts.classList.remove('hide')
+                post.scrollIntoView({ behavior: 'instant' });
+
+
+                addEventListeners()
+
+
+            }
+
+        })
+
+    })
+
+    }
+function postDetailListener(element, postId, likeDiv) {
+
+    let moreBtn = element.querySelector('.more')
+    let post = element.querySelector('.post')
+
+
+    //display confirm delete modal and hide it
+    let deleteBtn = moreBtn.querySelector('.delete-btn-post')
+    let confirmDeleteDiv = document.getElementById('confirm-delete')
+    let confirmDelete = confirmDeleteDiv.querySelector('.delete')
+    deleteBtn.addEventListener('click', (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        confirmDeleteDiv.style.display = 'block'
+
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('#confirm-delete') || event.target.closest('.cancel')) {
+                confirmDeleteDiv.style.display = 'none'
+            }
+        })
+
+    })
+    let input = element.querySelector('input')
+
+    deletePost(element, true, confirmDelete)
+
+
+    writeComment(element, input, postId)
+    savePost(post)
+
+}
+
+if (pathName.includes('profile')) {
+    let connectionModal = document.getElementById('connection-modal')
+    let modalTitle = connectionModal.querySelector('.modal-title')
+
+    //display follower and followings
+    document.querySelectorAll('.connections').forEach(element => {
+
+        element.addEventListener('click', () => {
+            let title = element.getAttribute('data-list')
+            let username = element.getAttribute('data-owner')
+            modalTitle.textContent = title
+            connectionList(title, username)
 
         })
     })
-}
 
+    //display detail of post with different style for different device size
+    const favDialog = document.getElementById('favDialog');
+    let backDrop = document.getElementById('backdrop')
+
+    //for nested addeventlistener 
+
+    
+    let elements=document.querySelectorAll('.item')
+
+    profileDetailPost(elements)
+    
+
+
+    //display saved posts
+    let savedBtn = document.getElementById('pills-saved-tab');
+    savedBtn.addEventListener('click', async function() {
+
+
+        const accessToken = await getToken()
+        const response = await fetch(baseUrl + '/api/posts/saved/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+        const datas = await response.json();
+        if (response.ok) {
+            let postsSection = document.getElementById('saved_sec');
+            postsSection.textContent = ''
+            datas.forEach(data => {
+
+                addPostProfile(data, true)
+            })
+        }
+    })
+}

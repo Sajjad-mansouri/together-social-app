@@ -1,12 +1,12 @@
 export async function getToken(){
         try{
-            console.log('try getToken')
+            
             var accessToken =  localStorage.getItem('access_token');
             const refreshToken =  localStorage.getItem('refresh_token');      
-            console.log('***')
-            console.log(refreshToken)
+            
+            
             if(refreshToken=='undefined' ){
-                console.log('dont exist refresh token')
+                
                 let csrfToken=document.querySelector('input[name="csrfmiddlewaretoken"]').value
             let response=await fetch(origin+'/account/logout/',{
                 method:'POST',
@@ -18,10 +18,10 @@ export async function getToken(){
 
             window.location.href=origin
             }
-            console.log(response)
+            
             // window.location.href=origin
             } 
-            console.log(isTokenExpired(accessToken))
+            
             if(accessToken=='undefined' || isTokenExpired( accessToken) ){
 
                 let response=await fetch(origin+'/api/token/refresh/',{
@@ -64,7 +64,7 @@ function isTokenExpired(token) {
 
 
 export async function login(event){
-    console.log('login')
+    
     event.preventDefault();
     const form=event.target;
     const formData=new FormData(form);

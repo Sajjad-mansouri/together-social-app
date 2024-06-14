@@ -1,84 +1,328 @@
 {%extends 'base.html'%}
 {%load static%}
-
+{% load humanize%}
+{%load social_tags%}
 {%block content%}
-        <div class="profile_container">
-            <div class="profile_info">
-                <div class="cart">
-                        <div class="img">
-                            <img src="{{owner.profile.profile_image.url}}" alt="">
-                        </div>
-                        <div class="info">
-                            <p class="name">
-                                {{user.username}}
-                                {%if owner == user%}
-                                <button class="edit_profile">
-                                    Edit profile 
-                                </button>
-                                {%else%}
-                                {% if access%}
-                                <button class="contact" data-btn='unfollow' data-contact={{contact_id}} data-owner={{owner.id}} >
-                                    unfollow
-                                </button>
-                                {%else%}
-                                <button class="contact" data-btn='follow' data-owner={{owner.id}} >
-                                    follow
-                                </button>
-                                {%endif%}
-                                {%endif%}
-                            </p>
-                            <div class="general_info">
-                                <p ><span>{{total_post}}</span> post</p>
-                                <p class='connections' data-list='follower' data-owner={{owner.username}} data-bs-toggle="modal" data-bs-target="#connection-modal"><span>{{follower_count}}</span> followers</p>
-                                <p class='connections' data-list='following' data-owner={{owner.username}} data-bs-toggle="modal" data-bs-target="#connection-modal"><span>{{following_count}}</span> following</p>
-                            </div>
-                            <p class="nick_name">{{owner.get_full_name}}</p>
-                            <p class="desc">
-                                {{owner.profile.bio}}
-                            </p>
-                        </div>
-                        <br>
+<div class="profile_container">
+    <div class="profile_info">
+        <div class="cart">
+            <div class="img">
+                <img src="{{owner.profile.profile_image.url}}" alt="">
+            </div>
+            <div class="info">
+                <p class="name">
+                    {{user.username}}
+                    {%if owner == user%}
+                    <button class="edit_profile">
+                        Edit profile
+                    </button>
+                    {%else%}
+                    {% if access%}
+                    <button class="contact" data-btn='unfollow' data-contact={{contact_id}} data-owner={{owner.id}}>
+                        unfollow
+                    </button>
+                    {%else%}
+                    <button class="contact" data-btn='follow' data-owner={{owner.id}}>
+                        follow
+                    </button>
+                    {%endif%}
+                    {%endif%}
+                </p>
+                <div class="general_info">
+                    <p><span>{{total_post}}</span> post</p>
+                    <p class='connections' data-list='follower' data-owner={{owner.username}} data-bs-toggle="modal" data-bs-target="#connection-modal"><span>{{follower_count}}</span> followers</p>
+                    <p class='connections' data-list='following' data-owner={{owner.username}} data-bs-toggle="modal" data-bs-target="#connection-modal"><span>{{following_count}}</span> following</p>
+                </div>
+                <p class="nick_name">{{owner.get_full_name}}</p>
+                <p class="desc">
+                    {{owner.profile.bio}}
+                </p>
+            </div>
+            <br>
+        </div>
+    </div>
+    <hr>
+    <div class="posts_profile">
+        <ul class="nav-pills w-100 d-flex justify-content-center" id="pills-tab" role="tablist">
+            <li class="nav-item mx-2" role="presentation">
+                <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">
+                    <img src="{% static 'images/feed.png' %}" alt="posts">
+                    POSTS
+                </button>
+            </li>
+            <li class="nav-item mx-2" role="presentation">
+                <button class="nav-link" id="pills-saved-tab" data-bs-toggle="pill" data-bs-target="#pills-saved" type="button" role="tab" aria-controls="pills-saved" aria-selected="false">
+                    <img src="{% static 'images/save-instagram.png' %}" alt="saved posts">
+                    SAVED
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+                <div id="posts_sec" class="post">
+                    {%for post in object_list%}
+                    <div class="item" data-post='{{post.id}}'>
+                        <img class="img-fluid item_img" src="{{post.image.url}}" alt="">
+                    </div>
+                    {%endfor%}
                 </div>
             </div>
-
-            <hr>
-            <div class="posts_profile">
-                <ul class="nav-pills w-100 d-flex justify-content-center" id="pills-tab" role="tablist">
-                    <li class="nav-item mx-2" role="presentation">
-                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">
-                            <img src="{% static 'images/feed.png' %}" alt="posts">
-                            POSTS
-                        </button>
-                    </li>
-                    <li class="nav-item mx-2" role="presentation">
-                      <button class="nav-link" id="pills-saved-tab" data-bs-toggle="pill" data-bs-target="#pills-saved" type="button" role="tab" aria-controls="pills-saved" aria-selected="false">
-                        <img src="{% static 'images/save-instagram.png' %}" alt="saved posts">
-                        SAVED
-                      </button>
-                    </li>
-
-                  </ul>
-                  <div class="tab-content" id="pills-tabContent">
-                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
-                        <div id="posts_sec" class="post">
-                            {%for post in object_list%}
-                            <div class="item">
-                                <img class="img-fluid item_img" src="{{post.image.url}}" alt="">
-                            </div>
-                            {%endfor%}
-
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="pills-saved" role="tabpanel" aria-labelledby="pills-saved-tab" tabindex="0">
-                        <div id="saved_sec" class="post">
-
-                            
-                        </div>
-                    </div>
-
-                    
-                  </div>
+            <div class="tab-pane fade" id="pills-saved" role="tabpanel" aria-labelledby="pills-saved-tab" tabindex="0">
+                <div id="saved_sec" class="post">
+                </div>
             </div>
         </div>
+    </div>
+</div>
+<div class="second_container">
+    <div class="main_section">
+        <div class="posts_container">
+            <div class="posts hide">
+                <div class='post-clone hide' data-post>
+                    <div class="info">
+                        <div class="person">
+                            <img src="">
+                            <a href="#"></a>
+                            <span class="circle">.</span>
+                            <span>just now</span>
+                        </div>
+                        <div class="more" data-bs-toggle="modal" data-bs-target="#delete_modal">
+                            <img src="{% static 'images/show_more.png' %}" alt="show more">
+                        </div>
+                    </div>
+                    <div class="image">
+                        <img src="">
+                    </div>
+                    <div class="desc">
+                        <div class="icons">
+                            <div class="icon_left d-flex">
+                                <div class="like" data-type='False' data-post='' data-like>
+                                    <img class="not_loved " src="{% static 'images/love.png' %}">
+                                    <img class="loved" src="{% static 'images/heart.png' %}">
+                                </div>
+                                <div class="chat">
+                                    <button type="button" class="btn p-0">
+                                        <img src="{% static 'images/bubble-chat.png' %}">
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="save not_saved">
+                                <img class="hide saved" src="{% static 'images/save_black.png' %}">
+                                <img class="not_saved" src="{% static 'images/save-instagram.png' %}">
+                            </div>
+                        </div>
+                        <div class="liked" data-likeCount="0">
+                        </div>
+                        <div class="post_desc">
+                            <p class='post_text'>
+                                <a class="bold" href="#">{{post.user}}</a>
+                                <span>{{post.text}}</span>
+                            </p>
+                            <p class='view-comments'></p>
+                        </div>
+                    </div>
+                </div>
+                {% for post in object_list%}
+                <div class='post' data-post='{{post.id}}'>
+                    <div class="info">
+                        <div class="person">
+                            <img src="{{post.user.profile.profile_image.url}}">
+                            <a href="#">{{post.user}}</a>
+                            <span class="circle">.</span>
+                            <span>{{post.created|naturaltime}}</span>
+                        </div>
+                        {%if post.user == user %}
+                        <div class="more" data-bs-toggle="modal" data-bs-target="#delete_modal">
+                            <img src="{% static 'images/show_more.png' %}" alt="show more">
+                        </div>
+                        {%endif%}
+                    </div>
+                    <div class="image">
+                        <img src="{{post.image.url}}">
+                    </div>
+                    <div class="desc">
+                        <div class="icons">
+                            <div class="icon_left d-flex">
+                                {%with post.id as post_id %}
+                                {%liked post_id as is_liked %}
+                                <div class="like" data-type='{{is_liked}}' data-post='{{post.id}}' data-like='{% get_like_id post_id %}'>
+                                    <img class="not_loved {%if is_liked %}hide_img{%endif%}" src="{% static 'images/love.png' %}">
+                                    <img class="loved {%if is_liked%}display {%endif%}" src="{% static 'images/heart.png' %}">
+                                </div>
+                                <div class="chat">
+                                    <button type="button" class="btn p-0">
+                                        <img src="{% static 'images/bubble-chat.png' %}">
+                                    </button>
+                                </div>
+                            </div>
+                            {% is_saved post_id as status%}
+                            <div class="save not_saved" data-status={{status}} data-saved={%saved_post_id post_id %}>
+                                <img class="{%if not status%}hide{%endif%} saved" src="{% static 'images/save_black.png' %}">
+                                <img class="not_saved{%if status%} hide{%endif%}" src="{% static 'images/save-instagram.png' %}">
+                            </div>
+                        </div>
+                        {%count_like post_id as likes%}
+                        <div class="liked" data-likeCount={%count_like post_id%}>
+                            {%if likes > 0%}
+                            <span>{%count_like post_id%}</span> like{{likes|pluralize:"s" }}
+                            {%endif%}
+                        </div>
+                        {%endwith%}
+                        <div class="post_desc">
+                            <p>
+                                <a class="bold" href="#">{{post.user}}</a>
+                                <span>{{post.text}}</span>
+                            </p>
+                            <p class='view-comments'>{%if post.comment.count != 0 %}<a class="gray" href="#">View all <span>{{post.comment.count}}</span> comments
+                                </a>{%endif%}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor%}
+            </div>
+        </div>
+    </div>
+</div>
+<div id="backdrop">
+    
 
+<div id="favDialog">
+    <div class="image-container">
+        <img src="">
+    </div>
+    <div class="comment-container" >
+        <div class='post' data-post>
+            <div class="info">
+                <div class="person">
+                    <img src="{{post.user.profile.profile_image.url}}">
+                    <a href="#">user</a>
+                    <span class="circle">.</span>
+                    <span></span>
+                </div>
+                <div class="more drop-down" >
+                    <img src="{% static 'images/show_more.png' %}" alt="show more">
+
+                                                <div class="drop-down-content hide">
+                                                    <a class="delete-btn-post" href="">delete</a>
+                                                    <a href="#">cancel</a>
+                                                </div>
+                            
+                </div>
+            </div>
+            <div class="desc modal-content">
+                <div class="post_desc">
+                    <p>
+                        <a class="bold" href="#">user</a>
+                        <span>text</span>
+                    </p>
+                    <div class="comment-body modal-body">
+                        <div class="comments-clone hide">
+                            <div class="comment">
+                                <div class="d-flex">
+                                    <div class="img">
+                                        <img src="" alt="">
+                                    </div>
+                                    <div class="content">
+                                        <div class="person">
+                                            <h4>namePerson</h4>
+                                            <span>3j</span>
+                                        </div>
+                                        <p>Wow amzing shot</p>
+                                        <div class="replay">
+                                            <button class="replay reply-btn">reply</button>
+                                            <div id='drop-down'>
+                                                <button class='delete-comment'>...</button>
+                                                <div class="drop-down-content">
+                                                    <a class='delete-btn-comment' href="">delete</a>
+                                                    <a href="">cancel</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="answers">
+                                            <button class="see_comment">
+                                                <span class="hide_com hide">Hide all responses</span>
+                                                <span class="show_c"> <span class="line"></span> See the <span> 1
+                                                    </span> answers</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="like">
+                                    <img class="not_loved" src="{% static 'images/love.png' %}" alt="">
+                                    <img class="loved" src="{% static 'images/heart.png' %}" alt="">
+                                    <p> 55</p>
+                                </div>
+                            </div>
+                            <div class="responses-clone hide">
+                                <div class="response comment">
+                                    <div class="d-flex">
+                                        <div class="img">
+                                            <img src="" alt="">
+                                        </div>
+                                        <div class="content">
+                                            <div class="person">
+                                                <h4>namePerson</h4>
+                                                <span>3j</span>
+                                            </div>
+                                            <p>Wow amzing shot</p>
+                                            <div class="replay">
+                                                <button class='reply-btn'>reply</button>
+                                                <div id='drop-down'>
+                                                    <button class='delete-comment'>...</button>
+                                                    <div class="drop-down-content">
+                                                        <a class='delete-btn-comment' href="">delete</a>
+                                                        <a href="">cancel</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="like">
+                                        <img class="not_loved" src="{% static 'images/love.png' %}" alt="">
+                                        <img class="loved" src="{% static 'images/heart.png' %}" alt="">
+                                        <p> 55</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="icons">
+                    <div class="icon_left d-flex">
+                        <div class="like" data-type='{{is_liked}}' data-post='' data-like=''>
+                            <img class="not_loved " src="{% static 'images/love.png' %}">
+                            <img class="loved " src="{% static 'images/heart.png' %}">
+                        </div>
+                        <div class="chat">
+                            <button type="button" class="btn p-0">
+                                <img src="{% static 'images/bubble-chat.png' %}">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="save not_saved" data-status data-saved>
+                        <img class="hide saved" src="{% static 'images/save_black.png' %}">
+                        <img class="not_saved" src="{% static 'images/save-instagram.png' %}">
+                    </div>
+                </div>
+                <div class="liked" data-likeCount>
+                    <span>120</span> like
+                </div>
+                <form>
+                    
+                    <input type="text"  placeholder="comment...">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div id='confirm-delete'>
+    <div class="header">
+        are you sure to delete this post?
+    </div>
+    <div class="content">
+        <button class='delete' >delete</button>
+        <button class='cancel' >cancel</button>
+    </div>
+</div>
 {%endblock%}

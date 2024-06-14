@@ -2,7 +2,7 @@ img{
   pointer-events: none;
 }
 
-#drop-down{
+#drop-down,.drop-down{
   display: inline-block;
   position: relative;
 }
@@ -17,6 +17,17 @@ img{
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 
+}
+.drop-down .drop-down-content{
+    
+    position: absolute;
+    text-align: center;
+    width: 100px;
+    right: 50%;
+    background-color: #f1f1f1;
+    min-width: 100%;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
 }
 
 
@@ -33,7 +44,7 @@ img{
 
   /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
   #drop-down .show-drop {display:block;}
-
+  .drop-down .show-drop{display: block}
 /*  settings css*/
 
 
@@ -53,9 +64,7 @@ img{
 
 
 }
-   .tab-content {
-      display: none;   
-  }
+
   .tab-content .row .title{
     display: flex;
     align-items: center;
@@ -386,4 +395,266 @@ input:checked + .slider:before {
 
 .button-4:-webkit-details-marker {
   display: none;
+}
+
+
+
+/*profile post detail css*/
+#backdrop {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: none;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transition: all 0.3s;
+  z-index: 1000;
+}
+#favDialog {
+  display: none;
+  position: fixed;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  padding: 0;
+  background-color: #fff;
+  border: 2px solid burlywood;
+  border-radius: 5px;
+  margin: auto;
+  z-index: 1000;
+
+  
+}
+
+/*dialog#favDialog[open]::backdrop{
+
+  background-color: rgb(0,0,0,25%);
+}*/
+#favDialog .image-container{
+  float: left;
+  width: 40%;
+  height: 100%;
+}
+#favDialog .image-container img{
+  width: 100%;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+#favDialog .comment-container{
+  width: 60%;
+  height: 100%;
+  float: right;
+}
+.comment-container .post{
+  height: 100%;
+  padding: 10px;
+}
+
+.comment-container .post .info {
+  height: 10%;
+  
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.comment-container .post .info .person a {
+  color: rgb(38, 38, 38);
+  font-weight: 600;
+  margin-right: 5px;
+}
+
+.comment-container .post .info .person span {
+  color: rgb(142, 142, 142);
+  list-style: circle;
+  font-weight: 400;
+  position: relative;
+  top: -1px;
+}
+
+.comment-container .post .info .person span.circle {
+  align-items: center;
+  font-size: 30px;
+}
+
+.comment-container .post .info .person img {
+  width: 32px;
+  height: 32px;
+  border-radius: 30px;
+  padding: 5px;
+}
+
+.comment-container .post .info .more img{
+    width: 15px;
+  height: 15px;
+}
+
+.comment-container .post .desc{
+  height: 80%;
+}
+
+.comment-container .post .desc .post_desc{
+  height: 80%;
+}
+.comment-container  .post .desc .icons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+.comment-container  .post .desc .icons div img {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+}
+.comment-container  .post .desc input {
+  border: none;
+  color: rgb(142, 142, 142);
+}
+
+
+.comment-container .post .desc p {
+  font-weight: 400;
+  margin: 10px 0;
+}
+.comment-container .post .desc a.bold {
+  font-weight: 600;
+  color: rgb(38, 38, 38);
+}
+.comment-container .post .desc a.gray {
+  color: rgb(142, 142, 142);
+  font-weight: 400;
+}
+.comment-container .post .desc .icons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+.comment-container .post .desc .icons div img {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+}
+.comment-container .post .desc input {
+  border: none;
+  color: rgb(142, 142, 142);
+}
+
+#confirm-delete{
+  display: none;
+  position: absolute;
+  padding: 20px;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+  background-color: #fff;
+  z-index: 2000;
+  left: calc(50%);
+  top: calc(50%);
+  transform: translate(-50%, -50%);
+}
+
+#confirm-delete .header{
+  margin-bottom: 20px;
+}
+
+
+
+
+/* CSS */
+#confirm-delete .content button.delete {
+  background: #FF4742;
+  border: 1px solid #FF4742;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 16px;
+  min-height: 40px;
+  outline: 0;
+  padding: 12px 14px;
+  text-align: center;
+  text-rendering: geometricprecision;
+  text-transform: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+}
+
+#confirm-delete .content button.delete:hover,
+#confirm-delete .content button.delete:active {
+  background-color: initial;
+  background-position: 0 0;
+  color: #FF4742;
+}
+
+#confirm-delete .content button.delete:active {
+  opacity: .5;
+}
+
+
+
+/* CSS */
+#confirm-delete .content button.cancel {
+  background-color: #FFFFFF;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #222222;
+  cursor: pointer;
+  display: inline-block;
+  font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 16px;
+  min-height: 40px;
+  outline: 0;
+  padding: 12px 14px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  touch-action: manipulation;
+  transition: box-shadow .2s,-ms-transform .1s,-webkit-transform .1s,transform .1s;
+  user-select: none;
+  -webkit-user-select: none;
+  width: auto;
+}
+
+#confirm-delete .content button.cancel:focus-visible {
+  box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
+  transition: box-shadow .2s;
+}
+
+#confirm-delete .content button.cancel:active {
+  background-color: #F7F7F7;
+  border-color: #000000;
+  transform: scale(.96);
+}
+
+#confirm-delete .content button.cancel:disabled {
+  border-color: #DDDDDD;
+  color: #DDDDDD;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+
+
+/*post detail style*/
+
+.post_desc .comment-body{
+  height: 80%;
+  overflow: scroll;
 }
