@@ -4,7 +4,7 @@ import { getToken, login } from './get-token.js'
 const posts = document.querySelector(".posts");
 const baseUrl = window.location.origin
 let pathName = window.location.pathname;
-
+let currentUser = document.getElementById('owner').textContent.match(/\w+(?=")/)
 
 
 //notification follow 
@@ -115,7 +115,7 @@ function replyListener(modalBody, replyBtn, replyTO, commentUser, mainComment) {
 
 
 function createCommentElement(modalBody, commentsSection, item, postId, post = false) {
-    let owner = document.getElementById('owner').textContent.match(/\w+(?=")/)
+
 
 
     if (item.main_comment == null) {
@@ -164,7 +164,7 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
 
         replyListener(modalBody, replyBtn, replyTO, commentUser, mainComment)
 
-        if (owner == item.author.username) {
+        if (currentUser == item.author.username) {
 
             deleteComment(comment, postId)
         } else {
@@ -219,7 +219,7 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
             span.textContent = Number(span.textContent) + 1;
         }
         let responseComment = true
-        if (owner == item.author.username) {
+        if (currentUser == item.author.username) {
 
             deleteComment(response, postId)
         } else {
@@ -1032,8 +1032,8 @@ async function contact() {
             followers.textContent = Number(followers.textContent) - 1
         }
     } else if (func == 'follow') {
-        let owner = btn.getAttribute('data-owner')
-        let datas = { to_user: owner }
+        let ownerProfile = btn.getAttribute('data-owner')
+        let datas = { to_user: ownerProfile }
         const response = await fetch(baseUrl + `/api/contact/`, {
             method: 'POST',
             headers: {
@@ -1460,10 +1460,10 @@ async function connectionList(queryType, username) {
             userInfo.append(username)
             userInfo.append(name)
 
-            let viewer = document.getElementById('owner').textContent.match(/(?<=")\w+(?=")/)[0]
+            
 
             connectionList.append(userInfo)
-            if (viewer == owner) {
+            if (currentUser == owner) {
 
                 let connectBtn = document.createElement('div')
                 connectBtn.className = 'connect-button'
@@ -1519,11 +1519,18 @@ function profileDetailPost(elements){
                 let postText=post.querySelector('.post_desc p span')
                 let infoUser=post.querySelector('.info .person a')
                 let infoUserImg=post.querySelector('.info .person img')
+                let more =post.querySelector('.more')
+
+                
                 if (response.ok) {
                     infoUser.textContent=data.owner.username
                     infoUserImg.src=data.owner.profile_image
                     postUser.textContent=data.owner.username
                     postText.textContent=data.text
+
+                    if(currentUser!=data.owner.username){
+                        more.remove()
+                    }
 
                     let dialogImg = favDialog.querySelector('.image-container img')
                     dialogImg.src = data.image
@@ -1596,12 +1603,14 @@ function profileDetailPost(elements){
                     let moreBtn = favDialog.querySelector('.more')
 
                     //display and hide dropdown for delete post
-                    let moreDropDown = moreBtn.querySelector('.drop-down-content')
+                    if(moreBtn!=null){
 
-                    moreBtn.addEventListener('click', () => {
+                        let moreDropDown = moreBtn.querySelector('.drop-down-content')
 
-                        moreDropDown.classList.toggle('hide')
-                    })
+                        moreBtn.addEventListener('click', () => {
+
+                            moreDropDown.classList.toggle('hide')
+                        })
                     document.addEventListener('click', (event) => {
                         if (event.target.closest('.drop-down-content') || !event.target.closest('.drop-down')) {
 
@@ -1609,6 +1618,7 @@ function profileDetailPost(elements){
 
                         }
                     })
+                    }
 
 
                     let postLikeButton = post.querySelector('.icons .like')
@@ -1654,21 +1664,24 @@ function postDetailListener(element, postId, likeDiv) {
 
 
     //display confirm delete modal and hide it
-    let deleteBtn = moreBtn.querySelector('.delete-btn-post')
     let confirmDeleteDiv = document.getElementById('confirm-delete')
     let confirmDelete = confirmDeleteDiv.querySelector('.delete')
-    deleteBtn.addEventListener('click', (event) => {
-        event.preventDefault()
-        event.stopPropagation()
-        confirmDeleteDiv.style.display = 'block'
+    if(moreBtn!=null){
 
-        document.addEventListener('click', (event) => {
-            if (!event.target.closest('#confirm-delete') || event.target.closest('.cancel')) {
-                confirmDeleteDiv.style.display = 'none'
-            }
+        let deleteBtn = moreBtn.querySelector('.delete-btn-post')
+        deleteBtn.addEventListener('click', (event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            confirmDeleteDiv.style.display = 'block'
+
+            document.addEventListener('click', (event) => {
+                if (!event.target.closest('#confirm-delete') || event.target.closest('.cancel')) {
+                    confirmDeleteDiv.style.display = 'none'
+                }
+            })
+
         })
-
-    })
+    }
     let input = element.querySelector('input')
 
     deletePost(element, true, confirmDelete)
@@ -1710,24 +1723,27 @@ if (pathName.includes('profile')) {
 
     //display saved posts
     let savedBtn = document.getElementById('pills-saved-tab');
-    savedBtn.addEventListener('click', async function() {
+    if(savedBtn!=null){
+        savedBtn.addEventListener('click', async function() {
 
 
-        const accessToken = await getToken()
-        const response = await fetch(baseUrl + '/api/posts/saved/', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
+            const accessToken = await getToken()
+            const response = await fetch(baseUrl + '/api/posts/saved/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            })
+            const datas = await response.json();
+            if (response.ok) {
+                let postsSection = document.getElementById('saved_sec');
+                postsSection.textContent = ''
+                datas.forEach(data => {
+
+                    addPostProfile(data, true)
+                })
             }
         })
-        const datas = await response.json();
-        if (response.ok) {
-            let postsSection = document.getElementById('saved_sec');
-            postsSection.textContent = ''
-            datas.forEach(data => {
-
-                addPostProfile(data, true)
-            })
-        }
-    })
+        
+    }
 }
