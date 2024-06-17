@@ -1,4 +1,5 @@
 {%load static%}
+{%load social_tags%}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,15 +26,21 @@
                 <div class="nav">
                     <div class="logo">
                         <a href="./home.html">
-                            <img class="d-block d-lg-none small-logo" src="{% static 'images/instagram.png' %}" alt="logo">
+                            <img class="d-block d-lg-none small-logo" src="{% static 'images/logo_main.png' %}" alt="logo">
                             <img class="d-none d-lg-block" src="{% static 'images/logo_menu.png' %}" alt="logo">
                         </a>
                     </div>
                     <div class="menu">
                         <ul>
                             <li>
-                                <a class="active" href="{% url 'home'%}">
-                                    <img src="{%static 'images/accueil.png' %}">
+                                <a class=" home {%if request.path == '/' %}active{%endif%}" href="{% url 'home'%}">
+                                    <img src="
+                                    {%if request.path != '/' %}
+                                    {%static 'images/home.png' %}"
+                                    {%else%}
+                                    {%static 'images/accueil.png' %}"
+                                    {%endif%}
+                                    >
                                     <span class="d-none d-lg-block ">Home</span>
                                 </a>
                             </li>
@@ -56,7 +63,8 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{%url 'profile' %}">
+                                {%user_profile_path as user_profile_path%}
+                                <a class='profile {%if request.path == "/profile/"  or request.path == user_profile_path %}active{%endif%}' href="{%url 'profile' %}">
                                     <img class="circle story" src="{{user.profile.profile_image.url}}">
                                     <span class="d-none d-lg-block ">Profile</span>
                                 </a>

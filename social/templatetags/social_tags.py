@@ -49,3 +49,11 @@ def saved_post_id(context,post_id):
 		return message.saved_posts.get(user=user).id
 	except Exception as e:
 		print(e)
+
+
+
+@register.simple_tag(takes_context=True)
+def user_profile_path(context):
+	user=context['user']
+
+	return f'/profile/{user.username}'

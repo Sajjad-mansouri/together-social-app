@@ -406,14 +406,14 @@ button.log_btn:hover {
   justify-content: center;
   min-height: 100vh;
 }
-.login .images {
+/*.login .images {
   position: relative;
 }
 .login .images .sliders {
   position: absolute;
   top: 25px;
   left: 155px;
-}
+}*/
 .login .content {
   max-width: 350px;
 }

@@ -1692,7 +1692,10 @@ function postDetailListener(element, postId, likeDiv) {
 
 }
 
+
 if (pathName.includes('profile')) {
+
+
     let connectionModal = document.getElementById('connection-modal')
     let modalTitle = connectionModal.querySelector('.modal-title')
 
@@ -1747,3 +1750,4 @@ if (pathName.includes('profile')) {
         
     }
 }
+

@@ -53,7 +53,7 @@
             {%if owner == user%}
             <li class="nav-item mx-2" role="presentation">
                 <button class="nav-link" id="pills-saved-tab" data-bs-toggle="pill" data-bs-target="#pills-saved" type="button" role="tab" aria-controls="pills-saved" aria-selected="false">
-                    <img src="{% static 'images/save-instagram.png' %}" alt="saved posts">
+                    <img src="{% static 'images/save-together.png' %}" alt="saved posts">
                     SAVED
                 </button>
             </li>
@@ -110,7 +110,7 @@
                             </div>
                             <div class="save not_saved">
                                 <img class="hide saved" src="{% static 'images/save_black.png' %}">
-                                <img class="not_saved" src="{% static 'images/save-instagram.png' %}">
+                                <img class="not_saved" src="{% static 'images/save-together.png' %}">
                             </div>
                         </div>
                         <div class="liked" data-likeCount="0">
@@ -160,7 +160,7 @@
                             {% is_saved post_id as status%}
                             <div class="save not_saved" data-status={{status}} data-saved={%saved_post_id post_id %}>
                                 <img class="{%if not status%}hide{%endif%} saved" src="{% static 'images/save_black.png' %}">
-                                <img class="not_saved{%if status%} hide{%endif%}" src="{% static 'images/save-instagram.png' %}">
+                                <img class="not_saved{%if status%} hide{%endif%}" src="{% static 'images/save-together.png' %}">
                             </div>
                         </div>
                         {%count_like post_id as likes%}
@@ -303,7 +303,7 @@
                     </div>
                     <div class="save not_saved" data-status data-saved>
                         <img class="hide saved" src="{% static 'images/save_black.png' %}">
-                        <img class="not_saved" src="{% static 'images/save-instagram.png' %}">
+                        <img class="not_saved" src="{% static 'images/save-together.png' %}">
                     </div>
                 </div>
                 <div class="liked" data-likeCount>
