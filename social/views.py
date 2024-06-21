@@ -13,7 +13,7 @@ class Index(TemplateView):
 	template_name='insta/login.html'
 
 
-class Profile(LoginRequiredMixin,ListView):
+class Profile(ListView):
 	template_name='insta/profile.html'
 	
 
@@ -28,7 +28,10 @@ class Profile(LoginRequiredMixin,ListView):
 	def get_context_data(self,**kwargs):
 		context=super().get_context_data(**kwargs)
 		context['owner']=self.owner
-		access=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner).exists()
+		try:
+			access=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner).exists()
+		except:
+			access=False
 		following_count=self.owner.rel_from.count()
 		follower_count=self.owner.rel_to.count()
 		total_post=self.owner.messages.count()

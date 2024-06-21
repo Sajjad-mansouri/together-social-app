@@ -143,6 +143,7 @@
                         <img src="{{post.image.url}}">
                     </div>
                     <div class="desc">
+                        {% if user.is_authenticated%}
                         <div class="icons">
                             <div class="icon_left d-flex">
                                 {%with post.id as post_id %}
@@ -170,6 +171,7 @@
                             {%endif%}
                         </div>
                         {%endwith%}
+                        {%endif%}
                         <div class="post_desc">
                             <p>
                                 <a class="bold" href="#">{{post.user}}</a>

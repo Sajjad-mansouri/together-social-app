@@ -20,7 +20,9 @@
 <body>
     <div class="post_page">
         <!--***** nav menu start ****** -->
+        
         <div class="nav_menu">
+            {% if user.is_authenticated%}
             <div class="fix_top">
                 <!-- nav for big->medium screen -->
                 <div class="nav">
@@ -167,8 +169,10 @@
                 <a href="#" id="sm_create_modal"><img src="{% static 'images/tab.png' %}"></a>
                 <a href="{%url 'profile'  %}"><img class="circle story" src=""></a>
             </div>
+            {%endif%}
         </div>
         <!-- search  -->
+        {% if user.is_authenticated%}
         <div id="search" class="search_section">
             <h2>Search</h2>
             <form>
@@ -274,6 +278,8 @@
                 </div>
             </div>
         </div>
+        {%endif%}
+        
         <!--***** nav menu end ****** -->
         {%block content%}
         {%endblock%}
