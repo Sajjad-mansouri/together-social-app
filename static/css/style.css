@@ -498,8 +498,12 @@ input:checked + .slider:before {
 
 .comment-container .post .desc{
   height: 80%;
+
 }
 
+.comment-container .post .desc.anon {
+  height: 65%;
+}
 .comment-container .post .desc .post_desc{
   height: 80%;
 }
@@ -699,3 +703,5 @@ input:checked + .slider:before {
 .nav .menu ul li a.active {
   font-weight: bold;
 }
+
+

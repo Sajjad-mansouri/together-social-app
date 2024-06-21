@@ -39,7 +39,11 @@ class PostSerializer(serializers.ModelSerializer):
 			like_obj=None
 
 		like_count=obj.likes.count()
-		if obj.id in user.like_set.values_list('post',flat=True):
+		try:
+			user_likes=user.like_set.values_list('post',flat=True)
+		except AttributeError:
+			user_likes=[]
+		if obj.id in user_likes:
 			return (True,like_obj.id, like_count)
 		else:
 		 return (False,None,like_count)
@@ -172,12 +176,16 @@ class CommentSerializer(serializers.ModelSerializer):
 
 	def user_comment(self,obj):
 		user=self._context['request'].user.username
+		print(self._context['request'].user)
+		print(f'user for comment:{user}')
+		print(obj.author.username)
 		if obj.author.username==user:
 			return True
 		else:
 			return False
 	def like(self,obj):
 		user=self._context['request'].user.id
+		print(f'user that like or unlike:{user}')
 		like_count=obj.like.count()
 		data={}
 		try:
@@ -244,6 +252,7 @@ class LikeCommentSerializer(serializers.ModelSerializer):
 		print('++++++++++++=')
 		print(type(data))
 		user=self._context['request'].user.id
+		print(self._context['request'].user)
 		print('*********')
 		data['user']=user
 		print(data)

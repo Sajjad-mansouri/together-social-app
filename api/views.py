@@ -148,7 +148,7 @@ class ProfileDetailApiView(generics.RetrieveUpdateDestroyAPIView):
 
 class CommentApiView(generics.ListCreateAPIView):
 	serializer_class=CommentSerializer
-
+	permission_classes=[AuthorDeletePermission]
 	def get_queryset(self):
 		message_id = self.kwargs['message_id']
 		post=Message.objects.get(id=message_id)

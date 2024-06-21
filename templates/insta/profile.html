@@ -88,9 +88,11 @@
                             <span class="circle">.</span>
                             <span>just now</span>
                         </div>
+                        {%if user.is_authenticated%}
                         <div class="more" data-bs-toggle="modal" data-bs-target="#delete_modal">
                             <img src="{% static 'images/show_more.png' %}" alt="show more">
                         </div>
+                        {%endif%}
                     </div>
                     <div class="image">
                         <img src="">
@@ -188,77 +190,38 @@
     </div>
 </div>
 <div id="backdrop">
-    
-
-<div id="favDialog">
-    <div class="image-container">
-        <img src="">
-    </div>
-    <div class="comment-container" >
-        <div class='post' data-post>
-            <div class="info">
-                <div class="person">
-                    <img src="{{post.user.profile.profile_image.url}}">
-                    <a href="#">user</a>
-                    <span class="circle">.</span>
-                    <span></span>
+    <div id="favDialog">
+        <div class="image-container">
+            <img src="">
+        </div>
+        <div class="comment-container">
+            <div class='post' data-post>
+                <div class="info">
+                    <div class="person">
+                        <img src="{{post.user.profile.profile_image.url}}">
+                        <a href="#">user</a>
+                        <span class="circle">.</span>
+                        <span></span>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <div class="more drop-down">
+                        <img src="{% static 'images/show_more.png' %}" alt="show more">
+                        <div class="drop-down-content hide">
+                            <a class="delete-btn-post" href="">delete</a>
+                            <a href="#">cancel</a>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
-                <div class="more drop-down" >
-                    <img src="{% static 'images/show_more.png' %}" alt="show more">
-
-                                                <div class="drop-down-content hide">
-                                                    <a class="delete-btn-post" href="">delete</a>
-                                                    <a href="#">cancel</a>
-                                                </div>
-                            
-                </div>
-            </div>
-            <div class="desc modal-content">
-                <div class="post_desc">
-                    <p>
-                        <a class="bold" href="#">user</a>
-                        <span>text</span>
-                    </p>
-                    <div class="comment-body modal-body">
-                        <div class="comments-clone hide">
-                            <div class="comment">
-                                <div class="d-flex">
-                                    <div class="img">
-                                        <img src="" alt="">
-                                    </div>
-                                    <div class="content">
-                                        <div class="person">
-                                            <h4>namePerson</h4>
-                                            <span>3j</span>
-                                        </div>
-                                        <p>Wow amzing shot</p>
-                                        <div class="replay">
-                                            <button class="replay reply-btn">reply</button>
-                                            <div id='drop-down'>
-                                                <button class='delete-comment'>...</button>
-                                                <div class="drop-down-content">
-                                                    <a class='delete-btn-comment' href="">delete</a>
-                                                    <a href="">cancel</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="answers">
-                                            <button class="see_comment">
-                                                <span class="hide_com hide">Hide all responses</span>
-                                                <span class="show_c"> <span class="line"></span> See the <span> 1
-                                                    </span> answers</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="like">
-                                    <img class="not_loved" src="{% static 'images/love.png' %}" alt="">
-                                    <img class="loved" src="{% static 'images/heart.png' %}" alt="">
-                                    <p> 55</p>
-                                </div>
-                            </div>
-                            <div class="responses-clone hide">
-                                <div class="response comment">
+                <div class="desc modal-content {%if user.is_anonymous%}anon{%endif%}">
+                    <div class="post_desc">
+                        <p>
+                            <a class="bold" href="#">user</a>
+                            <span>text</span>
+                        </p>
+                        <div class="comment-body modal-body">
+                            <div class="comments-clone hide">
+                                <div class="comment">
                                     <div class="d-flex">
                                         <div class="img">
                                             <img src="" alt="">
@@ -270,7 +233,7 @@
                                             </div>
                                             <p>Wow amzing shot</p>
                                             <div class="replay">
-                                                <button class='reply-btn'>reply</button>
+                                                <button class="replay reply-btn">reply</button>
                                                 <div id='drop-down'>
                                                     <button class='delete-comment'>...</button>
                                                     <div class="drop-down-content">
@@ -278,6 +241,13 @@
                                                         <a href="">cancel</a>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="answers">
+                                                <button class="see_comment">
+                                                    <span class="hide_com hide">Hide all responses</span>
+                                                    <span class="show_c"> <span class="line"></span> See the <span> 1
+                                                        </span> answers</span>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -287,46 +257,83 @@
                                         <p> 55</p>
                                     </div>
                                 </div>
+                                <div class="responses-clone hide">
+                                    <div class="response comment">
+                                        <div class="d-flex">
+                                            <div class="img">
+                                                <img src="" alt="">
+                                            </div>
+                                            <div class="content">
+                                                <div class="person">
+                                                    <h4>namePerson</h4>
+                                                    <span>3j</span>
+                                                </div>
+                                                <p>Wow amzing shot</p>
+                                                <div class="replay">
+                                                    <button class='reply-btn'>reply</button>
+                                                    <div id='drop-down'>
+                                                        <button class='delete-comment'>...</button>
+                                                        <div class="drop-down-content">
+                                                            <a class='delete-btn-comment' href="">delete</a>
+                                                            <a href="">cancel</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="like">
+                                            <img class="not_loved" src="{% static 'images/love.png' %}" alt="">
+                                            <img class="loved" src="{% static 'images/heart.png' %}" alt="">
+                                            <p> 55</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="icons">
-                    <div class="icon_left d-flex">
-                        <div class="like" data-type='{{is_liked}}' data-post='' data-like=''>
-                            <img class="not_loved " src="{% static 'images/love.png' %}">
-                            <img class="loved " src="{% static 'images/heart.png' %}">
+                    <div class="icons">
+                        <div class="icon_left d-flex">
+                            <div class="like" data-type='{{is_liked}}' data-post='' data-like=''>
+                                <img class="not_loved " src="{% static 'images/love.png' %}">
+                                <img class="loved " src="{% static 'images/heart.png' %}">
+                            </div>
+                            {%if user.is_authenticated%}
+                            <div class="chat">
+                                <button type="button" class="btn p-0">
+                                    <img src="{% static 'images/bubble-chat.png' %}">
+                                </button>
+                            </div>
+                            {%endif%}
                         </div>
-                        <div class="chat">
-                            <button type="button" class="btn p-0">
-                                <img src="{% static 'images/bubble-chat.png' %}">
-                            </button>
+                        {% if user.is_authenticated %}
+                        <div class="save not_saved" data-status data-saved>
+                            <img class="hide saved" src="{% static 'images/save_black.png' %}">
+                            <img class="not_saved" src="{% static 'images/save-together.png' %}">
                         </div>
+                        {% endif %}
                     </div>
-                    <div class="save not_saved" data-status data-saved>
-                        <img class="hide saved" src="{% static 'images/save_black.png' %}">
-                        <img class="not_saved" src="{% static 'images/save-together.png' %}">
+                    <div class="liked" data-likeCount>
+                        <span>120</span> like
                     </div>
+                    {% if user.is_authenticated %}
+                    <form>
+                        <input type="text" placeholder="comment...">
+                    </form>
+                    {%else%}
+                    <div class="alert alert-warning">You must be <a href="{%url 'login'%}">logged</a> in to comment and like posts.</div>
+                    {% endif %}
                 </div>
-                <div class="liked" data-likeCount>
-                    <span>120</span> like
-                </div>
-                <form>
-                    
-                    <input type="text"  placeholder="comment...">
-                </form>
             </div>
         </div>
     </div>
-</div>
 </div>
 <div id='confirm-delete'>
     <div class="header">
         are you sure to delete this post?
     </div>
     <div class="content">
-        <button class='delete' >delete</button>
-        <button class='cancel' >cancel</button>
+        <button class='delete'>delete</button>
+        <button class='cancel'>cancel</button>
     </div>
 </div>
 {%endblock%}

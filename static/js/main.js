@@ -95,22 +95,24 @@ function hideModal(cloneModal) {
 
 function replyListener(modalBody, replyBtn, replyTO, commentUser, mainComment) {
 
+    if(currentUser!=null){
 
-    let modalContent = modalBody.closest('.modal-content')
-    replyBtn.addEventListener('click', () => {
-
-
-
-        let input = modalContent.querySelector('input')
+        let modalContent = modalBody.closest('.modal-content')
+        replyBtn.addEventListener('click', () => {
 
 
 
-        input.focus()
-        input.value = `@${commentUser} `
-        input.setAttribute('data-mainComment', mainComment);
-        input.setAttribute('data-replyTo', replyTO);
+            let input = modalContent.querySelector('input')
 
-    })
+
+
+            input.focus()
+            input.value = `@${commentUser} `
+            input.setAttribute('data-mainComment', mainComment);
+            input.setAttribute('data-replyTo', replyTO);
+
+        })
+    }
 }
 
 
@@ -173,8 +175,16 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
         }
         commentLikeInfo(comment, item.like_info)
         let likeCommentDiv = comment.querySelector('.like')
+        console.log(likeCommentDiv)
         likeCommentDiv.addEventListener('click', () => {
-            likeComment(comment, item.like_info)
+            
+                if(currentUser!=null){
+
+                likeComment(comment, item.like_info)
+                }else{
+                    console.log('anonymous')
+                }
+            
         })
     } else {
         //reply 
@@ -229,7 +239,13 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
         commentLikeInfo(response, item.like_info)
         let likeCommentDiv = response.querySelector('.like')
         likeCommentDiv.addEventListener('click', () => {
-            likeComment(response, item.like_info)
+            if(currentUser!=null){
+
+                likeComment(response, item.like_info)
+            }else{
+                console.log('anonymous')
+            }
+
         })
     }
 }
@@ -240,13 +256,13 @@ async function getComments(modalClone, postId) {
 
     let modalBody = modalClone.querySelector('.comment-body')
     let commentsSection = modalBody.querySelector('.comments-clone')
-    const accessToken = await getToken()
+    // const accessToken = await getToken()
 
     const response = await fetch(`http://localhost:8000/api/post/${postId}/comments`, {
         method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        },
+        // headers: {
+        //     'Authorization': `Bearer ${accessToken}`
+        // },
 
     })
     const data = await response.json()
@@ -313,20 +329,23 @@ function messageAddEvnetListener(messageElement) {
 let commentForm = null
 
 function writeComment(modalClone, input, postId) {
-    let form = input.closest('form')
-    form.removeEventListener('submit', commentForm)
+    if(input!=null){
+        let form = input.closest('form')
 
-    commentForm = function() {
-        event.preventDefault()
-        let inputValue = input.value;
-        let comment = inputValue.replace(/@\w+\s/, '');
-        let replyTO = input.getAttribute('data-replyTo');
-        let mainComment = input.getAttribute('data-mainComment');
+        form.removeEventListener('submit', commentForm)
 
-        postComment(modalClone, postId, comment, replyTO, mainComment)
+        commentForm = function() {
+            event.preventDefault()
+            let inputValue = input.value;
+            let comment = inputValue.replace(/@\w+\s/, '');
+            let replyTO = input.getAttribute('data-replyTo');
+            let mainComment = input.getAttribute('data-mainComment');
 
+            postComment(modalClone, postId, comment, replyTO, mainComment)
+
+        }
+        form.addEventListener('submit', commentForm)
     }
-    form.addEventListener('submit', commentForm)
 
 }
 
@@ -648,8 +667,12 @@ function createPostModal(){
     form.addEventListener('change', handleSubmit);
     hideModal(modalClone)
 }
-document.querySelector('#create-btn').addEventListener('click',createPostModal)
-document.querySelector('#sm_create_modal').addEventListener('click',createPostModal)
+console.log(currentUser)
+if(currentUser!=null){
+
+    document.querySelector('#create-btn').addEventListener('click',createPostModal)
+    document.querySelector('#sm_create_modal').addEventListener('click',createPostModal)
+}
 //like comment and reply
 
 // like and dislike
@@ -661,13 +684,14 @@ async function likeComment(div, like_info) {
     let notLovedimg = likeDiv.querySelector('.not_loved')
     let p = likeDiv.querySelector('p')
     const accessToken = await getToken()
-    if (like_info.is_liked) {
+    console.log(currentUser)
+    let headers={'Authorization': `Bearer ${accessToken}`}
+
+    if (like_info.is_liked ) {
 
         const response = await fetch(baseUrl + `/api/comment/likes/${like_info.id}`, {
             method: "DELETE",
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
+            headers: headers
         })
 
         if (response.ok) {
@@ -679,14 +703,14 @@ async function likeComment(div, like_info) {
 
         }
 
-    } else {
+    } else{
 
         const body = { 'comment': commentId }
 
         const response = await fetch(baseUrl + '/api/comments/likes/', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${accessToken}`,
+                'Authorization': headers.Authorization,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(body)
@@ -724,89 +748,94 @@ function commentLikeInfo(div, like_info) {
 // like and dislike
 async function like(div) {
 
+    if(currentUser!=null){
 
-    const dataType = div.getAttribute('data-type');
+        const dataType = div.getAttribute('data-type');
 
-    const dataPost = div.getAttribute('data-post');
-    const dataLike = div.getAttribute('data-like');
-
-    const accessToken = await getToken()
-
-    if (dataType === 'True') {
-
-        const response = await fetch(baseUrl + `/api/like/${dataLike}`, {
-            method: "DELETE",
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
-        })
-
-        if (response.ok) {
-
-            let post = div.closest('.post');
-            let liked = post.querySelector('.liked')
-            let span = liked.querySelector('span');
-            let likeCount = Number(liked.getAttribute('data-likeCount')) - 1;
-            span.textContent = likeCount;
-            liked.setAttribute('data-likeCount', likeCount)
-            if (likeCount == 0) {
-                liked.textContent = ''
-            } else if (likeCount == 1) {
-                span.nextSibling.textContent = ' like'
-            }
-            div.setAttribute('data-type', 'False')
-            div.classList.remove('love')
-            let not_loved = div.children[0];
-            let loved = div.children[1];
-            not_loved.classList.remove('hide_img')
-            loved.classList.remove('display')
+        const dataPost = div.getAttribute('data-post');
+        const dataLike = div.getAttribute('data-like');
 
 
-
-        }
-
-    } else if (dataType === 'False') {
-        const body = { 'post': dataPost }
-
-        const response = await fetch(baseUrl + '/api/like/', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        })
+        const accessToken = await getToken()
+        let headers={'Authorization': `Bearer ${accessToken}`}
 
 
-        if (response.ok) {
+        if (dataType === 'True') {
 
+            const response = await fetch(baseUrl + `/api/like/${dataLike}`, {
+                method: "DELETE",
+                headers: headers
+            })
 
-            const data = await response.json()
+            if (response.ok) {
 
-
-            div.setAttribute('data-type', 'True')
-            let post = div.closest('.post')
-            let liked = post.querySelector('.liked')
-            let likeCount = Number(liked.getAttribute('data-likeCount')) + 1
-            liked.setAttribute('data-likeCount', likeCount)
-
-            if (likeCount == 1) {
-
-                liked.innerHTML = '<span>1</span> like'
-            } else {
-                let span = liked.querySelector('span')
+                let post = div.closest('.post');
+                let liked = post.querySelector('.liked')
+                let span = liked.querySelector('span');
+                let likeCount = Number(liked.getAttribute('data-likeCount')) - 1;
                 span.textContent = likeCount;
-                span.nextSibling.textContent = ' likes'
+                liked.setAttribute('data-likeCount', likeCount)
+                if (likeCount == 0) {
+                    liked.textContent = ''
+                } else if (likeCount == 1) {
+                    span.nextSibling.textContent = ' like'
+                }
+                div.setAttribute('data-type', 'False')
+                div.classList.remove('love')
+                let not_loved = div.children[0];
+                let loved = div.children[1];
+                not_loved.classList.remove('hide_img')
+                loved.classList.remove('display')
+
+
+
             }
 
-            div.setAttribute('data-like', data.id)
-            div.classList.add('love')
-            let not_loved = div.children[0];
-            let loved = div.children[1];
-            not_loved.classList.add('hide_img')
-            loved.classList.add('display')
-        }
+        } else if (dataType === 'False') {
+            const body = { 'post': dataPost }
 
+            const response = await fetch(baseUrl + '/api/like/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': headers.Authorization,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+
+
+            if (response.ok) {
+
+
+                const data = await response.json()
+
+
+                div.setAttribute('data-type', 'True')
+                let post = div.closest('.post')
+                let liked = post.querySelector('.liked')
+                let likeCount = Number(liked.getAttribute('data-likeCount')) + 1
+                liked.setAttribute('data-likeCount', likeCount)
+
+                if (likeCount == 1) {
+
+                    liked.innerHTML = '<span>1</span> like'
+                } else {
+                    let span = liked.querySelector('span')
+                    span.textContent = likeCount;
+                    span.nextSibling.textContent = ' likes'
+                }
+
+                div.setAttribute('data-like', data.id)
+                div.classList.add('love')
+                let not_loved = div.children[0];
+                let loved = div.children[1];
+                not_loved.classList.add('hide_img')
+                loved.classList.add('display')
+            }
+
+        }
+    }else{
+        console.log('anonymous')
     }
 }
 
@@ -815,52 +844,54 @@ function savePost(element) {
 
     let postId = element.getAttribute('data-post')
     let saveIcon = element.querySelector('.save');
+    if(saveIcon!=null){
 
-    let saved = saveIcon.querySelector('.saved')
-    let notSaved = saveIcon.querySelector('.not_saved')
-    saveIcon.addEventListener('click', async function() {
-        let status = saveIcon.getAttribute('data-status');
-        let savedId = saveIcon.getAttribute('data-saved')
-        let accessToken = await getToken()
-        if (status == 'True') {
-            //delete post from saved posts
+        let saved = saveIcon.querySelector('.saved')
+        let notSaved = saveIcon.querySelector('.not_saved')
+        saveIcon.addEventListener('click', async function() {
+            let status = saveIcon.getAttribute('data-status');
+            let savedId = saveIcon.getAttribute('data-saved')
+            let accessToken = await getToken()
+            if (status == 'True') {
+                //delete post from saved posts
 
-            const response = await fetch(baseUrl + `/api/saved/${savedId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
+                const response = await fetch(baseUrl + `/api/saved/${savedId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
 
-                },
+                    },
 
-            })
-            if (response.ok) {
-                saveIcon.setAttribute('data-status', 'False');
-                saveIcon.setAttribute('data-saved', 'None')
-                saved.classList.add('hide')
-                notSaved.classList.remove('hide')
+                })
+                if (response.ok) {
+                    saveIcon.setAttribute('data-status', 'False');
+                    saveIcon.setAttribute('data-saved', 'None')
+                    saved.classList.add('hide')
+                    notSaved.classList.remove('hide')
+                }
+            } else {
+                //add post to saved posts
+                const body = { 'post': postId }
+                const response = await fetch(baseUrl + '/api/saved/', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                })
+                const data = await response.json()
+
+                if (response.ok) {
+                    saveIcon.setAttribute('data-status', 'True');
+                    saveIcon.setAttribute('data-saved', data.id)
+                    saved.classList.remove('hide')
+                    notSaved.classList.add('hide')
+                }
             }
-        } else {
-            //add post to saved posts
-            const body = { 'post': postId }
-            const response = await fetch(baseUrl + '/api/saved/', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(body)
-            })
-            const data = await response.json()
 
-            if (response.ok) {
-                saveIcon.setAttribute('data-status', 'True');
-                saveIcon.setAttribute('data-saved', data.id)
-                saved.classList.remove('hide')
-                notSaved.classList.add('hide')
-            }
-        }
-
-    })
+        })
+    }
 
 }
 
@@ -964,38 +995,40 @@ async function searchUser(findDiv, searchValue) {
     }
 }
 
+if(currentUser!=null){
 
-let search_icon = document.getElementById("search_icon");
-let search = document.getElementById("search");
-let findDiv = search.querySelector('.find')
-let searchForm = search.querySelector('form')
-let searchInput = search.querySelector('input');
-searchInput.addEventListener('input', event => {
-    findDiv.querySelectorAll('.account').forEach(element => {
-        element.remove()
-    })
-
-    const searchValue = event.target.value.trim();
-    if (searchValue != '') {
-        searchUser(findDiv, searchValue)
-    } else {
+    let search_icon = document.getElementById("search_icon");
+    let search = document.getElementById("search");
+    let findDiv = search.querySelector('.find')
+    let searchForm = search.querySelector('form')
+    let searchInput = search.querySelector('input');
+    searchInput.addEventListener('input', event => {
         findDiv.querySelectorAll('.account').forEach(element => {
             element.remove()
         })
-    }
-})
-searchForm.addEventListener('submit', event => {
-    event.preventDefault();
 
-})
+        const searchValue = event.target.value.trim();
+        if (searchValue != '') {
+            searchUser(findDiv, searchValue)
+        } else {
+            findDiv.querySelectorAll('.account').forEach(element => {
+                element.remove()
+            })
+        }
+    })
+    searchForm.addEventListener('submit', event => {
+        event.preventDefault();
 
-search_icon.addEventListener("click", function() {
+    })
+
+    search_icon.addEventListener("click", function() {
 
 
-    search.classList.toggle("show");
+        search.classList.toggle("show");
 
 
-});
+    });
+}
 
 let notification = document.getElementById("notification");
 let notification_icon = document.querySelectorAll(".notification_icon");
@@ -1070,13 +1103,16 @@ if (document.contains(document.querySelector('.contact'))) {
 }
 
 //logout
-let logoutBtn = document.querySelector('.logout')
-let logoutForm = logoutBtn.querySelector('form')
-logoutBtn.addEventListener('click', event => {
-    event.preventDefault();
-    logoutForm.submit()
+if(currentUser!=null){
 
-})
+    let logoutBtn = document.querySelector('.logout')
+    let logoutForm = logoutBtn.querySelector('form')
+    logoutBtn.addEventListener('click', event => {
+        event.preventDefault();
+        logoutForm.submit()
+
+    })
+}
 
 ///settings
 
@@ -1499,12 +1535,12 @@ function profileDetailPost(elements){
             if (window.screen.width > 498) {
 
                 let postId = element.getAttribute('data-post');
-                let accessToken = await getToken()
+                // let accessToken = await getToken()
                 let response = await fetch(baseUrl + `/api/post/${postId}/`, {
                     method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`
-                    }
+                    // headers: {
+                    //     'Authorization': `Bearer ${accessToken}`
+                    // }
                 })
                 let data = await response.json()
 
@@ -1528,7 +1564,7 @@ function profileDetailPost(elements){
                     postUser.textContent=data.owner.username
                     postText.textContent=data.text
 
-                    if(currentUser!=data.owner.username){
+                    if(currentUser==data.owner.username){
                         more.remove()
                     }
 
