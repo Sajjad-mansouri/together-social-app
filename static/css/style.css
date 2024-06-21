@@ -705,3 +705,21 @@ input:checked + .slider:before {
 }
 
 
+div.is_private{
+  display: grid;
+  grid-template-columns: 1fr 8fr;
+  align-items: center;
+}
+div.is_private img{
+  align-self: start;
+}
+
+div.is_private .private_desc{
+  display: grid;
+
+}
+
+div.is_private .private_desc .private_title{
+font-weight: bold;
+}
+

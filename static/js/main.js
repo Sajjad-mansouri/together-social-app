@@ -1736,16 +1736,21 @@ if (pathName.includes('profile')) {
     let modalTitle = connectionModal.querySelector('.modal-title')
 
     //display follower and followings
-    document.querySelectorAll('.connections').forEach(element => {
 
-        element.addEventListener('click', () => {
-            let title = element.getAttribute('data-list')
-            let username = element.getAttribute('data-owner')
-            modalTitle.textContent = title
-            connectionList(title, username)
+        document.querySelectorAll('.connections').forEach(element => {
 
+            element.addEventListener('click', () => {
+                let title = element.getAttribute('data-list')
+                let username = element.getAttribute('data-owner')
+                modalTitle.textContent = title
+                if(currentUser!=null){
+
+                    connectionList(title, username)
+                }
+
+            })
         })
-    })
+    
 
     //display detail of post with different style for different device size
     const favDialog = document.getElementById('favDialog');

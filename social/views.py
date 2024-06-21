@@ -32,6 +32,7 @@ class Profile(ListView):
 			access=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner).exists()
 		except:
 			access=False
+
 		following_count=self.owner.rel_from.count()
 		follower_count=self.owner.rel_to.count()
 		total_post=self.owner.messages.count()

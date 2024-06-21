@@ -11,37 +11,55 @@
             </div>
             <div class="info">
                 <p class="name">
+                    {% if user.is_authenticated%}
                     {{owner.username}}
                     {%if owner == user%}
                     <button class="edit_profile">
-                        Edit profile
+                        Edit profile 
                     </button>
                     {%else%}
+
                     {% if access%}
                     <button class="contact" data-btn='unfollow' data-contact={{contact_id}} data-owner={{owner.id}}>
-                        unfollow
+                        unfollow 
                     </button>
                     {%else%}
                     <button class="contact" data-btn='follow' data-owner={{owner.id}}>
-                        follow
+                        follow 
                     </button>
                     {%endif%}
                     {%endif%}
+                    {%endif%}
+
                 </p>
                 <div class="general_info">
                     <p><span>{{total_post}}</span> post</p>
-                    <p class='connections' data-list='follower' data-owner={{owner.username}} data-bs-toggle="modal" data-bs-target="#connection-modal"><span>{{follower_count}}</span> followers</p>
-                    <p class='connections' data-list='following' data-owner={{owner.username}} data-bs-toggle="modal" data-bs-target="#connection-modal"><span>{{following_count}}</span> following</p>
+                    <p class='connections' data-list='follower' data-owner={{owner.username}} 
+                    {% if access  %}
+                        
+                        data-bs-toggle="modal" 
+                        data-bs-target="#connection-modal"
+                    {% endif %}
+                    ><span>{{follower_count}}</span> followers</p>
+                    <p class='connections' data-list='following' data-owner={{owner.username}} 
+                    {% if access  %}
+                        
+                        data-bs-toggle="modal" 
+                        data-bs-target="#connection-modal"
+                    {% endif %}
+                    ><span>{{following_count}}</span> following</p>
                 </div>
                 <p class="nick_name">{{owner.get_full_name}}</p>
                 <p class="desc">
                     {{owner.profile.bio}}
+                    
                 </p>
             </div>
             <br>
         </div>
     </div>
     <hr>
+    {%if access or not owner.profile.private or owner == user%}
     <div class="posts_profile">
         <ul class="nav-pills w-100 d-flex justify-content-center" id="pills-tab" role="tablist">
             <li class="nav-item mx-2" role="presentation">
@@ -327,6 +345,17 @@
         </div>
     </div>
 </div>
+{%else%}
+
+<div class="is_private">
+    <img src="{%static 'images/padlock.png'%}" width="50">
+    <div class="private_desc">
+        <span class="private_title">This Account is Private</span> 
+        <span>Follow this account to see their photos.</span>   
+      
+    </div>
+</div>
+{%endif%}
 <div id='confirm-delete'>
     <div class="header">
         are you sure to delete this post?
