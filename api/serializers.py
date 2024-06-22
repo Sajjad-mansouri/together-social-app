@@ -99,12 +99,20 @@ class UserSerializer(serializers.ModelSerializer):
 class ContactSerializer(serializers.ModelSerializer):
 	class Meta:
 		model=Contact
-		fields=['id','from_user','to_user']
+		fields=['id','from_user','to_user','access']
 
 	def to_internal_value(self,data):
 		from_user=self._context['request'].user.id
 		data['from_user']=from_user
 		return super().to_internal_value(data)
+
+	def create(self,validated_data):
+		print(f'create in contactSerializer: {validated_data}')
+		to_user=validated_data.get('to_user')
+		access=False if to_user.profile.private else True
+		validated_data['access']=access
+
+		return Contact.objects.create(**validated_data)
 
 class LikeSerializer(serializers.ModelSerializer):
 	class Meta:

@@ -23,6 +23,7 @@ class Profile(models.Model):
 class Contact(models.Model):
 	from_user=models.ForeignKey(MyUser,on_delete=models.CASCADE,related_name='rel_from')
 	to_user=models.ForeignKey(MyUser,on_delete=models.CASCADE,related_name='rel_to')
+	access=models.BooleanField(default=True)
 	created=models.DateTimeField(auto_now_add=True)
 	class Meta:
 		unique_together=['from_user','to_user']

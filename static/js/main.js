@@ -1081,10 +1081,15 @@ async function contact() {
         if (response.ok) {
             btn.setAttribute('data-btn', 'unfollow')
             btn.setAttribute('data-contact', data.id)
-            btn.textContent = 'unfollow'
+            if(data.access){
+
+                btn.textContent = 'unfollow'
+                followers.textContent = Number(followers.textContent) + 1
+            }else{
+                btn.textContent='requested'
+            }
 
 
-            followers.textContent = Number(followers.textContent) + 1
         }
     }
 }

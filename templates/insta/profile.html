@@ -23,6 +23,11 @@
                     <button class="contact" data-btn='unfollow' data-contact={{contact_id}} data-owner={{owner.id}}>
                         unfollow 
                     </button>
+
+                    {% elif requested %}
+                    <button class="contact" data-btn='requested' data-owner={{owner.id}}>
+                        requested 
+                    </button>
                     {%else%}
                     <button class="contact" data-btn='follow' data-owner={{owner.id}}>
                         follow 

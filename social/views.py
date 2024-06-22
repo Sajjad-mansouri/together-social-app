@@ -29,12 +29,14 @@ class Profile(ListView):
 		context=super().get_context_data(**kwargs)
 		context['owner']=self.owner
 		try:
-			access=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner).exists()
+			access=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=True).exists()
+			requested=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=False).exists()
 		except:
 			access=False
+			requested=False
 
 		following_count=self.owner.rel_from.count()
-		follower_count=self.owner.rel_to.count()
+		follower_count=self.owner.rel_to.filter(access=True).count()
 		total_post=self.owner.messages.count()
 		context['following_count']=following_count
 		context['follower_count']=follower_count
@@ -44,6 +46,7 @@ class Profile(ListView):
 		else:
 			context['contact_id']=''
 		context['access']=access
+		context['requested']=requested
 		return context
 
 
@@ -62,7 +65,7 @@ class Home(ListView):
 		else:
 			return render(request,'registration/login.html')
 	def get_queryset(self):
-		following=self.request.user.rel_from.values_list('to_user',flat=True)
+		following=self.request.user.rel_from.filter(access=True).values_list('to_user',flat=True)
 		print(Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user)))
 		print('++++++')
 		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user))
