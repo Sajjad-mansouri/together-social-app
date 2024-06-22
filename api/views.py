@@ -59,8 +59,10 @@ class UserListAPiView(generics.ListAPIView):
 		if self.request.query_params.get('search') !=None:
 
 			search=self.request.query_params.get('search')
+			print(f'search:{search}')
+			print(self.request.user)
 			queryset=UserModel.objects.filter(username__istartswith=search).exclude(username=self.request.user).select_related('profile')
-		
+			print(queryset)
 		elif self.request.query_params.get('relation') == 'follower':
 			print(self.request.user)
 			username=self.request.query_params.get('owner')

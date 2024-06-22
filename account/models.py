@@ -1,6 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+
+
 
 class MyUser(AbstractUser):
 	email=models.EmailField(unique=True)
@@ -29,3 +34,16 @@ class Contact(models.Model):
 		unique_together=['from_user','to_user']
 
 
+
+
+class Notification(models.Model):
+	user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+	content_type=models.ForeignKey(ContentType,on_delete=models.CASCADE)
+	object_id=models.PositiveIntegerField()
+	content_object=GenericForeignKey('content_type','object_id')
+	verb=models.CharField(max_length=300)
+	created=models.DateTimeField(auto_now_add=True)
+	seen=models.BooleanField(default=False)
+
+	class Meta:
+		indexes=[models.Index(fields=['content_type','object_id'])]

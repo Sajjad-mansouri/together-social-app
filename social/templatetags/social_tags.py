@@ -1,9 +1,12 @@
 from django import template
 from django.db.models import Q,Count
+from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 
 from social.models import Like,Message
+from account.models import Notification
 
-
+UserModel=get_user_model()
 register = template.Library()
 
 @register.simple_tag(takes_context=True)
@@ -57,3 +60,9 @@ def user_profile_path(context):
 	user=context['user']
 
 	return f'/profile/{user.username}'
+
+@register.simple_tag(takes_context=True)
+def notifications(context,owner):
+		user_type=ContentType.objects.get_for_model(UserModel)
+		notifs=Notification.objects.filter(content_type=user_type,object_id=owner.id,seen=False)
+		return notifs

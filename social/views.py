@@ -6,7 +6,9 @@ from django.shortcuts import get_object_or_404,redirect,render
 from django.db.models import Q
 
 
+
 from .models import Message
+from account.models import Notification
 
 UserModel=get_user_model()
 class Index(TemplateView):
@@ -34,6 +36,8 @@ class Profile(ListView):
 		except:
 			access=False
 			requested=False
+
+
 
 		following_count=self.owner.rel_from.count()
 		follower_count=self.owner.rel_to.filter(access=True).count()
@@ -69,6 +73,11 @@ class Home(ListView):
 		print(Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user)))
 		print('++++++')
 		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user))
+
+	def get_context_data(self,**kwargs):
+		context=super().get_context_data(**kwargs)
+		context['owner']=self.request.user
+		return context
 
 
 class Setting(LoginRequiredMixin,TemplateView):

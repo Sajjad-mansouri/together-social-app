@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     #myapp
     'account.apps.AccountConfig',
     'social.apps.SocialConfig',
+    'api.apps.ApiConfig',
 
     #installed
     "crispy_forms",

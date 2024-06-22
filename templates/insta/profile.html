@@ -13,6 +13,7 @@
                 <p class="name">
                     {% if user.is_authenticated%}
                     {{owner.username}}
+
                     {%if owner == user%}
                     <button class="edit_profile">
                         Edit profile 
