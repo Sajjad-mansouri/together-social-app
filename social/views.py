@@ -47,8 +47,13 @@ class Profile(ListView):
 		context['total_post']=total_post
 		if access:
 			context['contact_id']=self.owner.rel_to.get(from_user=self.request.user,to_user=self.owner).id
+		elif requested:
+			context['requested_id']=self.owner.rel_to.get(from_user=self.request.user,to_user=self.owner).id
 		else:
 			context['contact_id']=''
+			context['requested_id']=''
+
+		
 		context['access']=access
 		context['requested']=requested
 		return context

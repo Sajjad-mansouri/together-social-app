@@ -1045,7 +1045,8 @@ async function contact() {
     let followers = generalInfo.children[1].querySelector('span')
     let func = btn.getAttribute('data-btn');
     const accessToken = await getToken()
-    if (func == 'unfollow') {
+    console.log(func)
+    if (func == 'unfollow' || func== 'requested') {
 
 
         const contactId = btn.getAttribute('data-contact');
@@ -1058,11 +1059,18 @@ async function contact() {
         })
 
         if (response.ok) {
-            btn.setAttribute('data-function', 'follow')
-            btn.setAttribute('data-btn', 'follow')
-            btn.textContent = 'follow'
+            if (func=='unfollow'){
 
-            followers.textContent = Number(followers.textContent) - 1
+                btn.setAttribute('data-function', 'follow')
+                btn.setAttribute('data-btn', 'follow')
+                btn.textContent = 'follow'
+
+                followers.textContent = Number(followers.textContent) - 1
+            }else if(func=='requested'){
+                btn.setAttribute('data-function', 'follow')
+                btn.setAttribute('data-btn', 'follow')
+                btn.textContent = 'follow'
+            }
         }
     } else if (func == 'follow') {
         let ownerProfile = btn.getAttribute('data-owner')
@@ -1087,6 +1095,7 @@ async function contact() {
                 followers.textContent = Number(followers.textContent) + 1
             }else{
                 btn.textContent='requested'
+                btn.setAttribute('data-btn','requested')
             }
 
 
