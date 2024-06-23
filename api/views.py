@@ -97,10 +97,11 @@ class ContactApiView(generics.ListCreateAPIView):
 
 
 
-class ContactDetailApiView(generics.RetrieveDestroyAPIView):
+class ContactDetailApiView(generics.RetrieveUpdateDestroyAPIView):
 	permission_classes=[RelationDeletePermission]
 	serializer_class=ContactSerializer
 	queryset=Contact.objects.all()
+
 	
 
 

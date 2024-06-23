@@ -40,14 +40,14 @@
                 </p>
                 <div class="general_info">
                     <p><span>{{total_post}}</span> post</p>
-                    <p class='connections' data-list='follower' data-owner={{owner.username}} 
+                    <p class='connections' {%if user.is_authenticated %}data-bs-toggle='modal' data-bs-target='#connection-modal'{%endif%} data-list='follower' data-owner={{owner.username}} 
                     {% if access  %}
                         
                         data-bs-toggle="modal" 
                         data-bs-target="#connection-modal"
                     {% endif %}
                     ><span>{{follower_count}}</span> followers</p>
-                    <p class='connections' data-list='following' data-owner={{owner.username}} 
+                    <p class='connections' {%if user.is_authenticated %}data-bs-toggle='modal' data-bs-target='#connection-modal'{%endif%}data-list='following' data-owner={{owner.username}} 
                     {% if access  %}
                         
                         data-bs-toggle="modal" 
@@ -65,6 +65,8 @@
         </div>
     </div>
     <hr>
+    
+    {{access}}
     {%if access or not owner.profile.private or owner == user%}
     <div class="posts_profile">
         <ul class="nav-pills w-100 d-flex justify-content-center" id="pills-tab" role="tablist">

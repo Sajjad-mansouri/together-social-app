@@ -202,7 +202,7 @@
             <div class="notifications">
                 {%notifications owner as notifs%}
                 {%for notif in notifs%}
-                <div class="notif follow_notif">
+                <div class="notif follow_notif" data-from_user={{notif.user}}  data-contact={{notif.object_id}}>
                     <div class="cart">
                         <div>
                             <div class="img">
@@ -216,8 +216,9 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="follow_you">
-                            <button class="follow_text">Follow</button>
+                        <div class="follow">
+                            <button class="notif_btn confirm_follow" >confirm</button>
+                            <button class="notif_btn delete_request">delete</button>
                         </div>
                     </div>
                 </div>

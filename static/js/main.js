@@ -7,25 +7,7 @@ let pathName = window.location.pathname;
 let currentUser = document.getElementById('owner').textContent.match(/\w+(?=")/)
 
 
-//notification follow 
-let not_follow = document.querySelectorAll("#notification .notif.follow_notif")
-not_follow.forEach(item => {
-    let follow = item.children[0].children[1].children[0];
-    follow.addEventListener("click", function(e) {
-        e.stopPropagation();
-        follow.classList.toggle("following");
-        if (follow.classList.contains("following")) {
-            follow.innerHTML = "Following";
-            follow.style.backgroundColor = 'rgb(142, 142, 142)';
-            follow.style.color = "black";
-        } else {
-            follow.innerHTML = "Follow";
-            follow.style.backgroundColor = 'rgb(0, 149, 246)';
-            follow.style.color = "white";
-        }
 
-    });
-})
 
 /**************************comments **************************/
 
@@ -1482,6 +1464,7 @@ async function connectionList(queryType, username) {
     const datas = await response.json()
 
     if (response.ok) {
+        
         datas.forEach(data => {
 
             let connectionList = document.createElement('div')
@@ -1758,6 +1741,7 @@ if (pathName.includes('profile')) {
                 let username = element.getAttribute('data-owner')
                 modalTitle.textContent = title
                 if(currentUser!=null){
+                    console.log(currentUser)
 
                     connectionList(title, username)
                 }
@@ -1806,3 +1790,31 @@ if (pathName.includes('profile')) {
     }
 }
 
+
+
+
+let notificationDiv=document.querySelector('#notification .notifications')
+let notifs=notificationDiv.querySelectorAll('.notif')
+notifs.forEach(element=>{
+    let confirm=element.querySelector('.confirm_follow')
+    confirm.addEventListener('click',async function(){
+        const accessToken = await getToken()
+        console.log(element)
+        const contactId = element.getAttribute('data-contact');
+        let update={access:true}
+        const response = await fetch(baseUrl + `/api/contact/${contactId}/`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+            },
+            body:JSON.stringify(update)
+
+        })
+        const data=await response.json()
+        if(response.ok){
+            let btn=element.querySelector('.confirm_follow')
+            btn.textContent='follow back'
+        }
+    })
+})

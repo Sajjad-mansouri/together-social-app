@@ -15,8 +15,8 @@ def my_callback(sender,instance,created,raw ,**kwargs):
         verb=f'{instance.from_user} is requesting follow You'
 
     last_notif=timezone.now()-datetime.timedelta(seconds=60)
-    content_type=ContentType.objects.get_for_model(instance.to_user)
-    object_id=instance.to_user.id
+    content_type=ContentType.objects.get_for_model(instance)
+    object_id=instance.id
     similarity=Notification.objects.filter(user=instance.from_user,content_type=content_type,object_id=object_id,verb=verb,created__gt=last_notif)
     if not similarity:
-        Notification.objects.create(user=instance.from_user,content_object=instance.to_user,verb=verb)
+        Notification.objects.create(user=instance.from_user,content_object=instance,verb=verb)

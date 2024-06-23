@@ -102,8 +102,12 @@ class ContactSerializer(serializers.ModelSerializer):
 		fields=['id','from_user','to_user','access']
 
 	def to_internal_value(self,data):
-		from_user=self._context['request'].user.id
-		data['from_user']=from_user
+		if not getattr(self.root,'partial',False):
+			
+
+			from_user=self._context['request'].user.id
+			data['from_user']=from_user
+		
 		return super().to_internal_value(data)
 
 	def create(self,validated_data):

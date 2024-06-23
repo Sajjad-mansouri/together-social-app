@@ -32,6 +32,11 @@ class Profile(ListView):
 		context['owner']=self.owner
 		try:
 			access=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=True).exists()
+			for item in self.owner.rel_to.all():
+				print(item.from_user)
+				print(item.to_user)
+				print(item.access)
+			print(f'access {access}')
 			requested=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=False).exists()
 		except:
 			access=False

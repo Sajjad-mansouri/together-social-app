@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 
 from social.models import Like,Message
-from account.models import Notification
+from account.models import Notification,Contact
 
 UserModel=get_user_model()
 register = template.Library()
@@ -63,6 +63,7 @@ def user_profile_path(context):
 
 @register.simple_tag(takes_context=True)
 def notifications(context,owner):
-		user_type=ContentType.objects.get_for_model(UserModel)
-		notifs=Notification.objects.filter(content_type=user_type,object_id=owner.id,seen=False)
+		contact_type=ContentType.objects.get_for_model(Contact)
+		contacts=Contact.objects.filter(to_user=owner,access=False)
+		notifs=Notification.objects.filter(content_type=contact_type,object_id__in=contacts,seen=False)
 		return notifs
