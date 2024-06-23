@@ -1464,7 +1464,7 @@ async function connectionList(queryType, username) {
     const datas = await response.json()
 
     if (response.ok) {
-        
+        console.log(datas)
         datas.forEach(data => {
 
             let connectionList = document.createElement('div')
@@ -1781,7 +1781,6 @@ if (pathName.includes('profile')) {
                 let postsSection = document.getElementById('saved_sec');
                 postsSection.textContent = ''
                 datas.forEach(data => {
-
                     addPostProfile(data, true)
                 })
             }
@@ -1812,9 +1811,46 @@ notifs.forEach(element=>{
 
         })
         const data=await response.json()
+        console.log(data)
         if(response.ok){
             let btn=element.querySelector('.confirm_follow')
-            btn.textContent='follow back'
+            let deleteBtn=element.querySelector('.delete_request')
+            let desc=element.querySelector('.desc')
+            btn.remove()
+            if(!data.reverse_following){
+
+                let followBack=document.createElement('button')
+                followBack.textContent='follow back'
+                followBack.classList.add('follow_back','notif_btn')
+                let followDiv=element.querySelector('.follow')
+                followDiv.prepend(followBack)
+                
+                let to_user=element.getAttribute('data-from_user')
+                let info={to_user:to_user}
+                followBack.addEventListener('click',async function(){
+                    let datas = { to_user: to_user }
+                    let resp = await fetch(baseUrl + `/api/contact/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        "Content-Type": "application/json",
+                    },
+                    body:JSON.stringify(info)
+
+                })
+                    if(resp.ok){
+                        followBack.remove()
+                        
+                        deleteBtn.remove()
+                    } 
+                })
+            }else{
+                deleteBtn.remove() 
+            }
+            desc.textContent='following you'
+    
         }
     })
+
+
 })

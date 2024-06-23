@@ -200,9 +200,9 @@
         <div id="notification" class="notification_section">
             <h2>Notifications</h2>
             <div class="notifications">
-                {%notifications owner as notifs%}
+                {%notifications user as notifs%}
                 {%for notif in notifs%}
-                <div class="notif follow_notif" data-from_user={{notif.user}}  data-contact={{notif.object_id}}>
+                <div class="notif follow_notif" data-from_user={{notif.user.id}}  data-contact={{notif.object_id}}>
                     <div class="cart">
                         <div>
                             <div class="img">

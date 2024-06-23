@@ -23,34 +23,34 @@ class Profile(ListView):
 		username=self.kwargs.get('username',self.request.user.username)
 		user=self.request.user
 		if username:
-			user=get_object_or_404(UserModel,username=username)
-		self.owner=user
-		return Message.objects.filter(user=user)
+			owner_user=get_object_or_404(UserModel,username=username)
+		self.owner=owner_user
+		return Message.objects.filter(user=owner_user)
 
 	def get_context_data(self,**kwargs):
 		context=super().get_context_data(**kwargs)
 		context['owner']=self.owner
 		try:
 			access=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=True).exists()
-			for item in self.owner.rel_to.all():
-				print(item.from_user)
-				print(item.to_user)
-				print(item.access)
-			print(f'access {access}')
+
 			requested=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=False).exists()
 		except:
 			access=False
 			requested=False
 
+		if self.owner==self.request.user:
+			access=True
+			print('======')
+			print(access)
 
 
-		following_count=self.owner.rel_from.count()
+		following_count=self.owner.rel_from.filter(access=True).count()
 		follower_count=self.owner.rel_to.filter(access=True).count()
 		total_post=self.owner.messages.count()
 		context['following_count']=following_count
 		context['follower_count']=follower_count
 		context['total_post']=total_post
-		if access:
+		if access and self.owner !=self.request.user:
 			context['contact_id']=self.owner.rel_to.get(from_user=self.request.user,to_user=self.owner).id
 		elif requested:
 			context['requested_id']=self.owner.rel_to.get(from_user=self.request.user,to_user=self.owner).id
@@ -61,6 +61,7 @@ class Profile(ListView):
 		
 		context['access']=access
 		context['requested']=requested
+		context['owner']=self.owner
 		return context
 
 
@@ -92,6 +93,11 @@ class Home(ListView):
 
 class Setting(LoginRequiredMixin,TemplateView):
 	template_name='insta/settings.html'
+
+	def get_context_data(self,**kwargs):
+		context=super().get_context_data(**kwargs)
+		context['owner']=self.request.user
+		return context
 
 
 class LikedPost(LoginRequiredMixin,ListView):

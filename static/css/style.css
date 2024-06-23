@@ -733,7 +733,9 @@ font-weight: bold;
 
 
 /* CSS */
-#notification .notif_btn.confirm_follow {
+#notification .notif_btn.confirm_follow,
+#notification .notif_btn.follow_back
+ {
   margin-right: 5px;
   background-color: #0095ff;
   border: 1px solid transparent;

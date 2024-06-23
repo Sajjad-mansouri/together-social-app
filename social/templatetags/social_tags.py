@@ -64,6 +64,9 @@ def user_profile_path(context):
 @register.simple_tag(takes_context=True)
 def notifications(context,owner):
 		contact_type=ContentType.objects.get_for_model(Contact)
+		print(owner)
+		print('**************')
+		owner=UserModel.objects.get(username=owner)
 		contacts=Contact.objects.filter(to_user=owner,access=False)
 		notifs=Notification.objects.filter(content_type=contact_type,object_id__in=contacts,seen=False)
 		return notifs

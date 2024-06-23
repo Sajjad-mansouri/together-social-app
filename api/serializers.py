@@ -97,9 +97,16 @@ class UserSerializer(serializers.ModelSerializer):
 		fields=['first_name','last_name','email','username','profile_image']
 
 class ContactSerializer(serializers.ModelSerializer):
+
+	def reverse(self,obj):
+		return Contact.objects.filter(from_user=obj.to_user,to_user=obj.from_user).exists()
+		
+
+	reverse_following=serializers.SerializerMethodField('reverse')
+
 	class Meta:
 		model=Contact
-		fields=['id','from_user','to_user','access']
+		fields=['id','from_user','to_user','access','reverse_following']
 
 	def to_internal_value(self,data):
 		if not getattr(self.root,'partial',False):

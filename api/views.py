@@ -67,7 +67,7 @@ class UserListAPiView(generics.ListAPIView):
 			print(self.request.user)
 			username=self.request.query_params.get('owner')
 			user=get_object_or_404(UserModel,username=username)
-			queryset = UserModel.objects.filter(rel_from__to_user=user)
+			queryset = UserModel.objects.filter(rel_from__to_user=user,rel_from__access=True)
 			print(queryset)
 
 			
@@ -75,7 +75,8 @@ class UserListAPiView(generics.ListAPIView):
 		elif self.request.query_params.get('relation') == 'following':
 			username=self.request.query_params.get('owner')
 			user=get_object_or_404(UserModel,username=username)
-			queryset = UserModel.objects.filter(rel_to__from_user=user)
+			queryset = UserModel.objects.filter(rel_to__from_user=user,rel_to__access=True)
+			print(queryset)
 
 
 
