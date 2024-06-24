@@ -446,7 +446,7 @@
                         {%if user.is_authenticated%}
                         <form>
                             <div class="input">
-                                <img src="" alt="">
+                                <img src="{{user.profile.profile_image.url}}" alt="">
                                 <input type="text" id="emoji_comment" placeholder="Add a comment..." />
                             </div>
                             <!-- <div class="emogi">

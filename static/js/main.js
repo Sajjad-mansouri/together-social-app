@@ -155,16 +155,15 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
             let dropDown = comment.querySelector('#drop-down')
             dropDown.remove()
         }
+        console.log(item)
         commentLikeInfo(comment, item.like_info)
         let likeCommentDiv = comment.querySelector('.like')
-        console.log(likeCommentDiv)
+        
         likeCommentDiv.addEventListener('click', () => {
             
                 if(currentUser!=null){
 
                 likeComment(comment, item.like_info)
-                }else{
-                    console.log('anonymous')
                 }
             
         })
@@ -218,6 +217,7 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
             let dropDown = response.querySelector('#drop-down')
             dropDown.remove()
         }
+
         commentLikeInfo(response, item.like_info)
         let likeCommentDiv = response.querySelector('.like')
         likeCommentDiv.addEventListener('click', () => {
@@ -225,7 +225,7 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
 
                 likeComment(response, item.like_info)
             }else{
-                console.log('anonymous')
+                
             }
 
         })
@@ -239,14 +239,26 @@ async function getComments(modalClone, postId) {
     let modalBody = modalClone.querySelector('.comment-body')
     let commentsSection = modalBody.querySelector('.comments-clone')
     // const accessToken = await getToken()
+    let response;
+    if(currentUser!=null){
+        let accessToken=await getToken()
+        response = await fetch(`http://localhost:8000/api/post/${postId}/comments`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
 
-    const response = await fetch(`http://localhost:8000/api/post/${postId}/comments`, {
-        method: 'GET',
-        // headers: {
-        //     'Authorization': `Bearer ${accessToken}`
-        // },
+        })        
+    }else{
 
-    })
+        response = await fetch(`http://localhost:8000/api/post/${postId}/comments`, {
+            method: 'GET',
+            // headers: {
+            //     'Authorization': `Bearer ${accessToken}`
+            // },
+
+        })
+    }
     const data = await response.json()
 
     if (response.ok) {
@@ -583,11 +595,11 @@ let deletePostCallBack = null
 let fetchDeletePost = null
 
 function deletePost(element, profile = false, deleteBtn = false) {
-    console.log('delete post function')
-    console.log(element)
+    
+    
     element.removeEventListener('click', deletePostCallBack)
     deletePostCallBack = function() {
-        console.log('delete callback')
+        
         //delebtn inserted to deletePost function in post detail profile
         if (deleteBtn == false) {
             deleteBtn = document.getElementById('delete-post')
@@ -649,7 +661,7 @@ function createPostModal(){
     form.addEventListener('change', handleSubmit);
     hideModal(modalClone)
 }
-console.log(currentUser)
+
 if(currentUser!=null){
 
     document.querySelector('#create-btn').addEventListener('click',createPostModal)
@@ -659,14 +671,14 @@ if(currentUser!=null){
 
 // like and dislike
 async function likeComment(div, like_info) {
-
+    
     const likeDiv = div.querySelector('.like')
     const commentId = div.getAttribute('data-comment')
     let lovedImg = likeDiv.querySelector('.loved')
     let notLovedimg = likeDiv.querySelector('.not_loved')
     let p = likeDiv.querySelector('p')
     const accessToken = await getToken()
-    console.log(currentUser)
+    
     let headers={'Authorization': `Bearer ${accessToken}`}
 
     if (like_info.is_liked ) {
@@ -817,11 +829,12 @@ async function like(div) {
 
         }
     }else{
-        console.log('anonymous')
+        
     }
 }
 
 //save post
+let  saveFetch
 function savePost(element) {
 
     let postId = element.getAttribute('data-post')
@@ -830,7 +843,8 @@ function savePost(element) {
 
         let saved = saveIcon.querySelector('.saved')
         let notSaved = saveIcon.querySelector('.not_saved')
-        saveIcon.addEventListener('click', async function() {
+        saveIcon.removeEventListener('click',saveFetch)
+        saveFetch=async function(){
             let status = saveIcon.getAttribute('data-status');
             let savedId = saveIcon.getAttribute('data-saved')
             let accessToken = await getToken()
@@ -872,7 +886,8 @@ function savePost(element) {
                 }
             }
 
-        })
+        }
+        saveIcon.addEventListener('click', saveFetch)
     }
 
 }
@@ -1027,7 +1042,7 @@ async function contact() {
     let followers = generalInfo.children[1].querySelector('span')
     let func = btn.getAttribute('data-btn');
     const accessToken = await getToken()
-    console.log(func)
+    
     if (func == 'unfollow' || func== 'requested') {
 
 
@@ -1464,7 +1479,7 @@ async function connectionList(queryType, username) {
     const datas = await response.json()
 
     if (response.ok) {
-        console.log(datas)
+        
         datas.forEach(data => {
 
             let connectionList = document.createElement('div')
@@ -1532,18 +1547,31 @@ function profileDetailPost(elements){
             if (window.screen.width > 498) {
 
                 let postId = element.getAttribute('data-post');
+                let response;
                 // let accessToken = await getToken()
-                let response = await fetch(baseUrl + `/api/post/${postId}/`, {
-                    method: 'GET',
-                    // headers: {
-                    //     'Authorization': `Bearer ${accessToken}`
-                    // }
-                })
-                let data = await response.json()
+                if(currentUser!=null){
+                    let accessToken=await getToken()
+                    response = await fetch(baseUrl + `/api/post/${postId}/`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
+                    })
+                }else{
 
+                    response = await fetch(baseUrl + `/api/post/${postId}/`, {
+                        method: 'GET',
+                        // headers: {
+                        //     'Authorization': `Bearer ${accessToken}`
+                        // }
+                    })
+                }
+                let data = await response.json()
+                
                 let container = document.querySelector('.comment-container .post_desc')
                 let post = document.querySelector('.comment-container .post')
                 let likeDiv = post.querySelector('.liked')
+                let saveIcon=post.querySelector('.save')
                 let likeSpan = likeDiv.querySelector('span')
                 let likeDivIcon = post.querySelector('.icons .like')
                 let loved = likeDivIcon.querySelector('.loved')
@@ -1561,7 +1589,7 @@ function profileDetailPost(elements){
                     postUser.textContent=data.owner.username
                     postText.textContent=data.text
 
-                    if(currentUser==data.owner.username){
+                    if(currentUser!=data.owner.username && more!=null){
                         more.remove()
                     }
 
@@ -1579,14 +1607,15 @@ function profileDetailPost(elements){
 
                     //like section
                     likeDivIcon.setAttribute('data-post', data.id)
-                    console.log(data.is_liked[0])
+                    
+
                     if (data.is_liked[0]) {
 
                         likeDivIcon.setAttribute('data-type', 'True')
                         likeDivIcon.setAttribute('data-like', data.is_liked[1])
                         loved.classList.add('display')
                         notLoved.classList.add('hide_img')
-                        console.log(likeSpan)
+                        
 
                     } else {
                         likeDivIcon.setAttribute('data-type', 'False')
@@ -1594,6 +1623,23 @@ function profileDetailPost(elements){
                         notLoved.classList.remove('hide_img')
 
 
+                    }
+
+                    if(data.is_saved[0]){
+                        
+                        saveIcon.setAttribute('data-status', 'True');
+                        saveIcon.setAttribute('data-saved', data.is_saved[1])
+                        let savedImg=saveIcon.querySelector('.saved')
+                        let notSavedImg=saveIcon.querySelector('.not_saved')
+                        savedImg.classList.remove('hide')
+                        notSavedImg.classList.add('hide')
+                    }else{
+                        saveIcon.setAttribute('data-status', 'False');
+                        saveIcon.removeAttribute('data-saved')
+                        let savedImg=saveIcon.querySelector('.saved')
+                        let notSavedImg=saveIcon.querySelector('.not_saved')
+                        savedImg.classList.add('hide')
+                        notSavedImg.classList.remove('hide')
                     }
                     likeDiv.setAttribute('data-likeCount', data.is_liked[2])
                     if (likeSpan == null) {
@@ -1741,7 +1787,7 @@ if (pathName.includes('profile')) {
                 let username = element.getAttribute('data-owner')
                 modalTitle.textContent = title
                 if(currentUser!=null){
-                    console.log(currentUser)
+                    
 
                     connectionList(title, username)
                 }
@@ -1798,7 +1844,7 @@ notifs.forEach(element=>{
     let confirm=element.querySelector('.confirm_follow')
     confirm.addEventListener('click',async function(){
         const accessToken = await getToken()
-        console.log(element)
+        
         const contactId = element.getAttribute('data-contact');
         let update={access:true}
         const response = await fetch(baseUrl + `/api/contact/${contactId}/`, {
@@ -1811,7 +1857,7 @@ notifs.forEach(element=>{
 
         })
         const data=await response.json()
-        console.log(data)
+        
         if(response.ok){
             let btn=element.querySelector('.confirm_follow')
             let deleteBtn=element.querySelector('.delete_request')

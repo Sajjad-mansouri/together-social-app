@@ -31,6 +31,7 @@ class PostSerializer(serializers.ModelSerializer):
 	owner=serializers.SerializerMethodField('get_author')
 
 	def liked(self,obj):
+		
 		user=self._context['request'].user
 		
 		try:
@@ -39,21 +40,46 @@ class PostSerializer(serializers.ModelSerializer):
 			like_obj=None
 
 		like_count=obj.likes.count()
+		
 		try:
 			user_likes=user.like_set.values_list('post',flat=True)
 		except AttributeError:
 			user_likes=[]
+		
+		
 		if obj.id in user_likes:
+			
 			return (True,like_obj.id, like_count)
 		else:
-		 return (False,None,like_count)
+			
+			return (False,None,like_count)
 
 	is_liked=serializers.SerializerMethodField('liked')
 
-	
+	def saved(self,obj):
+		user=self._context['request'].user
+		
+		try:
+			saved_obj=user.savepost_set.get(post=obj)
+		except:
+			saved_obj=None
+
+		try:
+			
+			user_saves=user.savepost_set.values_list('post',flat=True)
+		except AttributeError:
+			user_saves=[]
+
+		
+		if obj.id in user_saves:
+			return (True,saved_obj.id)
+		else:
+			return (False,None)
+
+	is_saved=serializers.SerializerMethodField('saved')	
 
 	def to_internal_value(self,data):
-		print(data)
+		
 		user=self._context['request'].user.id
 		data['user']=user
 		return super().to_internal_value(data)
@@ -61,12 +87,12 @@ class PostSerializer(serializers.ModelSerializer):
 	def is_valid(self,raise_exception=False):
 
 			valid=super().is_valid()
-			print(self.errors)
+			
 			return valid
 
 	class Meta:
 		model=Message
-		fields=['id','text','image','created','owner','user','is_liked']
+		fields=['id','text','image','created','owner','user','is_liked','is_saved']
 		read_only_fields=['owner','is_liked']
 
 
@@ -118,7 +144,7 @@ class ContactSerializer(serializers.ModelSerializer):
 		return super().to_internal_value(data)
 
 	def create(self,validated_data):
-		print(f'create in contactSerializer: {validated_data}')
+		
 		to_user=validated_data.get('to_user')
 		access=False if to_user.profile.private else True
 		validated_data['access']=access
@@ -133,7 +159,7 @@ class LikeSerializer(serializers.ModelSerializer):
 	def to_internal_value(self,data):
 		user=self._context['request'].user.id
 		data['user']=user
-		print(data)
+		
 		return super().to_internal_value(data)
 
 class SavedPostSerializer(serializers.ModelSerializer):
@@ -169,7 +195,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 			instance_user.username=user.get('username',instance_user.username)
 			
 			instance_user.save()
-		print('user',user)
+		
 		instance.save()
 		return instance
 
@@ -195,22 +221,23 @@ class CommentSerializer(serializers.ModelSerializer):
 
 	def user_comment(self,obj):
 		user=self._context['request'].user.username
-		print(self._context['request'].user)
-		print(f'user for comment:{user}')
-		print(obj.author.username)
+		
+		
+		
 		if obj.author.username==user:
 			return True
 		else:
 			return False
 	def like(self,obj):
 		user=self._context['request'].user.id
-		print(f'user that like or unlike:{user}')
+		
 		like_count=obj.like.count()
 		data={}
 		try:
-			
+			print('try like commment')
+			print(f'user: {user}')
 			liked=obj.likecomment_set.get(user_id=user)
-			
+			print(f'liked: {liked}')
 			data.update({"is_liked":True,"id":liked.id})
 		except Exception as e:
 			data.update({'is_liked':False})
@@ -225,11 +252,11 @@ class CommentSerializer(serializers.ModelSerializer):
 	def to_internal_value(self,data):
 		user=self._context['request'].user.id
 		data['author']={'username':user}
-		print(data)
+		
 		return super().to_internal_value(data)
 
 	def create(self,validated_data):
-		print('validated_data',validated_data)
+		
 		author=validated_data.pop('author')
 		object_id=validated_data['object_id']
 		username=int(author['username'])
@@ -254,7 +281,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 	def is_valid(self,raise_exception=False):
 		valid=super().is_valid(raise_exception=False)
-		print(self.errors)
+		
 		return valid
 	class Meta:
 		model=Comment
@@ -268,13 +295,13 @@ class LikeCommentSerializer(serializers.ModelSerializer):
 		fields=['id','user','comment']
 
 	def to_internal_value(self,data):
-		print('++++++++++++=')
-		print(type(data))
+		
+		
 		user=self._context['request'].user.id
-		print(self._context['request'].user)
-		print('*********')
+		
+		
 		data['user']=user
-		print(data)
+		
 		return super().to_internal_value(data)
 
 
@@ -292,25 +319,25 @@ class ChangePasswordSerializer(serializers.Serializer):
 		return super().to_internal_value(data)
 
 	def is_valid(self,raise_exception=False):
-			print('is_valid')
+			
 			valid=super().is_valid(raise_exception=True)
-			print('value in is_valid')
+			
 			return valid
 	def validate_old_password(self,value):
-		print('validate_old_password')
+		
 		user=self._context['request'].user
 		if not user.check_password(value):
 			raise serializers.ValidationError('old password is not correct')
 		return value
 
 	def validate(self,data):
-		print('validate')
+		
 		
 		if data['password1']!=data['password2']:
 			raise serializers.ValidationError('doesnot match passwords')
 
 		validate_password(data['password1'],self._context['request'].user)
-		print('end validate')
+		
 		return data
 
 	def save(self,**kwargs):
