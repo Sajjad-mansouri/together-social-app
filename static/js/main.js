@@ -77,7 +77,7 @@ function hideModal(cloneModal) {
 
 function replyListener(modalBody, replyBtn, replyTO, commentUser, mainComment) {
 
-    if(currentUser!=null){
+    if (currentUser != null) {
 
         let modalContent = modalBody.closest('.modal-content')
         replyBtn.addEventListener('click', () => {
@@ -155,17 +155,17 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
             let dropDown = comment.querySelector('#drop-down')
             dropDown.remove()
         }
-        console.log(item)
+        
         commentLikeInfo(comment, item.like_info)
         let likeCommentDiv = comment.querySelector('.like')
-        
+
         likeCommentDiv.addEventListener('click', () => {
-            
-                if(currentUser!=null){
+
+            if (currentUser != null) {
 
                 likeComment(comment, item.like_info)
-                }
-            
+            }
+
         })
     } else {
         //reply 
@@ -221,11 +221,11 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
         commentLikeInfo(response, item.like_info)
         let likeCommentDiv = response.querySelector('.like')
         likeCommentDiv.addEventListener('click', () => {
-            if(currentUser!=null){
+            if (currentUser != null) {
 
                 likeComment(response, item.like_info)
-            }else{
-                
+            } else {
+
             }
 
         })
@@ -240,16 +240,16 @@ async function getComments(modalClone, postId) {
     let commentsSection = modalBody.querySelector('.comments-clone')
     // const accessToken = await getToken()
     let response;
-    if(currentUser!=null){
-        let accessToken=await getToken()
+    if (currentUser != null) {
+        let accessToken = await getToken()
         response = await fetch(`http://localhost:8000/api/post/${postId}/comments`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
 
-        })        
-    }else{
+        })
+    } else {
 
         response = await fetch(`http://localhost:8000/api/post/${postId}/comments`, {
             method: 'GET',
@@ -323,7 +323,7 @@ function messageAddEvnetListener(messageElement) {
 let commentForm = null
 
 function writeComment(modalClone, input, postId) {
-    if(input!=null){
+    if (input != null) {
         let form = input.closest('form')
 
         form.removeEventListener('submit', commentForm)
@@ -521,7 +521,7 @@ function addPostProfile(data, saved = false) {
     }
     let div = document.createElement('div');
     div.className = 'item';
-    div.setAttribute('data-post',data.id)
+    div.setAttribute('data-post', data.id)
     let image = document.createElement('img');
     image.src = data.image;
     image.className = 'img-fluid item_img';
@@ -537,8 +537,9 @@ function addPostProfile(data, saved = false) {
     let generalInfo = document.querySelector('.profile_info .general_info')
 
     let postInfo = generalInfo.children[0].querySelector('span')
-    let divs=[div]
+    let divs = [div]
     postInfo.textContent = Number(postInfo.textContent) + 1
+    console.log(divs)
     profileDetailPost(divs)
 
 }
@@ -595,11 +596,11 @@ let deletePostCallBack = null
 let fetchDeletePost = null
 
 function deletePost(element, profile = false, deleteBtn = false) {
-    
-    
+
+
     element.removeEventListener('click', deletePostCallBack)
     deletePostCallBack = function() {
-        
+
         //delebtn inserted to deletePost function in post detail profile
         if (deleteBtn == false) {
             deleteBtn = document.getElementById('delete-post')
@@ -640,7 +641,7 @@ function deletePost(element, profile = false, deleteBtn = false) {
 }
 
 
-function createPostModal(){
+function createPostModal() {
     event.preventDefault();
 
     let modal = document.querySelector('#create_modal_clone')
@@ -662,26 +663,26 @@ function createPostModal(){
     hideModal(modalClone)
 }
 
-if(currentUser!=null){
+if (currentUser != null) {
 
-    document.querySelector('#create-btn').addEventListener('click',createPostModal)
-    document.querySelector('#sm_create_modal').addEventListener('click',createPostModal)
+    document.querySelector('#create-btn').addEventListener('click', createPostModal)
+    document.querySelector('#sm_create_modal').addEventListener('click', createPostModal)
 }
 //like comment and reply
 
 // like and dislike
 async function likeComment(div, like_info) {
-    
+
     const likeDiv = div.querySelector('.like')
     const commentId = div.getAttribute('data-comment')
     let lovedImg = likeDiv.querySelector('.loved')
     let notLovedimg = likeDiv.querySelector('.not_loved')
     let p = likeDiv.querySelector('p')
     const accessToken = await getToken()
-    
-    let headers={'Authorization': `Bearer ${accessToken}`}
 
-    if (like_info.is_liked ) {
+    let headers = { 'Authorization': `Bearer ${accessToken}` }
+
+    if (like_info.is_liked) {
 
         const response = await fetch(baseUrl + `/api/comment/likes/${like_info.id}`, {
             method: "DELETE",
@@ -697,7 +698,7 @@ async function likeComment(div, like_info) {
 
         }
 
-    } else{
+    } else {
 
         const body = { 'comment': commentId }
 
@@ -740,9 +741,11 @@ function commentLikeInfo(div, like_info) {
 
 //**********like post**************
 // like and dislike
+let counter=0
 async function like(div) {
-
-    if(currentUser!=null){
+    counter+=1
+    console.log(counter)
+    if (currentUser != null) {
 
         const dataType = div.getAttribute('data-type');
 
@@ -751,7 +754,7 @@ async function like(div) {
 
 
         const accessToken = await getToken()
-        let headers={'Authorization': `Bearer ${accessToken}`}
+        let headers = { 'Authorization': `Bearer ${accessToken}` }
 
 
         if (dataType === 'True') {
@@ -760,9 +763,10 @@ async function like(div) {
                 method: "DELETE",
                 headers: headers
             })
-
+            
+            
             if (response.ok) {
-
+                
                 let post = div.closest('.post');
                 let liked = post.querySelector('.liked')
                 let span = liked.querySelector('span');
@@ -828,23 +832,24 @@ async function like(div) {
             }
 
         }
-    }else{
-        
+    } else {
+
     }
 }
 
 //save post
-let  saveFetch
+let saveFetch
+
 function savePost(element) {
 
     let postId = element.getAttribute('data-post')
     let saveIcon = element.querySelector('.save');
-    if(saveIcon!=null){
+    if (saveIcon != null) {
 
         let saved = saveIcon.querySelector('.saved')
         let notSaved = saveIcon.querySelector('.not_saved')
-        saveIcon.removeEventListener('click',saveFetch)
-        saveFetch=async function(){
+        saveIcon.removeEventListener('click', saveFetch)
+        saveFetch = async function() {
             let status = saveIcon.getAttribute('data-status');
             let savedId = saveIcon.getAttribute('data-saved')
             let accessToken = await getToken()
@@ -992,7 +997,7 @@ async function searchUser(findDiv, searchValue) {
     }
 }
 
-if(currentUser!=null){
+if (currentUser != null) {
 
     let search_icon = document.getElementById("search_icon");
     let search = document.getElementById("search");
@@ -1042,8 +1047,8 @@ async function contact() {
     let followers = generalInfo.children[1].querySelector('span')
     let func = btn.getAttribute('data-btn');
     const accessToken = await getToken()
-    
-    if (func == 'unfollow' || func== 'requested') {
+
+    if (func == 'unfollow' || func == 'requested') {
 
 
         const contactId = btn.getAttribute('data-contact');
@@ -1056,14 +1061,14 @@ async function contact() {
         })
 
         if (response.ok) {
-            if (func=='unfollow'){
+            if (func == 'unfollow') {
 
                 btn.setAttribute('data-function', 'follow')
                 btn.setAttribute('data-btn', 'follow')
                 btn.textContent = 'follow'
 
                 followers.textContent = Number(followers.textContent) - 1
-            }else if(func=='requested'){
+            } else if (func == 'requested') {
                 btn.setAttribute('data-function', 'follow')
                 btn.setAttribute('data-btn', 'follow')
                 btn.textContent = 'follow'
@@ -1086,13 +1091,13 @@ async function contact() {
         if (response.ok) {
             btn.setAttribute('data-btn', 'unfollow')
             btn.setAttribute('data-contact', data.id)
-            if(data.access){
+            if (data.access) {
 
                 btn.textContent = 'unfollow'
                 followers.textContent = Number(followers.textContent) + 1
-            }else{
-                btn.textContent='requested'
-                btn.setAttribute('data-btn','requested')
+            } else {
+                btn.textContent = 'requested'
+                btn.setAttribute('data-btn', 'requested')
             }
 
 
@@ -1114,7 +1119,7 @@ if (document.contains(document.querySelector('.contact'))) {
 }
 
 //logout
-if(currentUser!=null){
+if (currentUser != null) {
 
     let logoutBtn = document.querySelector('.logout')
     let logoutForm = logoutBtn.querySelector('form')
@@ -1479,7 +1484,7 @@ async function connectionList(queryType, username) {
     const datas = await response.json()
 
     if (response.ok) {
-        
+
         datas.forEach(data => {
 
             let connectionList = document.createElement('div')
@@ -1508,7 +1513,7 @@ async function connectionList(queryType, username) {
             userInfo.append(username)
             userInfo.append(name)
 
-            
+
 
             connectionList.append(userInfo)
             if (currentUser == owner) {
@@ -1535,9 +1540,14 @@ async function connectionList(queryType, username) {
     }
 }
 
-function profileDetailPost(elements){
-        let run = true
-        elements.forEach(element => {
+function profileDetailPost(elements) {
+    let run = true
+    let escapeDetailModal=null
+    let closeDetailModal=null
+    let toggleDetailMore=null
+    let closeDetailMoreContent=null
+    let likePostFunction=null
+    elements.forEach(element => {
         element.addEventListener('click', async function(event) {
 
             event.stopPropagation()
@@ -1549,15 +1559,15 @@ function profileDetailPost(elements){
                 let postId = element.getAttribute('data-post');
                 let response;
                 // let accessToken = await getToken()
-                if(currentUser!=null){
-                    let accessToken=await getToken()
+                if (currentUser != null) {
+                    let accessToken = await getToken()
                     response = await fetch(baseUrl + `/api/post/${postId}/`, {
                         method: 'GET',
                         headers: {
                             'Authorization': `Bearer ${accessToken}`
                         }
                     })
-                }else{
+                } else {
 
                     response = await fetch(baseUrl + `/api/post/${postId}/`, {
                         method: 'GET',
@@ -1567,29 +1577,33 @@ function profileDetailPost(elements){
                     })
                 }
                 let data = await response.json()
-                
-                let container = document.querySelector('.comment-container .post_desc')
-                let post = document.querySelector('.comment-container .post')
+                let backDrop=document.querySelector('#backdrop')
+                let favDialogClone=document.getElementById('favDialog-clone')
+                let favDialog=favDialogClone.cloneNode(true)
+                favDialog.setAttribute('id','favDialog')
+                backDrop.append(favDialog)
+                let container = favDialog.querySelector('.comment-container .post_desc')
+                let post = favDialog.querySelector('.comment-container .post')
                 let likeDiv = post.querySelector('.liked')
-                let saveIcon=post.querySelector('.save')
+                let saveIcon = post.querySelector('.save')
                 let likeSpan = likeDiv.querySelector('span')
                 let likeDivIcon = post.querySelector('.icons .like')
                 let loved = likeDivIcon.querySelector('.loved')
                 let notLoved = likeDivIcon.querySelector('.not_loved')
-                let postUser=post.querySelector('.post_desc p a')
-                let postText=post.querySelector('.post_desc p span')
-                let infoUser=post.querySelector('.info .person a')
-                let infoUserImg=post.querySelector('.info .person img')
-                let more =post.querySelector('.more')
+                let postUser = post.querySelector('.post_desc p a')
+                let postText = post.querySelector('.post_desc p span')
+                let infoUser = post.querySelector('.info .person a')
+                let infoUserImg = post.querySelector('.info .person img')
+                let more = post.querySelector('.more')
 
-                
+
                 if (response.ok) {
-                    infoUser.textContent=data.owner.username
-                    infoUserImg.src=data.owner.profile_image
-                    postUser.textContent=data.owner.username
-                    postText.textContent=data.text
+                    infoUser.textContent = data.owner.username
+                    infoUserImg.src = data.owner.profile_image
+                    postUser.textContent = data.owner.username
+                    postText.textContent = data.text
 
-                    if(currentUser!=data.owner.username && more!=null){
+                    if (currentUser != data.owner.username && more != null) {
                         more.remove()
                     }
 
@@ -1607,7 +1621,7 @@ function profileDetailPost(elements){
 
                     //like section
                     likeDivIcon.setAttribute('data-post', data.id)
-                    
+
 
                     if (data.is_liked[0]) {
 
@@ -1615,7 +1629,7 @@ function profileDetailPost(elements){
                         likeDivIcon.setAttribute('data-like', data.is_liked[1])
                         loved.classList.add('display')
                         notLoved.classList.add('hide_img')
-                        
+
 
                     } else {
                         likeDivIcon.setAttribute('data-type', 'False')
@@ -1625,19 +1639,19 @@ function profileDetailPost(elements){
 
                     }
 
-                    if(data.is_saved[0]){
-                        
+                    if (data.is_saved[0]) {
+
                         saveIcon.setAttribute('data-status', 'True');
                         saveIcon.setAttribute('data-saved', data.is_saved[1])
-                        let savedImg=saveIcon.querySelector('.saved')
-                        let notSavedImg=saveIcon.querySelector('.not_saved')
+                        let savedImg = saveIcon.querySelector('.saved')
+                        let notSavedImg = saveIcon.querySelector('.not_saved')
                         savedImg.classList.remove('hide')
                         notSavedImg.classList.add('hide')
-                    }else{
+                    } else {
                         saveIcon.setAttribute('data-status', 'False');
                         saveIcon.removeAttribute('data-saved')
-                        let savedImg=saveIcon.querySelector('.saved')
-                        let notSavedImg=saveIcon.querySelector('.not_saved')
+                        let savedImg = saveIcon.querySelector('.saved')
+                        let notSavedImg = saveIcon.querySelector('.not_saved')
                         savedImg.classList.add('hide')
                         notSavedImg.classList.remove('hide')
                     }
@@ -1660,54 +1674,70 @@ function profileDetailPost(elements){
 
                 getComments(favDialog, postId)
 
-                if (run) {
-                    document.addEventListener('keyup', (event) => {
+                //close detail post with escape btn on click on outside of modal
+                document.removeEventListener('keyup',escapeDetailModal)
 
-                        if (event.key == 'Escape') {
-                            backdrop.style.display = 'none'
-                            favDialog.style.display = 'none'
-                        }
-                    })
+                escapeDetailModal=function(event){
 
-                    document.addEventListener('click', (event) => {
-
-                        if (!event.target.closest('#favDialog') && favDialog.style.display == 'block' && !event.target.closest('#confirm-delete')) {
-
-                            backdrop.style.display = 'none'
-                            favDialog.style.display = 'none'
-                        }
-                    })
-
-
-                    let moreBtn = favDialog.querySelector('.more')
-
-                    //display and hide dropdown for delete post
-                    if(moreBtn!=null){
-
-                        let moreDropDown = moreBtn.querySelector('.drop-down-content')
-
-                        moreBtn.addEventListener('click', () => {
-
-                            moreDropDown.classList.toggle('hide')
-                        })
-                    document.addEventListener('click', (event) => {
-                        if (event.target.closest('.drop-down-content') || !event.target.closest('.drop-down')) {
-
-                            moreDropDown.classList.add('hide')
-
-                        }
-                    })
+                    if (event.key == 'Escape') {
+                        backdrop.style.display = 'none'
+                        favDialog.remove()
                     }
-
-
-                    let postLikeButton = post.querySelector('.icons .like')
-
-                    postLikeButton.addEventListener('click', () => {
-
-                        like(postLikeButton)
-                    })
                 }
-                run = false
+                document.addEventListener('keyup',escapeDetailModal)
+
+                document.removeEventListener('click', closeDetailModal)
+                closeDetailModal=function(event){
+
+                    if (!event.target.closest('#favDialog') && favDialog.style.display == 'block' && !event.target.closest('#confirm-delete')) {
+
+                        backdrop.style.display = 'none'
+                        favDialog.remove()
+                    }
+                }
+                document.addEventListener('click', closeDetailModal)
+                //endclose detail post with escape btn on click on outside of modal
+
+
+
+
+                //display and hide dropdown and dropdown content for delete post
+                let moreBtn = favDialog.querySelector('.more')
+                let moreDropDown = moreBtn.querySelector('.drop-down-content')
+                moreBtn.removeEventListener('click',toggleDetailMore)                    
+                document.removeEventListener('click',closeDetailMoreContent)
+
+                toggleDetailMore=function(){moreDropDown.classList.toggle('hide')}
+                closeDetailMoreContent=function(event){
+                                            if (event.target.closest('.drop-down-content') || !event.target.closest('.drop-down')) {
+
+                        moreDropDown.classList.add('hide')
+
+                    }
+                }
+                if (moreBtn != null) {
+                moreBtn.addEventListener('click',toggleDetailMore)                    
+                document.addEventListener('click',closeDetailMoreContent)
+                }
+                //end display and hide dropdown and dropdown content for delete post
+
+
+                //like postdetail
+                let postLikeButton = post.querySelector('.icons .like')
+                
+
+               
+                
+                postLikeButton.removeEventListener('click',likePostFunction)
+                
+
+                likePostFunction=function(){like(postLikeButton)}
+                
+
+                postLikeButton.addEventListener('click',likePostFunction)
+                
+                //end like postdetail
+
 
                 postDetailListener(favDialog, data.id, likeDiv)
 
@@ -1735,7 +1765,8 @@ function profileDetailPost(elements){
 
     })
 
-    }
+}
+
 function postDetailListener(element, postId, likeDiv) {
 
     let moreBtn = element.querySelector('.more')
@@ -1745,7 +1776,7 @@ function postDetailListener(element, postId, likeDiv) {
     //display confirm delete modal and hide it
     let confirmDeleteDiv = document.getElementById('confirm-delete')
     let confirmDelete = confirmDeleteDiv.querySelector('.delete')
-    if(moreBtn!=null){
+    if (moreBtn != null) {
 
         let deleteBtn = moreBtn.querySelector('.delete-btn-post')
         deleteBtn.addEventListener('click', (event) => {
@@ -1780,38 +1811,37 @@ if (pathName.includes('profile')) {
 
     //display follower and followings
 
-        document.querySelectorAll('.connections').forEach(element => {
+    document.querySelectorAll('.connections').forEach(element => {
 
-            element.addEventListener('click', () => {
-                let title = element.getAttribute('data-list')
-                let username = element.getAttribute('data-owner')
-                modalTitle.textContent = title
-                if(currentUser!=null){
-                    
+        element.addEventListener('click', () => {
+            let title = element.getAttribute('data-list')
+            let username = element.getAttribute('data-owner')
+            modalTitle.textContent = title
+            if (currentUser != null) {
 
-                    connectionList(title, username)
-                }
 
-            })
+                connectionList(title, username)
+            }
+
         })
-    
+    })
+
 
     //display detail of post with different style for different device size
-    const favDialog = document.getElementById('favDialog');
-    let backDrop = document.getElementById('backdrop')
+
 
     //for nested addeventlistener 
 
-    
-    let elements=document.querySelectorAll('.item')
-    
+
+    let elements = document.querySelectorAll('.item')
+
     profileDetailPost(elements)
-    
+
 
 
     //display saved posts
     let savedBtn = document.getElementById('pills-saved-tab');
-    if(savedBtn!=null){
+    if (savedBtn != null) {
         savedBtn.addEventListener('click', async function() {
 
 
@@ -1831,70 +1861,70 @@ if (pathName.includes('profile')) {
                 })
             }
         })
-        
+
     }
 }
 
 
 
 
-let notificationDiv=document.querySelector('#notification .notifications')
-let notifs=notificationDiv.querySelectorAll('.notif')
-notifs.forEach(element=>{
-    let confirm=element.querySelector('.confirm_follow')
-    confirm.addEventListener('click',async function(){
+let notificationDiv = document.querySelector('#notification .notifications')
+let notifs = notificationDiv.querySelectorAll('.notif')
+notifs.forEach(element => {
+    let confirm = element.querySelector('.confirm_follow')
+    confirm.addEventListener('click', async function() {
         const accessToken = await getToken()
-        
+
         const contactId = element.getAttribute('data-contact');
-        let update={access:true}
+        let update = { access: true }
         const response = await fetch(baseUrl + `/api/contact/${contactId}/`, {
             method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
             },
-            body:JSON.stringify(update)
+            body: JSON.stringify(update)
 
         })
-        const data=await response.json()
-        
-        if(response.ok){
-            let btn=element.querySelector('.confirm_follow')
-            let deleteBtn=element.querySelector('.delete_request')
-            let desc=element.querySelector('.desc')
-            btn.remove()
-            if(!data.reverse_following){
+        const data = await response.json()
 
-                let followBack=document.createElement('button')
-                followBack.textContent='follow back'
-                followBack.classList.add('follow_back','notif_btn')
-                let followDiv=element.querySelector('.follow')
+        if (response.ok) {
+            let btn = element.querySelector('.confirm_follow')
+            let deleteBtn = element.querySelector('.delete_request')
+            let desc = element.querySelector('.desc')
+            btn.remove()
+            if (!data.reverse_following) {
+
+                let followBack = document.createElement('button')
+                followBack.textContent = 'follow back'
+                followBack.classList.add('follow_back', 'notif_btn')
+                let followDiv = element.querySelector('.follow')
                 followDiv.prepend(followBack)
-                
-                let to_user=element.getAttribute('data-from_user')
-                let info={to_user:to_user}
-                followBack.addEventListener('click',async function(){
+
+                let to_user = element.getAttribute('data-from_user')
+                let info = { to_user: to_user }
+                followBack.addEventListener('click', async function() {
                     let datas = { to_user: to_user }
                     let resp = await fetch(baseUrl + `/api/contact/`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        "Content-Type": "application/json",
-                    },
-                    body:JSON.stringify(info)
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(info)
 
-                })
-                    if(resp.ok){
+                    })
+                    if (resp.ok) {
                         followBack.remove()
-                        
+
                         deleteBtn.remove()
-                    } 
+                    }
                 })
-            }else{
-                deleteBtn.remove() 
+            } else {
+                deleteBtn.remove()
             }
-            desc.textContent='following you'
-    
+            desc.textContent = 'following you'
+
         }
     })
 

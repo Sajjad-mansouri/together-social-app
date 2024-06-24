@@ -429,6 +429,9 @@ input:checked + .slider:before {
 
   
 }
+#favDialog-clone{
+  display: none;
+}
 
 /*dialog#favDialog[open]::backdrop{
 
