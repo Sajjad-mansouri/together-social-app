@@ -673,12 +673,21 @@ input:checked + .slider:before {
 .login{
   display: grid;
   grid-template-columns: 1fr 1fr;
+
 }
 
 .login .content{
   height: 80%;
   align-self: center;
+  
+  display: grid;
+  grid-template-columns: 1fr;
 }
+.login .content .sing-up.border_insc{
+  align-self: end;
+}
+
+
 .login .typewrite-container{
   position: relative;
   display: flex;

@@ -9,7 +9,7 @@ loginForm.addEventListener('submit', (event) => {
 
 class TextType {
     constructor() {
-        this.texts = ["Hi, Im Sajjad Mansouri.", "Welcome to my site!", "I Love Design.", "I Love to Develop."]
+        this.texts = ["Hi, Im Sajjad Mansouri.", "Welcome to together!", "I Love Design.", "I Love to Develop."]
         this.wordIndex = 0
         this.sentenceIndex = 0
         this.isDeleting = false
