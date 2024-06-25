@@ -101,13 +101,13 @@ function replyListener(modalBody, replyBtn, replyTO, commentUser, mainComment) {
 function createCommentElement(modalBody, commentsSection, item, postId, post = false) {
 
 
-
+    console.log(item.main_comment)
     if (item.main_comment == null) {
         let comment = commentsSection.cloneNode(true)
         comment.className = 'comments'
         comment.setAttribute('data-comment', item.id)
         comment.setAttribute('data-is_user_comment', item.is_user_comment)
-
+        console.log(comment)
 
         let content = comment.querySelector('.content')
 
@@ -145,7 +145,10 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
                 span.textContent = Number(span.textContent) + 1;
             }
         }
+        if (post) {
+            hideShowReply(modalBody)
 
+        }
         replyListener(modalBody, replyBtn, replyTO, commentUser, mainComment)
 
         if (currentUser == item.author.username) {
@@ -177,7 +180,7 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
         let responsesClone = comment.querySelector('.responses-clone');
         let response = responsesClone.cloneNode(true)
 
-        //if create comment or reply post be true ,when creating reply response be displayed
+        //if create comment or reply on comment be true ,when creating reply response will be displayed
         if (post) {
 
             response.className = 'responses'
@@ -331,9 +334,14 @@ function writeComment(modalClone, input, postId) {
         commentForm = function() {
             event.preventDefault()
             let inputValue = input.value;
+            let targetUser=inputValue.match(/@\w+\s/)
             let comment = inputValue.replace(/@\w+\s/, '');
             let replyTO = input.getAttribute('data-replyTo');
             let mainComment = input.getAttribute('data-mainComment');
+            if(targetUser==null){
+                replyTO=null;
+                mainComment=null;
+            }
 
             postComment(modalClone, postId, comment, replyTO, mainComment)
 
