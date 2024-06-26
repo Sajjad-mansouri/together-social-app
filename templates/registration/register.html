@@ -1,7 +1,7 @@
 {%extends 'registration/base_registration.html'%}
 {%load static%}
 {%block content%}
-        <div class="sign_up">
+        <div class="sign_up base_register">
             <div class="content">
                 <div class="log-on border_insc">
                     <div class="logo">
@@ -39,7 +39,7 @@
                 <div class="sing-in border_insc">
                     <p>
                         Have an account? 
-                        <a href="./login.html">Log in</a>
+                        <a href="{% url 'login'%}">Log in</a>
                     </p>
                 </div>
 
