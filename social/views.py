@@ -12,11 +12,11 @@ from account.models import Notification
 
 UserModel=get_user_model()
 class Index(TemplateView):
-	template_name='insta/login.html'
+	template_name='together/login.html'
 
 
 class Profile(ListView):
-	template_name='insta/profile.html'
+	template_name='together/profile.html'
 	
 
 	def get_queryset(self):
@@ -72,7 +72,7 @@ class Search(LoginRequiredMixin,ListView):
 		return UserModel.objects.all()
 
 class Home(ListView):
-	template_name='insta/home.html'
+	template_name='together/home.html'
 
 	def get(self,request,*args,**kwargs):
 		if request.user.is_authenticated:
@@ -92,7 +92,7 @@ class Home(ListView):
 
 
 class Setting(LoginRequiredMixin,TemplateView):
-	template_name='insta/settings.html'
+	template_name='together/settings.html'
 
 	def get_context_data(self,**kwargs):
 		context=super().get_context_data(**kwargs)
@@ -105,3 +105,7 @@ class LikedPost(LoginRequiredMixin,ListView):
 	def get_queryset(self):
 		return Message.objects.filter(likes__user=self.request.user)
 
+
+
+# class ReportProblem(LoginRequiredMixin,FormView):
+# 	template_name

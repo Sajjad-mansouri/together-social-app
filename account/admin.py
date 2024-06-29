@@ -19,3 +19,5 @@ class Contact(admin.ModelAdmin):
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
 	list_display=['user','content_object','object_id']
+
+

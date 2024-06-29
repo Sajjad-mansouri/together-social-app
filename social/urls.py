@@ -9,6 +9,8 @@ urlpatterns=[
 	path('profile/<str:username>',views.Profile.as_view(),name='profile'),
 	path('search/',views.Search.as_view(),name='search'),
 	path('settings/',views.Setting.as_view(),name='setting'),
-	path('liked-post/',views.LikedPost.as_view(),name='liked_post')
+	path('liked-post/',views.LikedPost.as_view(),name='liked_post'),
+
+	# path('report-problem/',views.ReportProblem.as_view(),name='report_problem')
 	
 ]

@@ -69,3 +69,38 @@ class LikeComment(LikeSaveAbstract):
 
 	class Meta:
 		unique_together=['user','comment']
+
+
+
+
+
+
+class GeneralProblem(models.Model):
+	title=models.CharField(max_length=200)
+	created=models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return self.title
+
+
+class Report(models.Model):
+	user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+
+	limit=models.Q(app_label='account',model='myuser') | models.Q(app_label='social',model='message')
+	content_type=models.ForeignKey(ContentType,on_delete=models.CASCADE,limit_choices_to=limit)
+	object_id=models.PositiveIntegerField()
+	content_object=GenericForeignKey('content_type','object_id')
+
+	general_report=models.ForeignKey(GeneralProblem,on_delete=models.CASCADE,null=True)
+	account_pretending=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,null=True,blank=True,related_name='target_user')
+
+	seen=models.BooleanField(default=False)
+	seen_date_time=models.DateTimeField(null=True,blank=True)
+	
+	created=models .DateTimeField(auto_now_add=True)
+
+
+class ReportProblem(models.Model):
+	user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+	report=models.TextField()
+	created=models.DateTimeField(auto_now_add=True)
