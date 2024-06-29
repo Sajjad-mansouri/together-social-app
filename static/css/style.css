@@ -667,48 +667,6 @@ input:checked + .slider:before {
 }
 
 
-/*login*/
-
-@media screen and (min-width: 498px) {
-.login{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-
-}
-
-.login .content{
-  height: 80%;
-  align-self: center;
-  
-  display: grid;
-  grid-template-columns: 1fr;
-}
-.login .content .sing-up.border_insc{
-  align-self: end;
-}
-
-
-.login .typewrite-container{
-  position: relative;
-  display: flex;
-  align-items: center;
-  background-color:#D8EFD3;
-  padding:36px 40px;
-  position: relative;
-  
-  
-  height: 80%;
-}
-.typewrite-container a{
-  align-self: center;
-  color: black;
-  font-size: 30px;
-  border-right: 0.08em solid black;
-  font-family: "Playwrite FR Moderne", cursive;
-  font-optical-sizing: auto;
-  font-style: normal;
-}
-  }
 
 
 
