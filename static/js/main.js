@@ -14,6 +14,7 @@ let currentUser = document.getElementById('owner').textContent.match(/\w+(?=")/)
 //comments
 
 function hideShowReply(modalBody, post = false, comments = null, response = null) {
+
     if (post) {
         //show replies of post that write reply
         let seeComment = comments.querySelector('.comment .see_comment');
@@ -56,23 +57,41 @@ function hideShowReply(modalBody, post = false, comments = null, response = null
     }
 }
 
-function hideModal(cloneModal) {
+function hideModal(event,cloneModal,remove=false) {
+    console.log(cloneModal)
+    let modalId=cloneModal.getAttribute('id')
+    let modalContainer=document.getElementById(modalId)
     //add event listener when click on screen to close modal
-    window.addEventListener('click', event => {
-        let modal = event.target.closest('.modal');
+    
+        let modal = event.target.closest('.modal-container');
+        console.log(modal)
+        console.log(modalContainer)
         let closeBtn;
-        if (modal != null) {
+        if (modalContainer != null) {
             closeBtn = modal.querySelector('.btn-close');
 
         }
+        console.log(event.target)
+        console.log(event.target.closest('.modal-content'))
+        console.log(!event.target.closest('.modal-content'))
+        let condition=event.target == closeBtn || !event.target.closest('.modal-content') && modalContainer != null;
+        let modalBack = document.querySelector('.modal-backdrop')
+        console.log(condition)
+        console.log(remove)
+        if(condition && remove==true )  {
+            console.log('close by hideModal')
+            if(modalBack){
 
-        if (event.target == closeBtn || !event.target.closest('.modal-content') && modal != null) {
-            let modalBack = document.querySelector('.modal-backdrop')
-            modalBack.remove();
-            modal.remove();
+                modalBack.remove();
+            }
+            modalContainer.remove();
 
+        }else if(condition){
+            modalBack.remove()
+            modal.classList.remove('show')
+            modal.style.display='none'
         }
-    })
+    
 }
 
 function replyListener(modalBody, replyBtn, replyTO, commentUser, mainComment) {
@@ -235,7 +254,7 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
     }
 }
 
-
+let hideCommentModal=null
 async function getComments(modalClone, postId) {
 
 
@@ -280,7 +299,9 @@ async function getComments(modalClone, postId) {
             empty.textContent = 'No comments yet!'
             modalBody.append(empty)
         }
-        hideModal(modalBody)
+        document.removeEventListener('click',hideCommentModal)
+        hideCommentModal=(e)=>hideModal(e,modalClone,true)
+        document.addEventListener('click',hideCommentModal)
         hideShowReply(modalBody)
     }
 }
@@ -648,7 +669,7 @@ function deletePost(element, profile = false, deleteBtn = false) {
     element.addEventListener('click', deletePostCallBack)
 }
 
-
+let hideCreateModal=null
 function createPostModal() {
     event.preventDefault();
 
@@ -668,7 +689,10 @@ function createPostModal() {
     let next_btn_post = document.querySelector(".next_btn_post");
     next_btn_post.addEventListener('click', handleNext);
     form.addEventListener('change', handleSubmit);
-    hideModal(modalClone)
+    document.removeEventListener('click',hideCreateModal)
+    hideCreateModal=(e)=>hideModal(e,modalClone,true)
+    document.addEventListener('click',hideCreateModal)
+    
 }
 
 if (currentUser != null) {
@@ -941,6 +965,7 @@ function addEventListeners(newPost = false) {
         messageAddEvnetListener(viewComments)
 
         document.querySelectorAll('.more').forEach((element) => {
+
             deletePost(element)
         })
 
@@ -1937,4 +1962,53 @@ notifs.forEach(element => {
     })
 
 
+})
+
+
+// report post
+let closeMoreModal=null
+let displayMoreModal=function(){
+    console.log('displaymoremodal')
+    let modal=document.querySelector('#delete_modal')
+    let moreModal= document.querySelector('#delete_modal .modal-dialog')
+    modal.classList.add('show')
+    modal.style.display='block'
+    let modalBackDrop=document.createElement('div')
+    modalBackDrop.classList.add('modal-backdrop','fade','show')
+    document.body.append(modalBackDrop)
+
+    document.removeEventListener('click',closeMoreModal,)
+    closeMoreModal=(e)=>hideModal(e,modal,false)
+    document.addEventListener('click',closeMoreModal)
+
+
+}
+let moreBtns=document.querySelectorAll('.info .more')
+moreBtns.forEach(element=>{
+    element.addEventListener('click',displayMoreModal)
+
+
+
+})
+
+
+let closeModal=null
+let reportBtn=document.querySelector('.report_btn')
+reportBtn.addEventListener('click',(event)=>{
+    event.stopPropagation()
+    let deleteModal=document.getElementById('delete_modal')
+    deleteModal.classList.remove('show')
+    deleteModal.style.display='none'
+    let reportModalClone=document.getElementById('report_post_modal-clone')
+    let reportModal=reportModalClone.cloneNode(true)
+    reportModal.setAttribute('id','report_post_modal')
+    reportModal.classList.add('show')
+    reportModal.style.display='block'
+    document.body.append(reportModal)
+    console.log('addeventListener')
+    document.removeEventListener('click',closeModal,)
+    closeModal=(e)=>hideModal(e,reportModal,true)
+    document.addEventListener('click',closeModal)
+
+    
 })

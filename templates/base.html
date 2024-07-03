@@ -288,7 +288,7 @@
             </div>
         </div>
         <!--Create model-->
-        <div class="modal fade" id="create_modal_clone" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal modal-container fade" id="create_modal_clone" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -335,10 +335,11 @@
             </div>
         </div>
         <!-- Modal for  deleting post -->
-        <div class="modal fade" id="delete_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal modal-container fade " id="delete_modal" >
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action report_btn" >report post</a>
                         <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#submit_delete_modal">delete</a>
                         <a href="#" class="list-group-item list-group-item-action" data-bs-dismiss="modal">cancel</a>
                     </div>
@@ -346,7 +347,7 @@
             </div>
         </div>
         <!-- submit delete-->
-        <div class="modal fade" id="submit_delete_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal modal-container fade" id="submit_delete_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -363,8 +364,30 @@
                 </div>
             </div>
         </div>
+
+      <!-- report post-->
+        <div class="modal modal-container" id="report_post_modal-clone" >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Report Post</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                        <div class="report-list">
+                         <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#report_post_modal">spam post</a>
+                         <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#report_post_modal">bully</a>
+                        </div>
+                    
+                    
+            
+                    
+                </div>
+            </div>
+        </div>
+
         <!-- Modal for add messages-->
-        <div class="modal fade" id="message_modal_clone" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal modal-container fade" id="message_modal_clone" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -461,7 +484,7 @@
             </div>
         </div>
         <!-- modal for display following and follower -->
-        <div class="modal fade" id="connection-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal modal-container fade" id="connection-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
