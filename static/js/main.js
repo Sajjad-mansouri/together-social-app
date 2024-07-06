@@ -57,6 +57,7 @@ function hideShowReply(modalBody, post = false, comments = null, response = null
     }
 }
 
+let hideInsideModal=null
 function hideModal(event, cloneModal, remove = false, element = false) {
     console.log('hidemodal function')
     let modalId = cloneModal.getAttribute('id')
@@ -82,8 +83,15 @@ function hideModal(event, cloneModal, remove = false, element = false) {
     } else {
         moreCondition = true
     }
-    
-
+    console.log('condition')
+    console.log(event.target == closeBtn)
+    console.log('or')
+    console.log(event.target == cancelBtn)
+    console.log('or')
+    console.log(event.target)
+    console.log(`event.target.closest('.modal-content'): ${!event.target.closest('.modal-content')}`)
+    console.log(!event.target.closest('.modal-content') && modalContainer != null && moreCondition)
+    console.log('end condtion')
     let condition = event.target == closeBtn || event.target == cancelBtn || !event.target.closest('.modal-content') && modalContainer != null && moreCondition;
     let modalBack = document.querySelector('.modal-backdrop')
 
@@ -103,6 +111,10 @@ function hideModal(event, cloneModal, remove = false, element = false) {
         }
         modalContainer.classList.remove('show')
         modalContainer.style.display = 'none'
+    }else{
+        document.removeEventListener('click',hideInsideModal)
+        hideInsideModal=(e)=>hideModal(e, cloneModal, remove, element )
+        document.addEventListener('click',hideInsideModal)
     }
     
 }
@@ -2029,6 +2041,30 @@ moreBtns.forEach(element => {
 
 let closeModal = null
 let reportBtn = document.querySelector('.report_btn')
+async function fetchReports(reportModal){
+    let accessToken = await getToken()
+    let response = await fetch(`http://localhost:8000/api/reports/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+            })
+    let data=await response.json()
+    if(response.ok){
+
+        let reportListDiv=reportModal.querySelector('.report-list')
+        data.forEach(link=>{
+            console.log(link)
+            let reportLink=document.createElement('a')
+            reportLink.textContent=link.title
+            reportLink.href='#'
+            reportListDiv.append(reportLink)
+            reportLink.addEventListener('click',()=>{
+                console.log(`${link.title}`)
+            })
+        })
+    }
+}
 reportBtn.addEventListener('click', (event) => {
     event.stopPropagation()
     let moreModal = document.getElementById('more_modal')
@@ -2039,8 +2075,9 @@ reportBtn.addEventListener('click', (event) => {
     reportModal.setAttribute('id', 'report_post_modal')
     reportModal.classList.add('show')
     reportModal.style.display = 'block'
+    fetchReports(reportModal)
     document.body.append(reportModal)
-
+    console.log('reportbtn addEventListener')
     document.removeEventListener('click', closeModal, )
     closeModal = (e) => hideModal(e, reportModal, true)
     document.addEventListener('click', closeModal,{once:true})

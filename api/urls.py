@@ -36,6 +36,8 @@ urlpatterns=[
 
 	path('change-password/',views.ChangePasswordView.as_view(),name='change-password'),
 
+	path('reports/',views.ReportsView.as_view(),name='reports')
+
 
 
 

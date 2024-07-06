@@ -4,7 +4,7 @@ from django.utils.timesince import timesince
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from rest_framework import serializers
-from social.models import Message,Like,Comment,LikeComment,SavePost
+from social.models import Message,Like,Comment,LikeComment,SavePost,GeneralProblem
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -346,3 +346,9 @@ class ChangePasswordSerializer(serializers.Serializer):
 		user.set_password(password)
 		user.save()
 		return user
+
+
+class ReportSerializer(serializers.ModelSerializer):
+	class Meta:
+		model=GeneralProblem
+		fields=['id','title']
