@@ -83,15 +83,7 @@ function hideModal(event, cloneModal, remove = false, element = false) {
     } else {
         moreCondition = true
     }
-    console.log('condition')
-    console.log(event.target == closeBtn)
-    console.log('or')
-    console.log(event.target == cancelBtn)
-    console.log('or')
-    console.log(event.target)
-    console.log(`event.target.closest('.modal-content'): ${!event.target.closest('.modal-content')}`)
-    console.log(!event.target.closest('.modal-content') && modalContainer != null && moreCondition)
-    console.log('end condtion')
+
     let condition = event.target == closeBtn || event.target == cancelBtn || !event.target.closest('.modal-content') && modalContainer != null && moreCondition;
     let modalBack = document.querySelector('.modal-backdrop')
 
@@ -2014,8 +2006,14 @@ notifs.forEach(element => {
 let closeMoreModal = null
 let displayMoreModal = function(event,element) {
     event.stopPropagation()
+    let postDiv=event.target.closest('.post')
+    let postOwner=postDiv.getAttribute('data-owner')
+    let objectId=postDiv.getAttribute('data-post')
     let modal = document.querySelector('#more_modal')
     let moreModal = document.querySelector('#more_modal .modal-dialog')
+    
+    modal.setAttribute('data-post',objectId)
+    modal.setAttribute('data-owner',postOwner)
     modal.classList.add('show')
     modal.style.display = 'block'
     let modalBackDrop = document.createElement('div')
@@ -2041,7 +2039,44 @@ moreBtns.forEach(element => {
 
 let closeModal = null
 let reportBtn = document.querySelector('.report_btn')
-async function fetchReports(reportModal){
+async function report(generalReport,postId,objectTyp,postOwner){
+        const body = { 'content_type': objectTyp,'object_id':postId,'general_report':generalReport }
+        let accessToken = await getToken()
+        const response = await fetch(baseUrl + '/api/report/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+        const data=await response.json()
+        if(response.ok){
+            console.log('report submited')
+                let reportModal=document.getElementById('report_post_modal')
+                reportModal.remove()
+                let stepMoreClone=document.getElementById('other_report_step-clone')
+                let stepMore = stepMoreClone.cloneNode(true)
+                stepMore.setAttribute('id', 'other_report_step')
+                let otherSteps=stepMore.querySelector('.other-steps')
+
+                let block=document.createElement('a')
+                block.textContent=`block ${postOwner}`
+
+                let unfollow=document.createElement('a')
+                unfollow.textContent=`unfollow ${postOwner}`
+
+                otherSteps.append(block)
+                otherSteps.append(unfollow)
+                stepMore.classList.add('show')
+                stepMore.style.display = 'block'
+                document.body.append(stepMore)
+                document.removeEventListener('click', closeModal, )
+                closeModal = (e) => hideModal(e, stepMore, true)
+                document.addEventListener('click', closeModal,{once:true})
+        }
+}
+async function fetchReports(postOwner,postId,reportModal){
     let accessToken = await getToken()
     let response = await fetch(`http://localhost:8000/api/reports/`, {
             method: 'GET',
@@ -2059,15 +2094,22 @@ async function fetchReports(reportModal){
             reportLink.textContent=link.title
             reportLink.href='#'
             reportListDiv.append(reportLink)
-            reportLink.addEventListener('click',()=>{
-                console.log(`${link.title}`)
+            reportLink.addEventListener('click',(event)=>{
+                event.stopPropagation()
+                let objectTyp='post'
+                report(link.id,postId,objectTyp,postOwner)
+
             })
         })
     }
 }
 reportBtn.addEventListener('click', (event) => {
     event.stopPropagation()
+
     let moreModal = document.getElementById('more_modal')
+    
+    let postId=moreModal.getAttribute('data-post')
+    let postOwner=moreModal.getAttribute('data-owner')
     moreModal.classList.remove('show')
     moreModal.style.display = 'none'
     let reportModalClone = document.getElementById('report_post_modal-clone')
@@ -2075,7 +2117,7 @@ reportBtn.addEventListener('click', (event) => {
     reportModal.setAttribute('id', 'report_post_modal')
     reportModal.classList.add('show')
     reportModal.style.display = 'block'
-    fetchReports(reportModal)
+    fetchReports(postOwner,postId,reportModal)
     document.body.append(reportModal)
     console.log('reportbtn addEventListener')
     document.removeEventListener('click', closeModal, )

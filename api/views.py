@@ -15,12 +15,13 @@ from .serializers import (
 						SavedPostSerializer,
 						ChangePasswordSerializer,
 						RelationSerializer,
+						GeneralReportSerializer,
 						ReportSerializer
 
 						)
 
 from .permissions import AuthorDeletePermission,RelationDeletePermission
-from social.models import Message,Like,Comment,LikeComment,SavePost,GeneralProblem
+from social.models import Message,Like,Comment,LikeComment,SavePost,GeneralProblem,Report
 from account.models import Contact,Profile
 UserModel=get_user_model()
 
@@ -190,5 +191,9 @@ class ChangePasswordView(generics.UpdateAPIView):
 
 
 class ReportsView(generics.ListAPIView):
-	serializer_class=ReportSerializer
+	serializer_class=GeneralReportSerializer
 	queryset=GeneralProblem.objects.all()
+
+class ReportApiView(generics.CreateAPIView):
+	serializer_class=ReportSerializer
+	queryset=Report.objects.all()

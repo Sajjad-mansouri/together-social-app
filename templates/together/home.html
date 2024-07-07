@@ -61,11 +61,11 @@
                     </div>
                 </div> 
                 {% for post in object_list%}
-                <div class='post' data-post='{{post.id}}'>
+                <div class='post' data-post='{{post.id}}' data-owner='{{post.user}}'>
                     <div class="info">
-                        <div class="person">
+                        <div class="person" >
                             <img src="{{post.user.profile.profile_image.url}}">
-                            <a href="#">{{post.user}}</a>
+                            <a href="#" >{{post.user}}</a>
                             <span class="circle">.</span>
                             <span>{{post.created|naturaltime}}</span>
                         </div>

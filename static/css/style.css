@@ -757,9 +757,15 @@ font-weight: bold;
   word-wrap: break-word;
 }
 
+/*more modal*/
+#more_modal .list-group .report_btn{
+  color: red;
+}
 
 /*report modal*/
-
+#report_post_modal .modal-header h2.modal-title{
+  font-size: 1.5rem;
+}
 #report_post_modal .report-list a{
   color: black;
   display: block;
@@ -770,4 +776,30 @@ font-weight: bold;
 
 #report_post_modal .report-list a:hover{
   background-color: #f8f9fa;
+}
+
+
+
+#report_post_modal .report-list h5{
+  padding:10px;
+}
+
+/*other next modal*/
+#other_report_step .modal-header h2.modal-title{
+  font-size: 1.5rem;
+}
+#other_report_step .other-steps a{
+  color: black;
+  display: block;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-bottom:1px solid #deede6;
+}
+
+#other_report_step .other-steps a:hover{
+  background-color: #f8f9fa;
+}
+
+#other_report_step .other-steps h5{
+  padding:10px;
 }

@@ -4,7 +4,7 @@ from django.utils.timesince import timesince
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from rest_framework import serializers
-from social.models import Message,Like,Comment,LikeComment,SavePost,GeneralProblem
+from social.models import Message,Like,Comment,LikeComment,SavePost,GeneralProblem,Report
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -348,7 +348,44 @@ class ChangePasswordSerializer(serializers.Serializer):
 		return user
 
 
-class ReportSerializer(serializers.ModelSerializer):
+class GeneralReportSerializer(serializers.ModelSerializer):
 	class Meta:
 		model=GeneralProblem
 		fields=['id','title']
+
+class ReportSerializer(serializers.ModelSerializer):
+
+	def to_internal_value(self,data):
+		user=self._context['request'].user.id
+		data['user']=user
+		if data['content_type']=='post':
+			self.content_type='post'
+		return super().to_internal_value(data)
+
+	def create(self,validated_data):
+		print(validated_data)
+		user=validated_data.pop('user')
+		object_id=validated_data['object_id']
+		general_report=validated_data['general_report']
+		if self.content_type=='post':
+			content_object=Message.objects.get(id=object_id)
+		elif self.content_type=='user':
+			content_object=UserModel.objects.get(id=object_id)
+		
+		return Report.objects.create(	user=user,
+										content_object=content_object,
+										general_report=general_report
+										)
+
+
+		
+
+	def is_valid(self,raise_exception=False):
+		valid=super().is_valid(raise_exception=False)
+		print(self.errors)
+		
+		return valid
+	class Meta:
+		model=Report
+		fields=['id','user','object_id','general_report']
+		# read_only_fields=['is_user_comment']

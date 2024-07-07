@@ -36,7 +36,9 @@ urlpatterns=[
 
 	path('change-password/',views.ChangePasswordView.as_view(),name='change-password'),
 
-	path('reports/',views.ReportsView.as_view(),name='reports')
+	path('reports/',views.ReportsView.as_view(),name='reports'),
+
+	path('report/',views.ReportApiView.as_view(),name='report'),
 
 
 
