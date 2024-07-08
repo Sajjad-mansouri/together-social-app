@@ -154,7 +154,7 @@
                     </div>
                 </div>
                 {% for post in object_list%}
-                <div class='post' data-post='{{post.id}}'>
+                <div class='post' data-post='{{post.id}}' data-owner='{{post.user}}'>
                     <div class="info">
                         <div class="person">
                             <img src="{{post.user.profile.profile_image.url}}">
@@ -162,11 +162,11 @@
                             <span class="circle">.</span>
                             <span>{{post.created|naturaltime}}</span>
                         </div>
-                        {%if post.user == user %}
-                        <div class="more" data-bs-toggle="modal" data-bs-target="#delete_modal">
+                        
+                        <div class="more" >
                             <img src="{% static 'images/show_more.png' %}" alt="show more">
                         </div>
-                        {%endif%}
+                        
                     </div>
                     <div class="image">
                         <img src="{{post.image.url}}">
@@ -234,6 +234,7 @@
                     <div class="more drop-down">
                         <img src="{% static 'images/show_more.png' %}" alt="show more">
                         <div class="drop-down-content hide">
+                            <a class="report_btn" href="#">report</a>
                             <a class="delete-btn-post" href="">delete</a>
                             <a href="#">cancel</a>
                         </div>

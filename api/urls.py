@@ -14,6 +14,7 @@ urlpatterns=[
 	path('users/',views.UserListAPiView.as_view(),name='user-list'),
 	path('contact/',views.ContactApiView.as_view(),name='contact'),
 	path('contact/<int:pk>/',views.ContactDetailApiView.as_view(),name='contact-detail'),
+	path('conection/<str:to_user>/',views.ContactDetailApiView.as_view(),name='conection'),
 
 	path('like/',views.LikeApiView.as_view(),name='like'),
 	path('like/<int:pk>/',views.LikeDetailApiView.as_view(),name='like-detail'),

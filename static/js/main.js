@@ -60,8 +60,13 @@ function hideShowReply(modalBody, post = false, comments = null, response = null
 let hideInsideModal=null
 function hideModal(event, cloneModal, remove = false, element = false) {
     console.log('hidemodal function')
+    console.log(cloneModal)
+    console.log(remove)
     let modalId = cloneModal.getAttribute('id')
     let modalContainer = document.getElementById(modalId)
+    let modalContent
+
+    console.log(modalContainer)
     //add event listener when click on screen to close modal    
 
 
@@ -84,12 +89,19 @@ function hideModal(event, cloneModal, remove = false, element = false) {
         moreCondition = true
     }
 
-    let condition = event.target == closeBtn || event.target == cancelBtn || !event.target.closest('.modal-content') && modalContainer != null && moreCondition;
+    let contentCondition
+    if(modalId=='favDialog'){
+        contentCondition=event.target.closest('#favDialog')
+    }else{
+        contentCondition=event.target.closest('.modal-content')
+    }
+
+    let condition = event.target == closeBtn || event.target == cancelBtn || !contentCondition && modalContainer != null && moreCondition;
     let modalBack = document.querySelector('.modal-backdrop')
 
 
     if (condition && remove == true) {
-
+        console.log('condition and remove')
         if (modalBack) {
 
             modalBack.remove();
@@ -97,6 +109,7 @@ function hideModal(event, cloneModal, remove = false, element = false) {
         modalContainer.remove();
 
     } else if (condition) {
+        console.log('condition')
         if(modalBack){
 
         modalBack.remove()
@@ -104,6 +117,7 @@ function hideModal(event, cloneModal, remove = false, element = false) {
         modalContainer.classList.remove('show')
         modalContainer.style.display = 'none'
     }else{
+        console.log('else')
         document.removeEventListener('click',hideInsideModal)
         hideInsideModal=(e)=>hideModal(e, cloneModal, remove, element )
         document.addEventListener('click',hideInsideModal)
@@ -316,6 +330,9 @@ async function getComments(modalClone, postId) {
             empty.textContent = 'No comments yet!'
             modalBody.append(empty)
         }
+        //add listener for closing comment modal or post detail in profile
+        console.log(`modalClone: ${modalClone}`)
+        console.log(modalClone)
         document.removeEventListener('click', hideCommentModal)
         hideCommentModal = (e) => hideModal(e, modalClone, true)
         document.addEventListener('click', hideCommentModal,{once:true})
@@ -656,6 +673,7 @@ function deletePost(element, profile = false, deleteBtn = false) {
 
         deleteModalBtn.addEventListener('click', (event) => {
             event.stopPropagation()
+            console.log('delete modal btn clicked')
             let moreModal = document.getElementById('more_modal')
             moreModal.classList.remove('show')
             moreModal.style.display = 'none'
@@ -1625,9 +1643,8 @@ function profileDetailPost(elements) {
 
 
             if (window.screen.width > 498) {
-
-                let postId = element.getAttribute('data-post');
                 let response;
+                let postId = element.getAttribute('data-post');
                 // let accessToken = await getToken()
                 if (currentUser != null) {
                     let accessToken = await getToken()
@@ -1673,16 +1690,15 @@ function profileDetailPost(elements) {
                     postUser.textContent = data.owner.username
                     postText.textContent = data.text
 
-                    if (currentUser != data.owner.username && more != null) {
-                        more.remove()
-                    }
+
 
                     let dialogImg = favDialog.querySelector('.image-container img')
                     dialogImg.src = data.image
                     backdrop.style.display = 'block'
                     favDialog.style.display = 'block'
-
+                    console.log(data)
                     post.setAttribute('data-post', data.id)
+                    post.setAttribute('data-owner',data.owner.username)
                     let commentsClone = container.querySelector('.comments-clone').cloneNode(true)
                     let commentBody = container.querySelector('.comment-body')
 
@@ -1739,6 +1755,21 @@ function profileDetailPost(elements) {
 
                     likeSpan.textContent = data.is_liked[2]
 
+                    //add listener for report btn in more drop down in profile post detail
+
+                    if (currentUser != data.owner.username && more != null) {
+                        let deleteBtn=more.querySelector('.delete-btn-post')
+                        deleteBtn.remove()
+                        let reportBtn=favDialog.querySelector('.report_btn')
+                        console.log('post')
+                        console.log(post)
+                        reportBtn.addEventListener('click',()=>reportModal(post,true)) 
+                    }else if(currentUser == data.owner.username && more != null){
+                        let reportBtn=more.querySelector('.report_btn')
+                        reportBtn.remove()
+                    }
+                
+
 
                 }
 
@@ -1771,13 +1802,15 @@ function profileDetailPost(elements) {
 
 
 
-                //display and hide dropdown and dropdown content for delete post
+                //display and hide dropdown and dropdown content for delete post in profile
                 let moreBtn = favDialog.querySelector('.more')
                 let moreDropDown = moreBtn.querySelector('.drop-down-content')
                 moreBtn.removeEventListener('click', toggleDetailMore)
                 document.removeEventListener('click', closeDetailMoreContent)
 
-                toggleDetailMore = function() { moreDropDown.classList.toggle('hide') }
+                toggleDetailMore = function() { 
+                    console.log('toggleDetailMore')
+                    moreDropDown.classList.toggle('hide') }
                 closeDetailMoreContent = function(event) {
                     if (event.target.closest('.drop-down-content') || !event.target.closest('.drop-down')) {
 
@@ -1838,7 +1871,7 @@ function profileDetailPost(elements) {
 }
 
 function postDetailListener(element, postId, likeDiv) {
-
+    console.log('postDetailListener')
     let moreBtn = element.querySelector('.more')
     let post = element.querySelector('.post')
 
@@ -2009,9 +2042,19 @@ let displayMoreModal = function(event,element) {
     let postDiv=event.target.closest('.post')
     let postOwner=postDiv.getAttribute('data-owner')
     let objectId=postDiv.getAttribute('data-post')
-    let modal = document.querySelector('#more_modal')
+    let modalClone = document.querySelector('#more_modal-clone')
+    let modal=modalClone.cloneNode(true)
+    modal.setAttribute('id','more_modal')
+    document.body.append(modal)
     let moreModal = document.querySelector('#more_modal .modal-dialog')
-    
+    let reportBtn=moreModal.querySelector('.report_btn')
+    let deleteBtn=moreModal.querySelector('#delete_modal')
+    if(currentUser==postOwner){
+        reportBtn.remove()
+    }else{
+        deleteBtn.remove()
+        reportBtn.addEventListener('click', reportModal )
+    }
     modal.setAttribute('data-post',objectId)
     modal.setAttribute('data-owner',postOwner)
     modal.classList.add('show')
@@ -2021,7 +2064,7 @@ let displayMoreModal = function(event,element) {
     document.body.append(modalBackDrop)
 
     document.removeEventListener('click', closeMoreModal, )
-    closeMoreModal = (e) => hideModal(e, modal, false, element)
+    closeMoreModal = (e) => hideModal(e, modal, true, element)
     console.log('what')
     document.addEventListener('click', closeMoreModal,{once:true})
 
@@ -2038,9 +2081,9 @@ moreBtns.forEach(element => {
 
 
 let closeModal = null
-let reportBtn = document.querySelector('.report_btn')
+
 async function report(generalReport,postId,objectTyp,postOwner){
-        const body = { 'content_type': objectTyp,'object_id':postId,'general_report':generalReport }
+        const body = { 'content_type': objectTyp,'object_id':postId,'general_report':generalReport ,'post_owner':postOwner}
         let accessToken = await getToken()
         const response = await fetch(baseUrl + '/api/report/', {
             method: 'POST',
@@ -2051,6 +2094,7 @@ async function report(generalReport,postId,objectTyp,postOwner){
             body: JSON.stringify(body)
         })
         const data=await response.json()
+
         if(response.ok){
             console.log('report submited')
                 let reportModal=document.getElementById('report_post_modal')
@@ -2061,13 +2105,32 @@ async function report(generalReport,postId,objectTyp,postOwner){
                 let otherSteps=stepMore.querySelector('.other-steps')
 
                 let block=document.createElement('a')
+                block.href='#'
                 block.textContent=`block ${postOwner}`
-
-                let unfollow=document.createElement('a')
-                unfollow.textContent=`unfollow ${postOwner}`
+                block.addEventListener('click',()=>{
+                    console.log('blocked')
+                })
 
                 otherSteps.append(block)
+                if(data.is_following){
+                    
+                    let unfollow=document.createElement('a')
+                    unfollow.href='#'
+                    unfollow.textContent=`unfollow ${postOwner}`
+                    unfollow.addEventListener('click',async function(){
+                                let accessToken=await getToken()
+                                let response = await fetch(baseUrl + `/api/conection/${postOwner}/`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Authorization': `Bearer ${accessToken}`
+                                }
+                            })
+                                if(response.ok){
+                                    console.log('unfollow successfully')
+                                }
+                    })
                 otherSteps.append(unfollow)
+                }
                 stepMore.classList.add('show')
                 stepMore.style.display = 'block'
                 document.body.append(stepMore)
@@ -2103,26 +2166,43 @@ async function fetchReports(postOwner,postId,reportModal){
         })
     }
 }
-reportBtn.addEventListener('click', (event) => {
-    event.stopPropagation()
 
-    let moreModal = document.getElementById('more_modal')
-    
-    let postId=moreModal.getAttribute('data-post')
-    let postOwner=moreModal.getAttribute('data-owner')
-    moreModal.classList.remove('show')
-    moreModal.style.display = 'none'
+function reportModal(post=false,profile=false){
+    console.log('reportModal')
+    event.stopPropagation()
+    let postId
+    let postOwner
+    if(profile){
+        postId=post.getAttribute('data-post')
+        postOwner=post.getAttribute('data-owner')        
+    }else{
+
+        let moreModal = document.getElementById('more_modal')
+        postId=moreModal.getAttribute('data-post')
+        postOwner=moreModal.getAttribute('data-owner')
+        moreModal.classList.remove('show')
+        moreModal.style.display = 'none'
+    }
+    console.log(post)
+    console.log('postOwner')
+    console.log(postOwner)
     let reportModalClone = document.getElementById('report_post_modal-clone')
-    let reportModal = reportModalClone.cloneNode(true)
-    reportModal.setAttribute('id', 'report_post_modal')
-    reportModal.classList.add('show')
-    reportModal.style.display = 'block'
-    fetchReports(postOwner,postId,reportModal)
-    document.body.append(reportModal)
+    let reportModalDiv = reportModalClone.cloneNode(true)
+    reportModalDiv.setAttribute('id', 'report_post_modal')
+    reportModalDiv.classList.add('show')
+    reportModalDiv.style.display = 'block'
+    fetchReports(postOwner,postId,reportModalDiv)
+    document.body.append(reportModalDiv)
     console.log('reportbtn addEventListener')
     document.removeEventListener('click', closeModal, )
-    closeModal = (e) => hideModal(e, reportModal, true)
+    closeModal = (e) => hideModal(e, reportModalDiv, true)
     document.addEventListener('click', closeModal,{once:true})
 
 
-})
+}
+
+
+
+
+
+

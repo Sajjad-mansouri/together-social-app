@@ -356,14 +356,27 @@ class GeneralReportSerializer(serializers.ModelSerializer):
 class ReportSerializer(serializers.ModelSerializer):
 
 	def to_internal_value(self,data):
-		user=self._context['request'].user.id
-		data['user']=user
+		self.user=self._context['request'].user.id
+		data['user']=self.user
+		self.post_owner=data.pop('post_owner')
 		if data['content_type']=='post':
 			self.content_type='post'
 		return super().to_internal_value(data)
 
+	def follow(self,obj):
+		try:
+			print(self.user)
+			print(self.post_owner)
+			Contact.objects.get(from_user=self.user,to_user__username=self.post_owner)
+			return True
+		except Exception as e:
+			print(e)
+			return False
+
+	is_following=serializers.SerializerMethodField('follow')
 	def create(self,validated_data):
-		print(validated_data)
+		
+
 		user=validated_data.pop('user')
 		object_id=validated_data['object_id']
 		general_report=validated_data['general_report']
@@ -387,5 +400,5 @@ class ReportSerializer(serializers.ModelSerializer):
 		return valid
 	class Meta:
 		model=Report
-		fields=['id','user','object_id','general_report']
+		fields=['id','user','object_id','general_report','is_following']
 		# read_only_fields=['is_user_comment']
