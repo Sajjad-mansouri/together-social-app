@@ -1796,7 +1796,7 @@ function profileDetailPost(elements) {
                 closeDetailModal = function(event) {
 
                     if (!event.target.closest('#favDialog') && favDialog.style.display == 'block' && !event.target.closest('#confirm-delete') && event.target.closest('#backdrop')) {
-                        
+
                         backdrop.style.display = 'none'
                         favDialog.remove()
                     }
@@ -2101,7 +2101,16 @@ async function report(generalReport,postId,objectTyp,postOwner){
         const data=await response.json()
 
         if(response.ok){
-            
+                //remove post after report post
+                if(pathName.includes('profile') && window.screen.width>498){
+
+                    let postItem=document.querySelector(`.item[data-post="${postId}"]`)
+                    postItem.remove()
+                }else{
+                    let postDiv=document.querySelector(`.post[data-post="${postId}"]`)
+                    postDiv.remove()
+                }
+
                 let reportModal=document.getElementById('report_post_modal')
                 reportModal.remove()
                 let stepMoreClone=document.getElementById('other_report_step-clone')
@@ -2131,7 +2140,9 @@ async function report(generalReport,postId,objectTyp,postOwner){
                                 }
                             })
                                 if(response.ok){
-                                    
+                                    // close modal
+                                    //close post detail if in profile page and screen width is over than 498
+                                    //remove div.item
                                 }
                     })
                 otherSteps.append(unfollow)
