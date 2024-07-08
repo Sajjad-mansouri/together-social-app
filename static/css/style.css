@@ -803,3 +803,8 @@ font-weight: bold;
 #other_report_step .other-steps h5{
   padding:10px;
 }
+
+
+.modal-container{
+  background-color: rgba(30,30,30,.5);
+}
