@@ -32,3 +32,4 @@ class ReportAdmin(admin.ModelAdmin):
 @admin.register(ReportProblem)
 class ReportProblemAdmin(admin.ModelAdmin):
 	list_display=['user',]
+

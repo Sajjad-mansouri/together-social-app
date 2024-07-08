@@ -19,6 +19,7 @@ class Message(models.Model):
 	like=models.ManyToManyField(settings.AUTH_USER_MODEL,through='Like')
 	saved_post=models.ManyToManyField(settings.AUTH_USER_MODEL,through='SavePost',related_name='save_messages')
 	comment=GenericRelation('Comment')
+	reports=GenericRelation('Report',related_query_name='reports')
 	def __str__(self):
 		return f'{self.id}'
 

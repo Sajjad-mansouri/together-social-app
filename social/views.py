@@ -4,10 +4,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404,redirect,render
 from django.db.models import Q
+from django.contrib.contenttypes.models import ContentType
 
 
 
-from .models import Message
+from .models import Message,Report
 from account.models import Notification
 
 UserModel=get_user_model()
@@ -20,13 +21,15 @@ class Profile(ListView):
 	
 
 	def get_queryset(self):
-		
+		ct=ContentType.objects.get_for_model(Message)
+		object_ids=Report.objects.filter(content_type__pk=ct.pk).values_list('object_id')
+
 		username=self.kwargs.get('username',self.request.user.username)
 		user=self.request.user
 		if username:
 			owner_user=get_object_or_404(UserModel,username=username)
 		self.owner=owner_user
-		return Message.objects.filter(user=owner_user)
+		return Message.objects.filter(user=owner_user).exclude(reports__content_type__pk=ct.pk,reports__object_id__in=object_ids)
 
 	def get_context_data(self,**kwargs):
 		context=super().get_context_data(**kwargs)
@@ -81,10 +84,11 @@ class Home(ListView):
 		else:
 			return render(request,'registration/login.html')
 	def get_queryset(self):
+		ct=ContentType.objects.get_for_model(Message)
+		object_ids=Report.objects.filter(content_type__pk=ct.pk).values_list('object_id')
 		following=self.request.user.rel_from.filter(access=True).values_list('to_user',flat=True)
-		print(Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user)))
-		print('++++++')
-		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user))
+
+		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user)).exclude(reports__content_type__pk=ct.pk,reports__object_id__in=object_ids)
 
 	def get_context_data(self,**kwargs):
 		context=super().get_context_data(**kwargs)
