@@ -17,6 +17,7 @@
                     {%if owner == user%}
                     <button class="edit_profile">
                         Edit profile 
+
                     </button>
                     {%else%}
 
@@ -59,6 +60,7 @@
                 <p class="nick_name">{{owner.get_full_name}}</p>
                 <p class="desc">
                     {{owner.profile.bio}}
+                    {% is_mobile%}
                     
                 </p>
             </div>
@@ -103,6 +105,9 @@
         </div>
     </div>
 </div>
+
+{% is_mobile as is_mobile%}
+{%if is_mobile %}
 <div class="second_container">
     <div class="main_section">
         <div class="posts_container">
@@ -216,6 +221,8 @@
         </div>
     </div>
 </div>
+{%else%}
+
 <div id="backdrop">
     <div id="favDialog-clone">
         <div class="image-container">
@@ -355,6 +362,7 @@
         </div>
     </div>
 </div>
+{%endif%}
 {%else%}
 
 <div class="is_private">

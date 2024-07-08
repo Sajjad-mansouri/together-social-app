@@ -20,6 +20,7 @@ class Profile(ListView):
 	
 
 	def get_queryset(self):
+		
 		username=self.kwargs.get('username',self.request.user.username)
 		user=self.request.user
 		if username:

@@ -6,6 +6,8 @@ from django.contrib.contenttypes.models import ContentType
 from social.models import Like,Message
 from account.models import Notification,Contact
 
+from user_agents import parse
+
 UserModel=get_user_model()
 register = template.Library()
 
@@ -70,3 +72,13 @@ def notifications(context,owner):
 		contacts=Contact.objects.filter(to_user=owner,access=False)
 		notifs=Notification.objects.filter(content_type=contact_type,object_id__in=contacts,seen=False)
 		return notifs
+
+
+
+@register.simple_tag(takes_context=True)
+def is_mobile(context):
+	request=context['request']
+	ua_string=request.META.get('HTTP_USER_AGENT')
+	user_agent=parse(ua_string)
+
+	return user_agent.is_mobile
