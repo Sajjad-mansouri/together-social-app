@@ -18,7 +18,7 @@ class Profile(models.Model):
 	bio=models.TextField(blank=True)
 	link=models.URLField(blank=True)
 	private=models.BooleanField(default=False)
-	
+	block=models.ManyToManyField('self',through='Block',symmetrical=False,related_name='block_profile')
 	birth_day=models.DateField(blank=True,null=True)
 
 	def __str__(self):
@@ -33,6 +33,12 @@ class Contact(models.Model):
 	class Meta:
 		unique_together=['from_user','to_user']
 
+class Block(models.Model):
+	from_user=models.ForeignKey(MyUser,on_delete=models.CASCADE,related_name='block_from')
+	to_user=models.ForeignKey(MyUser,on_delete=models.CASCADE,related_name='block_to')
+	created=models.DateTimeField(auto_now_add=True)
+	class Meta:
+		unique_together=['from_user','to_user']
 
 
 

@@ -2223,3 +2223,7 @@ function reportModal(post=false,profile=false){
 
 
 
+let unBlockBtn=document.querySelector('.unblock')
+unBlockBtn.addEventListener('click',()=>{
+    console.log('unblocked')
+})

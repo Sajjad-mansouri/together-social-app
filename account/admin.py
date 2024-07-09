@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Profile,Contact,MyUser,Notification
+from .models import Profile,Contact,MyUser,Notification,Block
 
 class MyUserAdmin(UserAdmin):
 	pass
@@ -21,3 +21,6 @@ class NotificationAdmin(admin.ModelAdmin):
 	list_display=['user','content_object','object_id']
 
 
+@admin.register(Block)
+class BlockAdmin(admin.ModelAdmin):
+	list_display=['id','from_user','to_user']

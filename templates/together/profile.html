@@ -21,7 +21,11 @@
                     </button>
                     {%else%}
 
-                    {% if access%}
+                    {% if is_block %}
+                        <button class="unblock" data-btn='unblock' data-owner={{owner.id}}>
+                            unblock 
+                        </button>
+                    {%elif access%}
                     <button class="contact" data-btn='unfollow' data-contact={{contact_id}} data-owner={{owner.id}}>
                         unfollow 
                     </button>
@@ -30,8 +34,9 @@
                     <button class="contact" data-btn='requested' data-owner={{owner.id}} data-contact={{requested_id}}>
                         requested 
                     </button>
+
                     {%else%}
-                    <button class="contact" data-btn='follow' data-owner={{owner.id}}>
+                       <button class="contact" data-btn='follow' data-owner={{owner.id}}>
                         follow 
                     </button>
                     {%endif%}
@@ -60,7 +65,8 @@
                 <p class="nick_name">{{owner.get_full_name}}</p>
                 <p class="desc">
                     {{owner.profile.bio}}
-                    {% is_mobile%}
+                    is_block={{is_block}}
+                    
                     
                 </p>
             </div>
@@ -69,8 +75,8 @@
     </div>
     <hr>
     
-    
-    {%if access or not owner.profile.private or owner == user%}
+    {%has_access as has_access %}
+    {%if has_access%}
     <div class="posts_profile">
         <ul class="nav-pills w-100 d-flex justify-content-center" id="pills-tab" role="tablist">
             <li class="nav-item mx-2" role="presentation">
@@ -363,6 +369,8 @@
     </div>
 </div>
 {%endif%}
+{%elif is_block%}
+
 {%else%}
 
 <div class="is_private">

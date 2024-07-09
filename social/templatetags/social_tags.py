@@ -82,3 +82,16 @@ def is_mobile(context):
 	user_agent=parse(ua_string)
 
 	return user_agent.is_mobile
+
+
+
+@register.simple_tag(takes_context=True)
+def has_access(context):
+	# {%if access or not owner.profile.private or owner == user %}
+	access=context['access']
+	owner=context['owner']
+	user=context['user']
+	is_block=context['is_block']
+	print('has access')
+	print(not is_block and (access or not owner.profile.private or owner == user))
+	return  not is_block and (access or not owner.profile.private or owner == user)

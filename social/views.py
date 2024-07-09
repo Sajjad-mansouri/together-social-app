@@ -34,13 +34,11 @@ class Profile(ListView):
 	def get_context_data(self,**kwargs):
 		context=super().get_context_data(**kwargs)
 		context['owner']=self.owner
-		try:
-			access=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=True).exists()
 
-			requested=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=False).exists()
-		except:
-			access=False
-			requested=False
+		access=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=True).exists()
+		requested=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=False).exists()
+		is_block=self.request.user.block_from.filter(to_user=self.owner).exists()
+
 
 		if self.owner==self.request.user:
 			access=True
@@ -66,6 +64,7 @@ class Profile(ListView):
 		context['access']=access
 		context['requested']=requested
 		context['owner']=self.owner
+		context['is_block']=is_block
 		return context
 
 
