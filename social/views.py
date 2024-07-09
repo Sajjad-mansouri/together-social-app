@@ -87,7 +87,7 @@ class Home(ListView):
 		object_ids=Report.objects.filter(content_type__pk=ct.pk).values_list('object_id')
 		following=self.request.user.rel_from.filter(access=True).values_list('to_user',flat=True)
 
-		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user)).exclude(reports__content_type__pk=ct.pk,reports__object_id__in=object_ids)
+		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user)).exclude(reports__content_type__pk=ct.pk,reports__object_id__in=object_ids).exclude(user__block_from__to_user=self.request.user)
 
 	def get_context_data(self,**kwargs):
 		context=super().get_context_data(**kwargs)

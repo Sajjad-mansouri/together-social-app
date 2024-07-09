@@ -6,6 +6,7 @@ from rest_framework.mixins import DestroyModelMixin,CreateModelMixin
 from rest_framework.generics import GenericAPIView
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from .serializers import (
 						PostSerializer,
 						UserSerializer,
@@ -67,7 +68,7 @@ class UserListAPiView(generics.ListAPIView):
 			search=self.request.query_params.get('search')
 			print(f'search:{search}')
 			print(self.request.user)
-			queryset=UserModel.objects.filter(username__istartswith=search).exclude(username=self.request.user).select_related('profile')
+			queryset=UserModel.objects.filter(username__istartswith=search).exclude(username=self.request.user).exclude(block_from__to_user=self.request.user).select_related('profile')
 			print(queryset)
 		elif self.request.query_params.get('relation') == 'follower':
 			print(self.request.user)
@@ -234,9 +235,11 @@ class RestrictionApiView(DestroyModelMixin,CreateModelMixin,GenericAPIView):
 		return Response(status=status.HTTP_204_NO_CONTENT)
 
 	def post(self, request, *args, **kwargs):
-
+		to_user=request.data['to_user']
+		to_user=UserModel.objects.get(username=to_user)
 		serializer = self.get_serializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
 		self.perform_create(serializer)
+		Contact.objects.filter(Q(from_user=request.user ,to_user=to_user)|Q(from_user=to_user ,to_user=request.user)).delete()
 		headers = self.get_success_headers(serializer.data)
 		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

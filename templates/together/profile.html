@@ -52,8 +52,8 @@
                 </div>
                 <div class="general_info">
                     <p><span>{{total_post}}</span> post</p>
-                    <p class='connections' data-list='follower' data-owner={{owner.username}} access {{access}} {% if access %} data-bs-toggle="modal" data-bs-target="#connection-modal" {% endif %}><span>{{follower_count}}</span> followers</p>
-                    <p class='connections' data-list='following' data-owner={{owner.username}} {% if access %} data-bs-toggle="modal" data-bs-target="#connection-modal" {% endif %}><span>{{following_count}}</span> following</p>
+                    <p class='connections' data-list='follower' data-owner={{owner.username}} access {{access}} {% if access and not is_block %} data-bs-toggle="modal" data-bs-target="#connection-modal" {% endif %}><span>{{follower_count}}</span> followers</p>
+                    <p class='connections' data-list='following' data-owner={{owner.username}} {% if access and not is_block %} data-bs-toggle="modal" data-bs-target="#connection-modal" {% endif %}><span>{{following_count}}</span> following</p>
                 </div>
                 <p class="nick_name">{{owner.get_full_name}}</p>
                 <p class="desc">
