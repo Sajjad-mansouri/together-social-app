@@ -58,9 +58,9 @@ function hideShowReply(modalBody, post = false, comments = null, response = null
 }
 
 let hideInsideModal=null
-function hideModal(event, cloneModal, remove = false, element = false) {
+function hideModal(event, cloneModal, remove = false, element = false,refresh=false) {
     
-    
+   
     
     let modalId = cloneModal.getAttribute('id')
     let modalContainer = document.getElementById(modalId)
@@ -121,6 +121,7 @@ function hideModal(event, cloneModal, remove = false, element = false) {
         }
         modalContainer.classList.remove('show')
         modalContainer.style.display = 'none'
+        location.reload()
     }else{
         
         document.removeEventListener('click',hideInsideModal)
@@ -2224,6 +2225,106 @@ function reportModal(post=false,profile=false){
 
 
 let unBlockBtn=document.querySelector('.unblock')
-unBlockBtn.addEventListener('click',()=>{
-    console.log('unblocked')
+let closeBlockModal=null
+if (unBlockBtn!=null){
+
+    unBlockBtn.addEventListener('click',(event)=>{
+        event.stopPropagation()
+        
+        let unblockDiv=document.querySelector('#unblock-clone')
+        unblockDiv.style.display='block'
+        document.removeEventListener('click',closeBlockModal)
+        closeBlockModal=(e)=>hideModal(e,unblockDiv,false)
+        document.addEventListener('click',closeBlockModal)
+    })
+}
+
+let action=document.querySelector('.action')
+if(action!=null){
+
+    action.addEventListener('click',async function(){
+        let to_user=action.getAttribute('data-to_user')
+        const accessToken = await getToken();
+
+        const response = await fetch(`http://localhost:8000/api/restriction/${to_user}/`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+        if (response.ok){
+
+            let unblockedDiv=document.querySelector('#unblocked-clone')
+            unblockedDiv.style.display='block'
+
+            let unblockDiv=document.querySelector('#unblock-clone')
+            unblockDiv.style.display='none'
+            document.removeEventListener('click',closeBlockModal)
+            closeBlockModal=(e)=>hideModal(e,unblockedDiv,false,false,true)
+            document.addEventListener('click',closeBlockModal)
+        }
+    })
+}
+
+
+//display and hide dropdown and dropdown content for delete post in profile
+let moreBtn = document.querySelector('.profile-more')
+let moreDropDown = moreBtn.querySelector('.drop-down-content')
+let toggleDetailMore = function() { 
+    
+    moreDropDown.classList.toggle('hide') }
+let closeDetailMoreContent = function(event) {
+    if (event.target.closest('.drop-down-content') || !event.target.closest('.drop-down')) {
+
+        moreDropDown.classList.add('hide')
+
+    }
+}
+moreBtn.removeEventListener('click', toggleDetailMore)
+document.removeEventListener('click', closeDetailMoreContent)
+if (moreBtn != null) {
+    moreBtn.addEventListener('click', toggleDetailMore)
+    document.addEventListener('click', closeDetailMoreContent)
+}
+
+let blockBtn=document.querySelector('.block')
+
+if (blockBtn!=null){
+
+    blockBtn.addEventListener('click',(event)=>{
+        event.stopPropagation()
+        
+        let blockDiv=document.querySelector('#block-clone')
+        blockDiv.style.display='block'
+        document.removeEventListener('click',closeBlockModal)
+        closeBlockModal=(e)=>hideModal(e,blockDiv,false)
+        document.addEventListener('click',closeBlockModal)
+    })
+}
+
+let blockAction=document.querySelector('.block-action')
+blockAction.addEventListener('click',async function(){
+    let to_user=blockAction.getAttribute('data-to_user')
+    const accessToken = await getToken();
+    let body={'to_user':to_user}
+    const response = await fetch(`http://localhost:8000/api/restriction/${to_user}/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type' : 'application/json'
+        },
+        body:JSON.stringify(body)
+    })
+    let data= await response.json()
+    if (response.ok){
+
+        let blockedDiv=document.querySelector('#blocked-clone')
+        blockedDiv.style.display='block'
+
+        let blockDiv=document.querySelector('#block-clone')
+        unblockDiv.style.display='none'
+        document.removeEventListener('click',closeBlockModal)
+        closeBlockModal=(e)=>hideModal(e,blockedDiv,false,false,true)
+        document.addEventListener('click',closeBlockModal)
+    }
 })

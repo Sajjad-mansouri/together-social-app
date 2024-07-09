@@ -1,7 +1,9 @@
 from rest_framework import generics,status
 from rest_framework.parsers import FormParser,MultiPartParser,JSONParser
 from rest_framework.response import Response
-
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.mixins import DestroyModelMixin,CreateModelMixin
+from rest_framework.generics import GenericAPIView
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from .serializers import (
@@ -17,13 +19,14 @@ from .serializers import (
 						ChangePasswordSerializer,
 						RelationSerializer,
 						GeneralReportSerializer,
-						ReportSerializer
+						ReportSerializer,
+						RestrictionSerializer
 
 						)
 
 from .permissions import AuthorDeletePermission,RelationDeletePermission
 from social.models import Message,Like,Comment,LikeComment,SavePost,GeneralProblem,Report
-from account.models import Contact,Profile
+from account.models import Contact,Profile,Block
 UserModel=get_user_model()
 
 class PostListApiView(generics.ListCreateAPIView):
@@ -213,3 +216,27 @@ class ReportsView(generics.ListAPIView):
 class ReportApiView(generics.CreateAPIView):
 	serializer_class=ReportSerializer
 	queryset=Report.objects.all()
+
+
+class RestrictionApiView(DestroyModelMixin,CreateModelMixin,GenericAPIView):
+	permission_classes=[IsAuthenticated]
+	serializer_class=RestrictionSerializer
+	queryset=Block.objects.all()
+
+	def delete(self,request,*args,**kwargs):
+
+		from_user=request.user
+		to_user=kwargs.get('to_user')
+		to_user=get_object_or_404(UserModel,username=to_user)
+		instance=get_object_or_404(Block,from_user=from_user,to_user=to_user)
+
+		self.perform_destroy(instance)
+		return Response(status=status.HTTP_204_NO_CONTENT)
+
+	def post(self, request, *args, **kwargs):
+
+		serializer = self.get_serializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+		self.perform_create(serializer)
+		headers = self.get_success_headers(serializer.data)
+		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

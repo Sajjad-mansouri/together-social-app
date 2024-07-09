@@ -161,7 +161,7 @@ button.log_btn:hover {
   margin: 0;
   font-size: 14px;
 }
-.cart div .info p.name {
+.cart div .info div.name {
   color: black;
   font-weight: 500;
 }
@@ -1533,17 +1533,17 @@ button.log_btn:hover {
   font-weight: 400;
   margin: 0;
 }
-.profile_container .profile_info .info p.name {
+.profile_container .profile_info .info div.name {
   display: flex;
   flex-wrap: wrap;
   font-size: 20px;
 }
 @media screen and (max-width: 498px) {
-  .profile_container .profile_info .info p.name {
+  .profile_container .profile_info .info div.name {
     justify-content: space-between;
   }
 }
-.profile_container .profile_info .info p.name button {
+.profile_container .profile_info .info div.name button {
   padding: 5px 15px;
   font-size: 15px;
   margin-left: 20px;

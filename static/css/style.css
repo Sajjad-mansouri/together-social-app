@@ -804,7 +804,80 @@ font-weight: bold;
   padding:10px;
 }
 
-
+/*backdrop*/
 .modal-container{
   background-color: rgba(30,30,30,.5);
+}
+
+
+/*block and unblock*/
+.block .modal-header{
+  justify-content: center;
+}
+.block .modal-header h2.modal-title{
+  font-size: 1.5rem;
+  text-align: center;
+}
+.block .modal-content .content a{
+  color: black;
+  display: block;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-bottom:1px solid #deede6;
+  text-align: center;
+}
+.block .modal-content .content a.action{
+  color:red;
+}
+
+.block .modal-content .content a:hover{
+  background-color: #f8f9fa;
+}
+
+.block .modal-content .content h5{
+  padding:10px;
+  text-align: center;
+}
+
+/*block and unblock done*/
+
+.block-done .modal-header{
+  justify-content: center;
+}
+.block-done .modal-header h2.modal-title{
+  font-size: 1.5rem;
+  text-align: center;
+}
+.block-done .modal-content .content a{
+  color: black;
+  display: block;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-bottom:1px solid #deede6;
+  text-align: center;
+}
+
+
+.block-done .modal-content .content a:hover{
+  background-color: #f8f9fa;
+}
+
+.block-done .modal-content .content h5{
+  padding:10px;
+  text-align: center;
+}
+
+
+/*drop down profile*/
+
+.profile_container .profile_info .cart div.name{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-items: start;
+}
+.profile_container .profile_info .cart div.name .profile-more{
+  justify-self: end;
+}
+.cart .hide{
+  display: none;
 }

@@ -8,7 +8,8 @@ from social.models import Message,Like,Comment,LikeComment,SavePost,GeneralProbl
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from account.models import Contact,Profile
+from django.shortcuts import get_object_or_404
+from account.models import Contact,Profile,Block
 
 
 UserModel=get_user_model()
@@ -402,3 +403,16 @@ class ReportSerializer(serializers.ModelSerializer):
 		model=Report
 		fields=['id','user','object_id','general_report','is_following']
 		# read_only_fields=['is_user_comment']
+
+
+class RestrictionSerializer(serializers.ModelSerializer):
+	def to_internal_value(self,data):
+		self.user=self._context['request'].user.id
+		data['from_user']=self.user
+		to_user=get_object_or_404(UserModel,username=data['to_user'])
+		data['to_user']=to_user.pk
+		print(data)
+		return super().to_internal_value(data)
+	class Meta:
+		model=Block
+		fields=['id','from_user','to_user']

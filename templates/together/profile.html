@@ -10,63 +10,54 @@
                 <img src="{{owner.profile.profile_image.url}}" alt="">
             </div>
             <div class="info">
-                <p class="name">
+                <div class="name">
                     {% if user.is_authenticated%}
-                    {{owner.username}}
-
+                    <span>{{owner.username}}</span>
                     {%if owner == user%}
                     <button class="edit_profile">
-                        Edit profile 
-
+                        Edit profile
                     </button>
                     {%else%}
-
                     {% if is_block %}
-                        <button class="unblock" data-btn='unblock' data-owner={{owner.id}}>
-                            unblock 
-                        </button>
+                    <button class="unblock" data-btn='unblock' data-owner={{owner.id}}>
+                        unblock
+                    </button>
                     {%elif access%}
                     <button class="contact" data-btn='unfollow' data-contact={{contact_id}} data-owner={{owner.id}}>
-                        unfollow 
+                        unfollow
                     </button>
-
                     {% elif requested %}
                     <button class="contact" data-btn='requested' data-owner={{owner.id}} data-contact={{requested_id}}>
-                        requested 
+                        requested
                     </button>
-
                     {%else%}
-                       <button class="contact" data-btn='follow' data-owner={{owner.id}}>
-                        follow 
+                    <button class="contact" data-btn='follow' data-owner={{owner.id}}>
+                        follow
                     </button>
                     {%endif%}
                     {%endif%}
                     {%endif%}
+                    {%if not is_block%}
+                    <section class="profile-more drop-down">
 
-                </p>
+                        <div>...</div>
+                        <section class="drop-down-content hide">
+                            
+                            <a class="block" href="#">block</a>
+                            <a href="#">cancel</a>
+                        </section>
+                    </section>
+                    {%endif%}
+
+                </div>
                 <div class="general_info">
                     <p><span>{{total_post}}</span> post</p>
-                    <p class='connections'  data-list='follower' data-owner={{owner.username}} 
-                    access {{access}}
-                    {% if access  %}
-                        
-                        data-bs-toggle="modal" 
-                        data-bs-target="#connection-modal"
-                    {% endif %}
-                    ><span>{{follower_count}}</span> followers</p>
-                    <p class='connections' data-list='following' data-owner={{owner.username}} 
-                    {% if access  %}
-                        
-                        data-bs-toggle="modal" 
-                        data-bs-target="#connection-modal"
-                    {% endif %}
-                    ><span>{{following_count}}</span> following</p>
+                    <p class='connections' data-list='follower' data-owner={{owner.username}} access {{access}} {% if access %} data-bs-toggle="modal" data-bs-target="#connection-modal" {% endif %}><span>{{follower_count}}</span> followers</p>
+                    <p class='connections' data-list='following' data-owner={{owner.username}} {% if access %} data-bs-toggle="modal" data-bs-target="#connection-modal" {% endif %}><span>{{following_count}}</span> following</p>
                 </div>
                 <p class="nick_name">{{owner.get_full_name}}</p>
                 <p class="desc">
                     {{owner.profile.bio}}
-                    is_block={{is_block}}
-                    
                     
                 </p>
             </div>
@@ -74,7 +65,6 @@
         </div>
     </div>
     <hr>
-    
     {%has_access as has_access %}
     {%if has_access%}
     <div class="posts_profile">
@@ -111,7 +101,6 @@
         </div>
     </div>
 </div>
-
 {% is_mobile as is_mobile%}
 {%if is_mobile %}
 <div class="second_container">
@@ -173,11 +162,9 @@
                             <span class="circle">.</span>
                             <span>{{post.created|naturaltime}}</span>
                         </div>
-                        
-                        <div class="more" >
+                        <div class="more">
                             <img src="{% static 'images/show_more.png' %}" alt="show more">
                         </div>
-                        
                     </div>
                     <div class="image">
                         <img src="{{post.image.url}}">
@@ -228,7 +215,6 @@
     </div>
 </div>
 {%else%}
-
 <div id="backdrop" class="backdrop">
     <div id="favDialog-clone">
         <div class="image-container">
@@ -370,15 +356,12 @@
 </div>
 {%endif%}
 {%elif is_block%}
-
 {%else%}
-
 <div class="is_private">
     <img src="{%static 'images/padlock.png'%}" width="50">
     <div class="private_desc">
-        <span class="private_title">This Account is Private</span> 
-        <span>Follow this account to see their photos.</span>   
-      
+        <span class="private_title">This Account is Private</span>
+        <span>Follow this account to see their photos.</span>
     </div>
 </div>
 {%endif%}
@@ -391,4 +374,61 @@
         <button class='cancel'>cancel</button>
     </div>
 </div>
+{%if is_block%}
+<div class="modal modal-container block" id="unblock-clone">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Unblock {{owner}}</h2>
+            </div>
+            <div class="content">
+                <h5>they will now be able to see your posts and follow you on Together.Together won't let them know you unblocked them.</h5>
+                <a href="#" class='action' data-to_user='{{owner}}'>Unblock</a>
+                <a href="" class="cancel">cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal modal-container block-done" id="unblocked-clone">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Unblocked {{owner}}.</h2>
+            </div>
+            <div class="content">
+                <h5>You can block them anytime from their profile.</h5>
+                <a href="" class="cancel">Dismis</a>
+            </div>
+        </div>
+    </div>
+</div>
+{%else%}
+<div class="modal modal-container block" id="block-clone">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">block {{owner}}?</h2>
+            </div>
+            <div class="content">
+                <h5>they won't be able to find your profile,posts on Together.Together won't let them know you blocked them.</h5>
+                <a href="#" class="block-action" data-to_user={{owner}}>block</a>
+                <a href="">cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal modal-container block-done" id="blocked-clone">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Blocked {{owner}}.</h2>
+            </div>
+            <div class="content">
+                <h5>You can unblock them anytime from their profile.</h5>
+                <a href="">Dismis</a>
+            </div>
+        </div>
+    </div>
+</div>
+{%endif%}
 {%endblock%}
