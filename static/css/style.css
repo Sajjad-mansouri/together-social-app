@@ -867,6 +867,32 @@ font-weight: bold;
   text-align: center;
 }
 
+/*unfollow done*/
+.unfollow-done .modal-header{
+  justify-content: center;
+}
+.unfollow-done .modal-header h2.modal-title{
+  font-size: 1.5rem;
+  text-align: center;
+}
+.unfollow-done .modal-content .content a{
+  color: black;
+  display: block;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-bottom:1px solid #deede6;
+  text-align: center;
+}
+
+
+.unfollow-done .modal-content .content a:hover{
+  background-color: #f8f9fa;
+}
+
+.unfollow-done .modal-content .content h5{
+  padding:10px;
+  text-align: center;
+}
 
 /*drop down profile*/
 

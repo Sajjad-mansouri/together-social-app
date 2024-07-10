@@ -89,10 +89,7 @@ class Home(ListView):
 
 		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user)).exclude(reports__content_type__pk=ct.pk,reports__object_id__in=object_ids).exclude(user__block_from__to_user=self.request.user)
 
-	def get_context_data(self,**kwargs):
-		context=super().get_context_data(**kwargs)
-		context['owner']=self.request.user
-		return context
+
 
 
 class Setting(LoginRequiredMixin,TemplateView):

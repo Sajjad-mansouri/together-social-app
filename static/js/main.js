@@ -2088,8 +2088,98 @@ moreBtns.forEach(element => {
 
 let closeModal = null
 
+async function reportUnfollow(event,postOwner){
+    event.stopPropagation()
+    console.log('reportUnfollow function')
+    let accessToken=await getToken()
+    let response = await fetch(baseUrl + `/api/conection/${postOwner}/`, {
+    method: 'DELETE',
+    headers: {
+        'Authorization': `Bearer ${accessToken}`
+    }
+    })
+    if(response.ok){
+        // close modal
+        //close post detail if in profile page and screen width is over than 498
+        //remove div.item
+        let otherReportDiv=document.getElementById('other_report_step')
+        otherReportDiv.remove()
+
+        
+        let unfollowDoneCloneDiv=document.querySelector('#unfollowed-clone')
+        let unfollowDoneDiv=unfollowDoneCloneDiv.cloneNode(true)
+
+        let titleDiv=unfollowDoneDiv.querySelector('.modal-title')
+        titleDiv.textContent=`Unfollowd ${postOwner}.`
+        document.body.append(unfollowDoneDiv)
+        unfollowDoneDiv.style.display='block'
+        document.removeEventListener('click',closeBlockModal)
+        closeBlockModal=(e)=>hideModal(e,unfollowDoneDiv,true)
+        document.addEventListener('click',closeBlockModal)
+
+
+    }
+}
+let closeBlockModal=null
+let blockUser=function (event,stepsDiv=false,postOwner=false){
+        
+        event.stopPropagation()
+        if (stepsDiv){
+            stepsDiv.remove()
+        }
+        let blockCloneDiv=document.querySelector('#block-clone')
+        let blockDiv=blockCloneDiv.cloneNode(true)
+        let blockTitle=blockDiv.querySelector('.modal-title')
+        blockTitle.textContent=`block ${postOwner}?`
+        blockDiv.style.display='block'
+        document.body.append(blockDiv)
+        let blockAction=blockDiv.querySelector('.block-action')
+        blockAction.addEventListener('click',async function(){
+            let to_user
+            if(postOwner){
+                to_user=postOwner
+            }else{
+                to_user=blockAction.getAttribute('data-to_user')
+            }
+
+            let body={'to_user':to_user}
+            const accessToken = await getToken();
+            const response = await fetch(`http://localhost:8000/api/restriction/${to_user}/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type' : 'application/json'
+                },
+                body:JSON.stringify(body)
+            })
+            let data= await response.json()
+            if (response.ok){
+
+                let blockedCloneDiv=document.querySelector('#blocked-clone')
+                let blockedDiv=blockedCloneDiv.cloneNode(true)
+                document.body.append(blockedDiv)
+                if(postOwner){
+                    let titleDiv=blockedDiv.querySelector('.modal-title')
+                    titleDiv.textContent=`Blocked ${owner}.`
+                }
+                blockedDiv.style.display='block'
+
+                let blockDiv=document.querySelector('#block-clone')
+                unblockDiv.style.display='none'
+                document.removeEventListener('click',closeBlockModal)
+                closeBlockModal=(e)=>hideModal(e,blockedDiv,true,false,true)
+                document.addEventListener('click',closeBlockModal)
+            }
+        })
+
+        document.removeEventListener('click',closeBlockModal)
+        closeBlockModal=(e)=>hideModal(e,blockDiv,false)
+        document.addEventListener('click',closeBlockModal)
+}
+
 async function report(generalReport,postId,objectTyp,postOwner){
         const body = { 'content_type': objectTyp,'object_id':postId,'general_report':generalReport ,'post_owner':postOwner}
+
         let accessToken = await getToken()
         const response = await fetch(baseUrl + '/api/report/', {
             method: 'POST',
@@ -2122,9 +2212,7 @@ async function report(generalReport,postId,objectTyp,postOwner){
                 let block=document.createElement('a')
                 block.href='#'
                 block.textContent=`block ${postOwner}`
-                block.addEventListener('click',()=>{
-                    
-                })
+                block.addEventListener('click',(e)=>blockUser(e,stepMore,postOwner))
 
                 otherSteps.append(block)
                 if(data.is_following){
@@ -2132,20 +2220,7 @@ async function report(generalReport,postId,objectTyp,postOwner){
                     let unfollow=document.createElement('a')
                     unfollow.href='#'
                     unfollow.textContent=`unfollow ${postOwner}`
-                    unfollow.addEventListener('click',async function(){
-                                let accessToken=await getToken()
-                                let response = await fetch(baseUrl + `/api/conection/${postOwner}/`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'Authorization': `Bearer ${accessToken}`
-                                }
-                            })
-                                if(response.ok){
-                                    // close modal
-                                    //close post detail if in profile page and screen width is over than 498
-                                    //remove div.item
-                                }
-                    })
+                    unfollow.addEventListener('click',(e)=>reportUnfollow(e,postOwner))
                 otherSteps.append(unfollow)
                 }
                 stepMore.classList.add('show')
@@ -2225,7 +2300,7 @@ function reportModal(post=false,profile=false){
 
 
 let unBlockBtn=document.querySelector('.unblock')
-let closeBlockModal=null
+
 if (unBlockBtn!=null){
 
     unBlockBtn.addEventListener('click',(event)=>{
@@ -2287,44 +2362,13 @@ if (moreBtn != null) {
     document.addEventListener('click', closeDetailMoreContent)
 }
 
+
+
 let blockBtn=document.querySelector('.block')
 
 if (blockBtn!=null){
 
-    blockBtn.addEventListener('click',(event)=>{
-        event.stopPropagation()
-        
-        let blockDiv=document.querySelector('#block-clone')
-        blockDiv.style.display='block'
-        document.removeEventListener('click',closeBlockModal)
-        closeBlockModal=(e)=>hideModal(e,blockDiv,false)
-        document.addEventListener('click',closeBlockModal)
-    })
+    blockBtn.addEventListener('click',(e)=>blockUser(e))
 }
 
-let blockAction=document.querySelector('.block-action')
-blockAction.addEventListener('click',async function(){
-    let to_user=blockAction.getAttribute('data-to_user')
-    const accessToken = await getToken();
-    let body={'to_user':to_user}
-    const response = await fetch(`http://localhost:8000/api/restriction/${to_user}/`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type' : 'application/json'
-        },
-        body:JSON.stringify(body)
-    })
-    let data= await response.json()
-    if (response.ok){
 
-        let blockedDiv=document.querySelector('#blocked-clone')
-        blockedDiv.style.display='block'
-
-        let blockDiv=document.querySelector('#block-clone')
-        unblockDiv.style.display='none'
-        document.removeEventListener('click',closeBlockModal)
-        closeBlockModal=(e)=>hideModal(e,blockedDiv,false,false,true)
-        document.addEventListener('click',closeBlockModal)
-    }
-})
