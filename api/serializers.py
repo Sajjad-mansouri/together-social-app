@@ -4,7 +4,7 @@ from django.utils.timesince import timesince
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from rest_framework import serializers
-from social.models import Message,Like,Comment,LikeComment,SavePost,GeneralProblem,Report
+from social.models import Message,Like,Comment,LikeComment,SavePost,GeneralProblem,Report,ReportProblem
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -416,3 +416,20 @@ class RestrictionSerializer(serializers.ModelSerializer):
 	class Meta:
 		model=Block
 		fields=['id','from_user','to_user']
+
+
+class ReportProblemSerializer(serializers.ModelSerializer):
+	def to_internal_value(self,data):
+		
+		user=self._context['request'].user.id
+		data['user']=user
+		print(data)
+		return super().to_internal_value(data)
+	def is_valid(self,raise_exception):
+		valid=super().is_valid(raise_exception=False)
+		print(self.errors)
+		print('errors')
+		return valid		
+	class Meta:
+		model=ReportProblem
+		fields=['user','report']

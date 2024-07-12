@@ -328,3 +328,21 @@
         </div>
     </div>
 </div>
+
+<div id="report-problem-modal" class="messages-modal">
+    <div class="report-problem-div modal-content" >
+        <img class='message-logo'src="{% static 'images/message_logo.png' %}">
+        <form class="report-problem-form">
+            <textarea placeholder="report problem"></textarea>
+            <input type="submit" class='submit' name="Report" value="Report">
+        </form>
+    </div>
+</div>
+
+<div id="report-problem-modal-sent" class="messages-modal">
+    <div class="report-problem-div modal-content">
+        <img class='message-logo' src="{% static 'images/message_logo.png' %}">
+        <h1>Your Report Sent</h1>
+        <img class='submited' src="{%static 'images/green-tick.png'%}">
+    </div>
+</div>

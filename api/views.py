@@ -3,7 +3,7 @@ from rest_framework.parsers import FormParser,MultiPartParser,JSONParser
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.mixins import DestroyModelMixin,CreateModelMixin
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView,CreateAPIView
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
@@ -21,12 +21,13 @@ from .serializers import (
 						RelationSerializer,
 						GeneralReportSerializer,
 						ReportSerializer,
-						RestrictionSerializer
+						RestrictionSerializer,
+						ReportProblemSerializer
 
 						)
 
 from .permissions import AuthorDeletePermission,RelationDeletePermission
-from social.models import Message,Like,Comment,LikeComment,SavePost,GeneralProblem,Report
+from social.models import Message,Like,Comment,LikeComment,SavePost,GeneralProblem,Report,ReportProblem
 from account.models import Contact,Profile,Block
 UserModel=get_user_model()
 
@@ -243,3 +244,10 @@ class RestrictionApiView(DestroyModelMixin,CreateModelMixin,GenericAPIView):
 		Contact.objects.filter(Q(from_user=request.user ,to_user=to_user)|Q(from_user=to_user ,to_user=request.user)).delete()
 		headers = self.get_success_headers(serializer.data)
 		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class ReportProblemApiView(CreateAPIView):
+	permission_classes=[IsAuthenticated]
+	serializer_class=ReportProblemSerializer
+	queryset=ReportProblem.objects.all()
+

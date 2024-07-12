@@ -41,7 +41,9 @@ urlpatterns=[
 
 	path('report/',views.ReportApiView.as_view(),name='report'),
 
-	path('restriction/<str:to_user>/',views.RestrictionApiView.as_view(),name='restriction')
+	path('restriction/<str:to_user>/',views.RestrictionApiView.as_view(),name='restriction'),
+
+	path('report-problem/',views.ReportProblemApiView.as_view(),name='report-problem')
 
 
 

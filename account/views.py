@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 
+
 from .forms import ProfileForm,UserForm,CustomCreationForm
 from .emailconf import EmailConfirmation
 
@@ -75,3 +76,5 @@ class SearchView(LoginRequiredMixin,TemplateView):
 
 class NotificationView(LoginRequiredMixin,TemplateView):
 	template_name='together/notification.html'
+
+
