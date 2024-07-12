@@ -68,11 +68,7 @@ class Profile(ListView):
 		return context
 
 
-class Search(LoginRequiredMixin,ListView):
-	template_name='transfer/search.html'
 
-	def get_queryset(self):
-		return UserModel.objects.all()
 
 class Home(ListView):
 	template_name='together/home.html'

@@ -120,16 +120,7 @@
                             </ul>
                         </div>
                         <div class="left">
-                            <div class="search_bar">
-                                <div class="input-group">
-                                    <div class="form-outline">
-                                        <div>
-                                            <img src="{%static 'images/search.png' %}" alt="search">
-                                        </div>
-                                        <input type="search" id="form1" class="form-control" placeholder="Search" />
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="notifications notification_icon">
                                 <a href="./notification.html">
                                     <img src="{%static 'images/love.png' %}">
@@ -145,10 +136,7 @@
                             <img class="logo" src="{% static 'images/logo_menu.png' %}">
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">
-                                    <span>Following</span>
-                                    <img src="{% static 'images/add-friend.png' %}">
-                                </a></li>
+
                             <li><a class="dropdown-item" href="#">
                                     <span>Favorites</span>
                                     <img src="{% static 'images/star.png' %}">
@@ -156,7 +144,7 @@
                         </ul>
                     </div>
                     <div class="left">
-                        <img src="{% static 'images/send.png' %}">
+                        
                         <a href="./notification.html">
                             <img class="notification_icon" src="{% static 'images/love.png' %}">
                         </a>
@@ -167,12 +155,16 @@
             <div class="nav_bottom">
                 <a href="{% url 'home'%}"><img src="{% static 'images/accueil.png' %}"></a>
                 <a href="#" id="sm_create_modal"><img src="{% static 'images/tab.png' %}"></a>
-                <a href="{%url 'profile'  %}"><img class="circle story" src=""></a>
+                <a href="{%url 'search'%}" id="sm_search_modal"><img src="{%static 'images/search.png' %}"></a>
+                <a href="{%url 'profile'  %}"><img class="circle story" src="{{user.profile.profile_image.url}}"></a>
             </div>
             {%endif%}
         </div>
         <!-- search  -->
-        {% if user.is_authenticated%}
+        {% is_mobile as is_mobile%}
+        {% if user.is_authenticated and not is_mobile%}
+
+
         <div id="search" class="search_section">
             <h2>Search</h2>
             <form>

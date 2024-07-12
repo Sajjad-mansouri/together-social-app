@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import CreateView,UpdateView,DeleteView
+from django.views.generic import CreateView,UpdateView,DeleteView,TemplateView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
@@ -68,3 +68,7 @@ class Deactivate(LoginRequiredMixin,DeleteView):
 	model=User_Model
 	success_url=reverse_lazy('login')
 
+
+
+class SearchView(LoginRequiredMixin,TemplateView):
+	template_name='together/search.html'

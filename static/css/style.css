@@ -907,3 +907,59 @@ font-weight: bold;
 .cart .hide{
   display: none;
 }
+
+/*search page*/
+
+.search_container {
+  background-color: white;
+  padding: 10px;
+  width: 350px;
+
+  height: 100vh;
+  padding: 1.5em 1em;
+}
+
+
+.search_container h2 {
+  color: rgb(38, 38, 38);
+  padding-bottom: 1em;
+  font-size: 25px;
+}
+.search_container form {
+  background-color: rgb(239, 239, 239);
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 1.5em;
+}
+.search_container form input {
+  background: transparent !important;
+  font-weight: 300;
+  padding: 5px 10px;
+  outline: none;
+  border: none !important;
+}
+.search_container .find .desc {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0;
+  margin-bottom: 20px;
+}
+.search_container .find .desc h4 {
+  margin: 0;
+  font-size: 20px;
+}
+.search_container .find .desc p {
+  margin: 0;
+}
+.search_container .find .desc p a {
+  font-weight: 500;
+  color: rgb(0, 149, 246);
+}
+.search_container .find .account .clear a {
+  color: rgb(142, 142, 142);
+}
+
+.search_container .find .account:hover{
+  background-color: rgb(239, 239, 239);
+}
