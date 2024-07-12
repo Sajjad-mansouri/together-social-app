@@ -60,10 +60,12 @@ function hideShowReply(modalBody, post = false, comments = null, response = null
 let hideInsideModal=null
 function hideModal(event, cloneModal, remove = false, element = false,refresh=false) {
     
-   
-    
+   console.log('hideModal')
+    event.stopPropagation()
     let modalId = cloneModal.getAttribute('id')
     let modalContainer = document.getElementById(modalId)
+    console.log('modal container')
+    console.log(modalContainer)
     let modalContent
 
     
@@ -104,9 +106,9 @@ function hideModal(event, cloneModal, remove = false, element = false,refresh=fa
     let condition = event.target == closeBtn || event.target == cancelBtn || !contentCondition && modalContainer != null && moreCondition && postDetailCondition ;
     let modalBack = document.querySelector('.modal-backdrop')
 
-
+    console.log(remove)
     if (condition && remove == true) {
-        
+        console.log('condition and remove')
         if (modalBack) {
 
             modalBack.remove();
@@ -114,17 +116,18 @@ function hideModal(event, cloneModal, remove = false, element = false,refresh=fa
         modalContainer.remove();
 
     } else if (condition) {
-        
+        console.log('condition')
         if(modalBack){
 
         modalBack.remove()
         }
         modalContainer.classList.remove('show')
         modalContainer.style.display = 'none'
-        location.reload()
+        // location.reload()
     }else{
-        
+        console.log('not condition and not remove')
         document.removeEventListener('click',hideInsideModal)
+        console.log(remove)
         hideInsideModal=(e)=>hideModal(e, cloneModal, remove, element )
         document.addEventListener('click',hideInsideModal)
     }
@@ -566,6 +569,7 @@ function addPostHome(data) {
     like.setAttribute('data-post', data.id)
 
     postClone.setAttribute('data-post', data.id);
+    postClone.setAttribute('data-owner',data.owner.username)
     profileImage.src = data.owner.profile_image;
     userName.textContent = data.owner.username;
     descUser.textContent = data.owner.username;
@@ -573,7 +577,7 @@ function addPostHome(data) {
     image.src = data.image;
 
     post.parentNode.insertBefore(postClone, post.nextSibling)
-    deletePost(more)
+    
     postClone.classList.remove('hide')
     addEventListeners(postClone)
 }
@@ -664,67 +668,69 @@ function completed(imageFile) {
 let deletePostCallBack = null
 let fetchDeletePost = null
 
-function deletePost(element, profile = false, deleteBtn = false) {
-    let deleteModalBtn = document.getElementById('delete_modal')
-    let submitDeleteModal = document.getElementById('submit_delete_modal')
 
-    element.removeEventListener('click', deletePostCallBack)
-    deletePostCallBack = function() {
+function displayConfirmDeletePost(event,moreModal,post,profile){
+    event.stopPropagation()
+    event.preventDefault()
+    console.log('displayConfirmDeletePost')
+    // create modal for confirm delete and append to document body
+    let submitDeleteModalClone = document.getElementById('submit_delete_modal-clone')
+    let submitDeleteModal=submitDeleteModalClone.cloneNode(true)
+    submitDeleteModal.setAttribute('id','submit_delete_modal')
+    let submitDeleteBtn=submitDeleteModal.querySelector('.action')
+    submitDeleteBtn.setAttribute('id','delete-post')
+    document.body.append(submitDeleteModal)
 
-        //delebtn inserted to deletePost function in post detail profile
 
-        if (deleteBtn == false) {
-            deleteBtn = document.getElementById('delete-post')
-        }
+    
+    // display moremodal in home page for all screen width and post detail for small screen width 
+    moreModal.classList.remove('show')
+    moreModal.style.display = 'none'
+    submitDeleteModal.classList.add('show')
+    submitDeleteModal.style.display = 'block'
 
-        deleteModalBtn.addEventListener('click', (event) => {
-            event.stopPropagation()
-            
-            let moreModal = document.getElementById('more_modal')
-            moreModal.classList.remove('show')
-            moreModal.style.display = 'none'
-            submitDeleteModal.classList.add('show')
-            submitDeleteModal.style.display = 'block'
+    submitDeleteBtn.addEventListener('click',(e)=>confirmDeletePost(e,submitDeleteModal,post,profile,))
 
-            document.removeEventListener('click', closeModal, )
-            
-            closeModal = (e) => hideModal(e, submitDeleteModal, false)
-            
-            document.addEventListener('click', closeModal,{once:true})
+    document.removeEventListener('click', closeModal, )
+    closeModal = (e) => hideModal(e, submitDeleteModal, true)
+    document.addEventListener('click', closeModal,{once:true})
+}
+
+async function confirmDeletePost(event,submitDeleteModal,post,profile = false) {
+
+        event.stopPropagation()
+
+        // let postId = post.getAttribute('data-post');
+        
+        // submitDeleteBtn.removeEventListener('click', fetchDeletePost)
+        console.log(post)
+        let postId=post.getAttribute('data-post')
+        const accessToken = await getToken()
+        const response = await fetch(`http://localhost:8000/api/post/${postId}`, {
+            method: 'Delete',
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
 
         })
-        let post = event.target.closest('.post');
+        if (response.ok) {
+            if (profile) {
+                let item = document.querySelector(`.item[data-post="${postId}"]`)
+                let backdrop=document.querySelector('#backdrop')
+                backdrop.style.display='none'
+                item.remove()
+            } else {
 
-
-        let postId = post.getAttribute('data-post');
-        deleteBtn.removeEventListener('click', fetchDeletePost)
-
-        fetchDeletePost = async function() {
-            const accessToken = await getToken()
-            const response = await fetch(`http://localhost:8000/api/post/${postId}`, {
-                method: 'Delete',
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-
-            })
-            if (response.ok) {
-                if (profile) {
-                    let item = document.querySelector(`.item[data-post="${postId}"]`)
-                    item.remove()
-                } else {
-
-                    post.remove()
-                }
-                let btnClose = document.querySelector('#submit_delete_modal .btn-close');
-
-                btnClose.click()
-
+                post.remove()
             }
+            
+            submitDeleteModal.remove()
+
         }
-        deleteBtn.addEventListener('click', fetchDeletePost)
-    }
-    element.addEventListener('click', deletePostCallBack)
+        
+        
+    
+    
 }
 
 
@@ -990,6 +996,51 @@ function savePost(element) {
 
 }
 
+let closeMoreModal = null
+let displayMoreModal = function(event) {
+    console.log('displayMoreModal')
+    event.stopPropagation()
+    let postDiv=event.target.closest('.post')
+    let postOwner=postDiv.getAttribute('data-owner')
+    let objectId=postDiv.getAttribute('data-post')
+    let modalClone = document.querySelector('#more_modal-clone')
+    let modal=modalClone.cloneNode(true)
+    console.log(modal)
+    modal.setAttribute('id','more_modal')
+    document.body.append(modal)
+    
+    let reportBtn=modal.querySelector('.report_btn')
+    
+    let deleteBtn=modal.querySelector('#delete_modal-clone')
+    deleteBtn.setAttribute('id','delete_modal')
+    console.log('postOnwer')
+    console.log(postOwner)
+    if(currentUser==postOwner){
+        reportBtn.remove()
+    }else{
+        deleteBtn.remove()
+        reportBtn.addEventListener('click',(e)=> reportModal(e) )
+    }
+    modal.setAttribute('data-post',objectId)
+    modal.setAttribute('data-owner',postOwner)
+    modal.classList.add('show')
+    modal.style.display = 'block'
+    // let modalBackDrop = document.createElement('div')
+    // modalBackDrop.classList.add('modal-backdrop', 'fade', 'show')
+    // document.body.append(modalBackDrop)
+    if(deleteBtn !=null){
+        let confirmDeleteFunction = (e)=> displayConfirmDeletePost(e,modal,postDiv)
+        deleteBtn.addEventListener('click',confirmDeleteFunction)
+    
+    }
+    document.removeEventListener('click', closeMoreModal, )
+    console.log('before closemoremodal')
+    closeMoreModal = (e) => hideModal(e, modal, true,)
+    
+    document.addEventListener('click', closeMoreModal,{once:true})
+
+
+}
 function addEventListeners(newPost = false) {
 
     if (newPost) {
@@ -1003,8 +1054,12 @@ function addEventListeners(newPost = false) {
 
         messageAddEvnetListener(messageButtons)
         messageAddEvnetListener(viewComments)
+        console.log('newpost')
+        let moreDiv=newPost.querySelector('.more')
 
-        deletePost(newPost)
+        //add listener for more btn for new post that be created
+        moreDiv.addEventListener('click', (e) => displayMoreModal(e))
+        
         savePost(newPost)
 
     } else {
@@ -1025,9 +1080,10 @@ function addEventListeners(newPost = false) {
         messageAddEvnetListener(messageButtons)
         messageAddEvnetListener(viewComments)
 
-        document.querySelectorAll('.more').forEach((element) => {
 
-            deletePost(element)
+        document.querySelectorAll('.more').forEach((element) => {
+            element.addEventListener('click', (e) => displayMoreModal(e))
+            
         })
 
         //save post
@@ -1634,14 +1690,14 @@ async function connectionList(queryType, username) {
     }
 }
 
-function profileDetailPost(elements) {
+function profileDetailPost(postItems) {
     let run = true
     let escapeDetailModal = null
     let closeDetailModal = null
     let toggleDetailMore = null
     let closeDetailMoreContent = null
     let likePostFunction = null
-    elements.forEach(element => {
+    postItems.forEach(element => {
         element.addEventListener('click', async function(event) {
 
             event.stopPropagation()
@@ -1769,7 +1825,7 @@ function profileDetailPost(elements) {
                         let reportBtn=favDialog.querySelector('.report_btn')
                         
                         
-                        reportBtn.addEventListener('click',()=>reportModal(post,true)) 
+                        reportBtn.addEventListener('click',(e)=>reportModal(e,post,true)) 
                     }else if(currentUser == data.owner.username && more != null){
                         let reportBtn=more.querySelector('.report_btn')
                         reportBtn.remove()
@@ -1862,8 +1918,8 @@ function profileDetailPost(elements) {
                 let post = posts.querySelector(`.post[data-post="${postId}"]`)
 
                 posts.classList.remove('hide')
-                post.scrollIntoView({ behavior: 'instant' });
 
+                post.scrollIntoView({ behavior: 'instant' });
 
                 addEventListeners()
 
@@ -1876,37 +1932,46 @@ function profileDetailPost(elements) {
 
 }
 
-function postDetailListener(element, postId, likeDiv) {
+function postDetailListener(postDetailDiv, postId, likeDiv) {
     
-    let moreBtn = element.querySelector('.more')
-    let post = element.querySelector('.post')
+    let moreBtn = postDetailDiv.querySelector('.more')
+    let post = postDetailDiv.querySelector('.post')
 
 
     //display confirm delete modal and hide it
-    let confirmDeleteDiv = document.getElementById('confirm-delete')
-    let confirmDelete = confirmDeleteDiv.querySelector('.delete')
+
+    // create modal for confirm delete and append to document body
+    let submitDeleteModalClone = document.getElementById('submit_delete_modal-clone')
+    let submitDeleteModal=submitDeleteModalClone.cloneNode(true)
+    submitDeleteModal.setAttribute('id','submit_delete_modal')
+    let submitDeleteBtn=submitDeleteModal.querySelector('.action')
+    submitDeleteBtn.setAttribute('id','delete-post')
+    document.body.append(submitDeleteModal)
+
     if (moreBtn != null ) {
 
         let deleteBtn = moreBtn.querySelector('.delete-btn-post')
         deleteBtn.addEventListener('click', (event) => {
             event.preventDefault()
             event.stopPropagation()
-            confirmDeleteDiv.style.display = 'block'
+
+            submitDeleteModal.style.display = 'block'
 
             document.addEventListener('click', (event) => {
                 if (!event.target.closest('#confirm-delete') || event.target.closest('.cancel')) {
-                    confirmDeleteDiv.style.display = 'none'
+                    submitDeleteModal.style.display = 'none'
                 }
             })
 
+            submitDeleteBtn.addEventListener('click',(e)=>confirmDeletePost(e,submitDeleteModal,post,true))
         })
     }
-    let input = element.querySelector('input')
-
-    deletePost(element, true, confirmDelete)
+    let input = postDetailDiv.querySelector('input')
 
 
-    writeComment(element, input, postId)
+    
+    
+    writeComment(postDetailDiv, input, postId)
     savePost(post)
 
 }
@@ -2041,49 +2106,7 @@ notifs.forEach(element => {
 })
 
 
-// report post
-let closeMoreModal = null
-let displayMoreModal = function(event,element) {
-    event.stopPropagation()
-    let postDiv=event.target.closest('.post')
-    let postOwner=postDiv.getAttribute('data-owner')
-    let objectId=postDiv.getAttribute('data-post')
-    let modalClone = document.querySelector('#more_modal-clone')
-    let modal=modalClone.cloneNode(true)
-    modal.setAttribute('id','more_modal')
-    document.body.append(modal)
-    let moreModal = document.querySelector('#more_modal .modal-dialog')
-    let reportBtn=moreModal.querySelector('.report_btn')
-    let deleteBtn=moreModal.querySelector('#delete_modal')
-    if(currentUser==postOwner){
-        reportBtn.remove()
-    }else{
-        deleteBtn.remove()
-        reportBtn.addEventListener('click', reportModal )
-    }
-    modal.setAttribute('data-post',objectId)
-    modal.setAttribute('data-owner',postOwner)
-    modal.classList.add('show')
-    modal.style.display = 'block'
-    let modalBackDrop = document.createElement('div')
-    modalBackDrop.classList.add('modal-backdrop', 'fade', 'show')
-    document.body.append(modalBackDrop)
 
-    document.removeEventListener('click', closeMoreModal, )
-    closeMoreModal = (e) => hideModal(e, modal, true, element)
-    
-    document.addEventListener('click', closeMoreModal,{once:true})
-
-
-}
-let moreBtns = document.querySelectorAll('.info .more')
-moreBtns.forEach(element => {
-    let displayMoreModalFunction = (e) => displayMoreModal(e,element)
-    element.addEventListener('click', displayMoreModalFunction)
-
-
-
-})
 
 
 let closeModal = null
@@ -2259,9 +2282,10 @@ async function fetchReports(postOwner,postId,reportModal){
     }
 }
 
-function reportModal(post=false,profile=false){
+function reportModal(event,post=false,profile=false){
     
     event.stopPropagation()
+    event.preventDefault()
     let postId
     let postOwner
     if(profile){
