@@ -19,14 +19,15 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from account.views import SearchView
+from account.views import SearchView,NotificationView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/',include('account.urls')),
     path('api/',include('api.urls')),
     path('',include('social.urls')),
-    path('search/',SearchView.as_view(),name='search')
+    path('search/',SearchView.as_view(),name='search'),
+    path('notifications/',NotificationView.as_view(),name='notifications')
 ]
 
 

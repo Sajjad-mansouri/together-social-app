@@ -963,3 +963,47 @@ font-weight: bold;
 .search_container .find .account:hover{
   background-color: rgb(239, 239, 239);
 }
+
+
+/*notification page*/
+.notification_container {
+
+  background-color: white;
+  padding: 10px;
+  width: 350px;
+  height: 100vh;
+  padding: 1.5em 1em;
+}
+
+
+.notification_container h2 {
+  color: rgb(38, 38, 38);
+  padding-bottom: 1em;
+  font-size: 25px;
+}
+.notification_container .info span {
+  font-weight: 300;
+  font-size: 13px;
+  color: rgb(38, 38, 38);
+}
+.notification_container .info span.time {
+  color: rgb(142, 142, 142);
+  font-weight: 400;
+}
+.notification_container .notifications .notif .follow_you button {
+  border: none;
+  padding: 5px 10px;
+  background-color: rgb(0, 149, 246);
+  border-radius: 5px;
+  color: white;
+  font-weight: 500;
+}
+.notification_container .notifications .notif .story_like {
+  padding: 0;
+}
+.notification_container .notifications .notif .story_like img {
+  margin: auto;
+  border-radius: 5px;
+  height: 50px;
+  border: none;
+}

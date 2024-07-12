@@ -72,3 +72,6 @@ class Deactivate(LoginRequiredMixin,DeleteView):
 
 class SearchView(LoginRequiredMixin,TemplateView):
 	template_name='together/search.html'
+
+class NotificationView(LoginRequiredMixin,TemplateView):
+	template_name='together/notification.html'

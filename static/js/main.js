@@ -1113,7 +1113,7 @@ if (pathName == '/') {
 
 //search section 
 async function searchUser(findDiv, searchValue) {
-
+    console.log(searchValue)
     const accessToken = await getToken()
     const response = await fetch(`http://localhost:8000/api/users/?search=${searchValue}`, {
         method: "GET",
@@ -1147,9 +1147,9 @@ async function searchUser(findDiv, searchValue) {
     }
 }
 
-if (currentUser != null) {
+if (currentUser != null && window.screen.width>=498 || currentUser != null && pathName.includes('search') ) {
 
-    let search_icon = document.getElementById("search_icon");
+    
     let search = document.getElementById("search");
     let findDiv = search.querySelector('.find')
     let searchForm = search.querySelector('form')
@@ -1172,14 +1172,17 @@ if (currentUser != null) {
         event.preventDefault();
 
     })
+    
 
-    search_icon.addEventListener("click", function() {
+        let search_icon = document.getElementById("search_icon");
+        search_icon.addEventListener("click", function() {
 
 
-        search.classList.toggle("show");
+            search.classList.toggle("show");
 
 
-    });
+        });
+    
 }
 
 let notification = document.getElementById("notification");
@@ -2043,67 +2046,93 @@ if (pathName.includes('profile')) {
 
 
 let notificationDiv = document.querySelector('#notification .notifications')
+if(notificationDiv){
 let notifs = notificationDiv.querySelectorAll('.notif')
-notifs.forEach(element => {
-    let confirm = element.querySelector('.confirm_follow')
-    confirm.addEventListener('click', async function() {
-        const accessToken = await getToken()
 
-        const contactId = element.getAttribute('data-contact');
-        let update = { access: true }
-        const response = await fetch(baseUrl + `/api/contact/${contactId}/`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(update)
 
-        })
-        const data = await response.json()
+    notifs.forEach(element => {
+        let confirm = element.querySelector('.confirm_follow')
+        let deleteRequest =  element.querySelector('.delete_request')
+        confirm.addEventListener('click', async function() {
+            const accessToken = await getToken()
 
-        if (response.ok) {
-            let btn = element.querySelector('.confirm_follow')
-            let deleteBtn = element.querySelector('.delete_request')
-            let desc = element.querySelector('.desc')
-            btn.remove()
-            if (!data.reverse_following) {
+            const contactId = element.getAttribute('data-contact');
+            let update = { access: true }
+            const response = await fetch(baseUrl + `/api/contact/${contactId}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(update)
 
-                let followBack = document.createElement('button')
-                followBack.textContent = 'follow back'
-                followBack.classList.add('follow_back', 'notif_btn')
-                let followDiv = element.querySelector('.follow')
-                followDiv.prepend(followBack)
+            })
+            const data = await response.json()
 
-                let to_user = element.getAttribute('data-from_user')
-                let info = { to_user: to_user }
-                followBack.addEventListener('click', async function() {
-                    let datas = { to_user: to_user }
-                    let resp = await fetch(baseUrl + `/api/contact/`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${accessToken}`,
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(info)
+            if (response.ok) {
+                let btn = element.querySelector('.confirm_follow')
+                let deleteBtn = element.querySelector('.delete_request')
+                let desc = element.querySelector('.desc')
+                btn.remove()
+                if (!data.reverse_following) {
 
+                    let followBack = document.createElement('button')
+                    followBack.textContent = 'follow back'
+                    followBack.classList.add('follow_back', 'notif_btn')
+                    let followDiv = element.querySelector('.follow')
+                    followDiv.prepend(followBack)
+
+                    let to_user = element.getAttribute('data-from_user')
+                    let info = { to_user: to_user }
+                    followBack.addEventListener('click', async function() {
+                        let datas = { to_user: to_user }
+                        let resp = await fetch(baseUrl + `/api/contact/`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${accessToken}`,
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(info)
+
+                        })
+                        if (resp.ok) {
+                            followBack.remove()
+
+                            deleteBtn.remove()
+                        }
                     })
-                    if (resp.ok) {
-                        followBack.remove()
+                } else {
+                    deleteBtn.remove()
+                }
+                desc.textContent = 'following you'
 
-                        deleteBtn.remove()
-                    }
-                })
-            } else {
-                deleteBtn.remove()
             }
-            desc.textContent = 'following you'
+        })
 
-        }
+        deleteRequest.addEventListener('click',async function(){
+            const accessToken = await getToken()
+
+            const contactId = element.getAttribute('data-contact');
+            let update = { access: true }
+            const response = await fetch(baseUrl + `/api/contact/${contactId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    
+                },
+
+            })
+            
+            if (response.ok){
+                element.remove()
+            }
+        })
+
+
     })
+}
 
 
-})
 
 
 
