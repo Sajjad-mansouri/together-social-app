@@ -1147,9 +1147,9 @@ async function searchUser(findDiv, searchValue) {
     }
 }
 
-if (currentUser != null && window.screen.width>=498 || currentUser != null && pathName.includes('search') ) {
+if (currentUser != null && window.screen.width>=769 || currentUser != null && pathName.includes('search') ) {
 
-    
+    console.log(pathName.includes('search'))
     let search = document.getElementById("search");
     let findDiv = search.querySelector('.find')
     let searchForm = search.querySelector('form')
@@ -1274,13 +1274,15 @@ if (document.contains(document.querySelector('.contact'))) {
 //logout
 if (currentUser != null) {
 
-    let logoutBtn = document.querySelector('.logout')
-    let logoutForm = logoutBtn.querySelector('form')
-    logoutBtn.addEventListener('click', event => {
-        event.preventDefault();
-        logoutForm.submit()
-
+    let logoutBtns = document.querySelectorAll('.logout')
+    logoutBtns.forEach(element=>{
+        let logoutForm=element.querySelector('form')
+        element.addEventListener('click',event=>{
+            event.preventDefault()
+            logoutForm.submit()
+        })
     })
+
 }
 
 ///settings
@@ -2181,6 +2183,7 @@ let blockUser=function (event,stepsDiv=false,postOwner=false){
         }
         let blockCloneDiv=document.querySelector('#block-clone')
         let blockDiv=blockCloneDiv.cloneNode(true)
+        blockDiv.setAttribute('id','block')
         let blockTitle=blockDiv.querySelector('.modal-title')
         blockTitle.textContent=`block ${postOwner}?`
         blockDiv.style.display='block'

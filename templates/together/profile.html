@@ -37,17 +37,36 @@
                     {%endif%}
                     {%endif%}
                     {%endif%}
-                    {%if not is_block%}
+                    
                     <section class="profile-more drop-down">
 
                         <div>...</div>
                         <section class="drop-down-content hide">
-                            
+                            {% if owner == user%}
+                            <a class="dropdown-item" href="{%url 'setting'%}">
+                                        <span>Settings</span>
+                                        <img src="{% static 'images/reglage.png' %}">
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                        <span>Report a problem</span>
+                                        <img src="{% static 'images/problem.png' %}">
+                            </a>
+
+                            <a class="dropdown-item logout" href="#">
+                                        <span>Log out</span>
+                                        <form method="POST" action="{%url 'logout'%}">
+                                            {%csrf_token%}
+                                        </form>
+                                    </a>
+                            {%endif%}
+                            {%if not is_block and owner != user %}
                             <a class="block" href="#">block</a>
+                            {%endif%}
                             <a href="#">cancel</a>
+                            
                         </section>
                     </section>
-                    {%endif%}
+                    
 
                 </div>
                 <div class="general_info">
