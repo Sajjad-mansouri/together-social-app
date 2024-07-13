@@ -1099,3 +1099,15 @@ font-weight: bold;
 .more,.profile-more,#image-upload{
   cursor: pointer;
 }
+
+/*delete,block and report to red */
+a#delete_modal,a.report-problem,a.delete-btn-post,a.delete-btn-comment,a.block,.block .modal-content .content a.block-action{
+  color:#FF0800;
+}
+
+.profile_container .profile_info .info div.name button.contact,
+.profile_container .profile_info .info div.name button.unblock
+{
+  background-color: #007FFF;
+  color: white;
+}
