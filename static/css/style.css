@@ -1082,3 +1082,13 @@ font-weight: bold;
   white-space: nowrap;
 
 }
+
+
+
+/*create modal*/
+#create_modal .modal-content #image_description .img_p{
+  background-color: white;
+  display: grid;
+  align-content: center;
+  justify-content: center;
+}
