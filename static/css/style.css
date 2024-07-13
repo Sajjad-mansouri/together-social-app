@@ -1092,3 +1092,10 @@ font-weight: bold;
   align-content: center;
   justify-content: center;
 }
+
+
+/*more style*/
+
+.more,.profile-more,#image-upload{
+  cursor: pointer;
+}
