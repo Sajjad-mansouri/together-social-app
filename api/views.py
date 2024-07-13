@@ -25,7 +25,7 @@ from .serializers import (
 						ReportProblemSerializer
 
 						)
-
+from django.core.mail import EmailMessage,mail_admins
 from .permissions import AuthorDeletePermission,RelationDeletePermission
 from social.models import Message,Like,Comment,LikeComment,SavePost,GeneralProblem,Report,ReportProblem
 from account.models import Contact,Profile,Block
@@ -251,3 +251,19 @@ class ReportProblemApiView(CreateAPIView):
 	serializer_class=ReportProblemSerializer
 	queryset=ReportProblem.objects.all()
 
+	def post(self, request, *args, **kwargs):
+
+		serializer = self.get_serializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+		self.perform_create(serializer)
+		subject='Your report be recieved!'
+		body='thanks for reporting'
+		
+		to=request.user.email
+		msg_user = EmailMessage(subject, body, None,[to])
+		msg_user.send()
+		admin_message=f'{request.user.username} report'
+		mail=mail_admins(admin_message,'a')
+		print(mail)
+		headers = self.get_success_headers(serializer.data)
+		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

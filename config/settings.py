@@ -184,3 +184,12 @@ REST_FRAMEWORK = {
 #     "REFRESH_TOKEN_LIFETIME": timedelta(minutes=1),
 #     }
 
+
+ADMINS=[('admin1','admin1@gmail.com')]
+
+from email.utils import getaddresses
+
+# DJANGO_ADMINS=Alice Judge <alice@cyb.org>,blake@cyb.org
+ADMINS = getaddresses([env('ADMINS')])
+DEFAULT_FROM_EMAIL=env('DEFAULT_FROM_EMAIL')
+SERVER_EMAIL=env('SERVER_EMAIL')

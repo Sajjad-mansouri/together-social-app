@@ -5,13 +5,14 @@ from django.utils.http import  urlsafe_base64_decode,urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth import get_user_model
 from django.template import loader
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives,EmailMessage
 from django.views.generic import TemplateView
 from django.core.exceptions import  ValidationError
 from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
+
 from .models import Profile
 UserModel = get_user_model()
 

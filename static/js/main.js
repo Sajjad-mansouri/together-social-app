@@ -2461,16 +2461,19 @@ async function sendReportProblem(event,textArea,reportProblemModal){
 
 
 let closeReportProblemModal
+let submitReportProblem
 let reportProblems=document.querySelectorAll('.report-problem')
 reportProblems.forEach(element=>{
-
+    console.log('a')
     element.addEventListener('click',(event)=>{
         event.stopPropagation()
         let reportProblemModal=document.querySelector('#report-problem-modal')
         reportProblemModal.style.display='block'
         let text=reportProblemModal.querySelector('textarea')
         let submit=reportProblemModal.querySelector('.submit')
-        submit.addEventListener('click',(e)=>sendReportProblem(e,text,reportProblemModal))
+        submit.removeEventListener('click',submitReportProblem)
+        submitReportProblem=(e)=>sendReportProblem(e,text,reportProblemModal)
+        submit.addEventListener('click',submitReportProblem)
         document.removeEventListener('click',closeReportProblemModal)
         closeReportProblemModal=(e)=>hideModal(e,reportProblemModal,false)
         document.addEventListener('click',closeReportProblemModal)
