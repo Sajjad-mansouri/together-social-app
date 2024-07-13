@@ -1522,7 +1522,20 @@ async function editInfo(dataTab, user) {
             })
             let data = await response.json()
             if (response.ok) {
+                let message=document.createElement('div')
+                if(data.private){
+                    message.textContent="Now your account is private. This doesn't affect your current followers, but new users will need to send a follow request."
 
+                }else{
+                    message.textContent='Now your account is public, and everyone can see your account and posts.'
+                }
+                message.classList.add('alert','alert-success')
+                let parentDiv=document.getElementById('account-privacy')
+                let node = document.querySelector('.is-private')
+                parentDiv.insertBefore(message,node)
+                setTimeout(()=>{
+                    message.remove()
+                },5000)
             }
         })
     }
