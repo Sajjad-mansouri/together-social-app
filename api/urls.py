@@ -45,7 +45,7 @@ urlpatterns=[
 
 	path('report-problem/',views.ReportProblemApiView.as_view(),name='report-problem'),
 
-	path('message/',views.Message.as_view(),name='message')
+	path('message/',views.MessageApiView.as_view(),name='message')
 
 
 

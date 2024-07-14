@@ -275,7 +275,7 @@ class ReportProblemApiView(CreateAPIView):
 
 
 
-class Message(APIView):
+class MessageApiView(APIView):
 	"""
 	View to list all users in the system.
 
