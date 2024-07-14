@@ -6,6 +6,7 @@ from django.views.generic import CreateView,UpdateView,DeleteView,TemplateView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
+from django.contrib.auth.views import LoginView
 
 
 from .forms import ProfileForm,UserForm,CustomCreationForm
@@ -84,4 +85,12 @@ class ContactMe(TemplateView):
 	def get_context_data(self,**kwargs):
 		context=super().get_context_data(**kwargs)
 		context['manager']=SiteManager.objects.first()
+		return context
+
+
+class CustomLoginView(LoginView):
+	def get_context_data(self,**kwargs):
+		context=super().get_context_data(**kwargs)
+		admin=User_Model.objects.filter(is_superuser=True)[0]
+		context['admin']=admin
 		return context
