@@ -1813,7 +1813,7 @@ function profileDetailPost(postItems) {
                         let notSavedImg = saveIcon.querySelector('.not_saved')
                         savedImg.classList.remove('hide')
                         notSavedImg.classList.add('hide')
-                    } else {
+                    } else if(saveIcon!=null) {
                         saveIcon.setAttribute('data-status', 'False');
                         saveIcon.removeAttribute('data-saved')
                         let savedImg = saveIcon.querySelector('.saved')

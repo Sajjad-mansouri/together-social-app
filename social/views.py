@@ -34,10 +34,21 @@ class Profile(ListView):
 	def get_context_data(self,**kwargs):
 		context=super().get_context_data(**kwargs)
 		context['owner']=self.owner
+		if self.request.user.is_authenticated:
+			access=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=True).exists()
+			requested=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=False).exists()
+			is_block=self.request.user.block_from.filter(to_user=self.owner).exists()
 
-		access=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=True).exists()
-		requested=self.owner.rel_to.filter(from_user=self.request.user,to_user=self.owner,access=False).exists()
-		is_block=self.request.user.block_from.filter(to_user=self.owner).exists()
+		else:
+			if not self.owner.profile.private:
+				access=True
+				requested=False
+				is_block=False
+			else:
+				access=False
+				requested=False
+				is_block=False
+
 
 
 		if self.owner==self.request.user:
@@ -52,7 +63,7 @@ class Profile(ListView):
 		context['following_count']=following_count
 		context['follower_count']=follower_count
 		context['total_post']=total_post
-		if access and self.owner !=self.request.user:
+		if access and self.owner !=self.request.user and self.request.user.is_authenticated:
 			context['contact_id']=self.owner.rel_to.get(from_user=self.request.user,to_user=self.owner).id
 		elif requested:
 			context['requested_id']=self.owner.rel_to.get(from_user=self.request.user,to_user=self.owner).id
