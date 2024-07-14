@@ -63,6 +63,7 @@ class Profile(ListView):
 		context['following_count']=following_count
 		context['follower_count']=follower_count
 		context['total_post']=total_post
+
 		if access and self.owner !=self.request.user and self.request.user.is_authenticated:
 			context['contact_id']=self.owner.rel_to.get(from_user=self.request.user,to_user=self.owner).id
 		elif requested:
@@ -89,8 +90,10 @@ class Home(ListView):
 			return super().get(request,*args,**kwargs)
 		else:
 			descriptions=json.dumps([item.text for item in AboutSite.objects.all()])
-			print(descriptions)
-			return render(request,'registration/login.html',{'descriptions':descriptions})
+			admins=UserModel.objects.filter(is_superuser=True)
+
+			admin=admins[0]
+			return render(request,'registration/login.html',{'descriptions':descriptions,'admin':admin})
 	def get_queryset(self):
 		ct=ContentType.objects.get_for_model(Message)
 		object_ids=Report.objects.filter(content_type__pk=ct.pk).values_list('object_id')

@@ -109,7 +109,7 @@
 
 /*login*/
 .login{
-  min-height: 90vh;
+  min-height: 85vh;
 }
 .typewrite-container{
   display: none;
@@ -123,7 +123,7 @@
 }
 
 .login .content{
-  height: 90%;
+  height: 100%;
   align-self: center;
   
   display: grid;
@@ -143,7 +143,7 @@
   position: relative;
   
   
-  height: 90%;
+  height: 100%;
 }
 .typewrite-container a{
   align-self: center;
@@ -162,10 +162,17 @@
 
 
 .footer{
+  background-color:#D8EFD3; 
+  padding: 10px;
   font-family: "Playwrite FR Moderne", cursive;
   margin-top: 10px;
   display: grid;
-  justify-content: center;
-  color:light green;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+  align-items: center;
+  
+}
+.footer a{
+  color:black;
 }
 
