@@ -2318,6 +2318,7 @@ async function fetchReports(postOwner,postId,reportModal){
             reportLink.href='#'
             reportListDiv.append(reportLink)
             reportLink.addEventListener('click',(event)=>{
+                event.preventDefault()
                 event.stopPropagation()
                 let objectTyp='post'
                 report(link.id,postId,objectTyp,postOwner)

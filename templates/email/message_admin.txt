@@ -1,0 +1,2 @@
+{{user}} sent you this message:
+{{message}}

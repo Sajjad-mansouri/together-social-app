@@ -108,7 +108,9 @@
 
 
 /*login*/
-
+.login{
+  min-height: 90vh;
+}
 .typewrite-container{
   display: none;
 }
@@ -116,11 +118,12 @@
 .login{
   display: grid;
   grid-template-columns: 1fr 1fr;
+  margin-top:10px ;
 
 }
 
 .login .content{
-  height: 80%;
+  height: 90%;
   align-self: center;
   
   display: grid;
@@ -133,22 +136,36 @@
 
 .login .typewrite-container{
   position: relative;
-  display: flex;
-  align-items: center;
+  display: grid;
+/*  align-items: center;*/
   background-color:#D8EFD3;
   padding:36px 40px;
   position: relative;
   
   
-  height: 80%;
+  height: 90%;
 }
 .typewrite-container a{
   align-self: center;
   color: black;
-  font-size: 30px;
-  border-right: 0.08em solid black;
+  font-size: 25px;
+/*  border-right: 0.08em solid black;*/
   font-family: "Playwrite FR Moderne", cursive;
   font-optical-sizing: auto;
   font-style: normal;
+/*  height: 15px;*/
+  
 }
   }
+
+
+
+
+.footer{
+  font-family: "Playwrite FR Moderne", cursive;
+  margin-top: 10px;
+  display: grid;
+  justify-content: center;
+  color:light green;
+}
+

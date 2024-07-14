@@ -5,11 +5,11 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404,redirect,render
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
-
+import json
 
 
 from .models import Message,Report
-from account.models import Notification
+from account.models import Notification,AboutSite
 
 UserModel=get_user_model()
 class Index(TemplateView):
@@ -77,13 +77,16 @@ class Home(ListView):
 		if request.user.is_authenticated:
 			return super().get(request,*args,**kwargs)
 		else:
-			return render(request,'registration/login.html')
+			descriptions=json.dumps([item.text for item in AboutSite.objects.all()])
+			print(descriptions)
+			return render(request,'registration/login.html',{'descriptions':descriptions})
 	def get_queryset(self):
 		ct=ContentType.objects.get_for_model(Message)
 		object_ids=Report.objects.filter(content_type__pk=ct.pk).values_list('object_id')
 		following=self.request.user.rel_from.filter(access=True).values_list('to_user',flat=True)
 
 		return Message.objects.filter(Q(user_id__in=following)|Q(user=self.request.user)).exclude(reports__content_type__pk=ct.pk,reports__object_id__in=object_ids).exclude(user__block_from__to_user=self.request.user)
+
 
 
 

@@ -10,7 +10,7 @@ from django.contrib import messages
 
 from .forms import ProfileForm,UserForm,CustomCreationForm
 from .emailconf import EmailConfirmation
-
+from .models import SiteManager
 User_Model=get_user_model()
 
 class UpdateProfile(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
@@ -78,3 +78,10 @@ class NotificationView(LoginRequiredMixin,TemplateView):
 	template_name='together/notification.html'
 
 
+class ContactMe(TemplateView):
+	template_name='together/contact-me.html'
+
+	def get_context_data(self,**kwargs):
+		context=super().get_context_data(**kwargs)
+		context['manager']=SiteManager.objects.first()
+		return context

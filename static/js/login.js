@@ -8,8 +8,8 @@ loginForm.addEventListener('submit', (event) => {
 
 
 class TextType {
-    constructor() {
-        this.texts = ["Hi, Im Sajjad Mansouri.", "Welcome to together!", "I Love Design.", "I Love to Develop."]
+    constructor(texts) {
+        this.texts = texts
         this.wordIndex = 0
         this.sentenceIndex = 0
         this.isDeleting = false
@@ -56,14 +56,17 @@ class TextType {
 window.onload = function() {
     var elements = document.getElementsByClassName('typewrite');
     if(window.screen.width>498){
-        
+    let hidden=document.querySelector('.descriptions')
+    let values=JSON.parse(hidden.textContent)     
     for (var i = 0; i < elements.length; i++) {
 
 
-        let type = new TextType();
+        let type = new TextType(values);
         type.typing()
 
     }
+
+    
     // INJECT CSS
     var css = document.createElement("style");
     }
@@ -71,3 +74,4 @@ window.onload = function() {
     css.innerHTML = ".typewrite > .wrap { border-right: 0.08em solid #fff}";
     document.body.appendChild(css);
 };
+

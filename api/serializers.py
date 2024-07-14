@@ -433,3 +433,9 @@ class ReportProblemSerializer(serializers.ModelSerializer):
 	class Meta:
 		model=ReportProblem
 		fields=['user','report']
+
+
+class MessageSerializer(serializers.Serializer):
+	name=serializers.CharField(max_length=100)
+	email = serializers.EmailField()
+	message=serializers.CharField(max_length=None)

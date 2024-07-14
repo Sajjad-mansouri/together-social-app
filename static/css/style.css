@@ -42,6 +42,7 @@ img{
 
   .drop-down section.drop-down-content a img{
     width: 25px;
+    margin-right: 0;
   }
 
   /* Change color of dropdown links on hover */

@@ -6,6 +6,9 @@ from rest_framework.mixins import DestroyModelMixin,CreateModelMixin
 from rest_framework.generics import GenericAPIView,CreateAPIView
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
+from rest_framework.views import APIView
+
 from django.db.models import Q
 from .serializers import (
 						PostSerializer,
@@ -22,7 +25,8 @@ from .serializers import (
 						GeneralReportSerializer,
 						ReportSerializer,
 						RestrictionSerializer,
-						ReportProblemSerializer
+						ReportProblemSerializer,
+						MessageSerializer
 
 						)
 from django.core.mail import EmailMessage,mail_admins
@@ -262,8 +266,32 @@ class ReportProblemApiView(CreateAPIView):
 		to=request.user.email
 		msg_user = EmailMessage(subject, body, None,[to])
 		msg_user.send()
-		admin_message=f'{request.user.username} report'
-		mail=mail_admins(admin_message,'a')
+		admin_email_body=f'{request.user.username} report'
+		admin_email_subject='a'
+		mail=mail_admins(admin_email_subject,admin_email_body)
 		print(mail)
 		headers = self.get_success_headers(serializer.data)
 		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+
+class Message(APIView):
+	"""
+	View to list all users in the system.
+
+	* Requires token authentication.
+	* Only admin users are able to access this view.
+	"""
+	# parser_classes=[JSONParser]
+	parser_classes=[FormParser,MultiPartParser,JSONParser]
+	def post(self, request, *args, **kwargs):
+		subject='Your message be recieved!'
+		body='Your message sent , thanks'
+		
+		to=request.data['email']
+		msg_user = EmailMessage(subject, body, None,[to])
+		msg_user.send()
+		admin_email_body=render_to_string('email/message_admin.txt',{'user':request.data['name'],'message':request.data['message']})
+		admin_email_subject='new message'
+		mail=mail_admins(admin_email_subject,admin_email_body)
+		return Response('sent')

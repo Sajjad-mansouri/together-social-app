@@ -28,10 +28,13 @@
 
     <div class="login">
         <div class='typewrite-container'>
-          <a href="" class="typewrite" data-period="2000" data-type='[ "Hi, Im Si.", "I am Creative.", "I Love Design.", "I Love to Develop." ]'>
+          <a href="" class="typewrite" data-period="2000" >
             <span class="wrap"></span>
           </a>
 
+          <div class="descriptions" style="display:none">
+{{descriptions|safe}}
+          </div>
         </div>
         <div class="content">
             <div class="log-on border_insc">
@@ -80,7 +83,12 @@
                 </p>
             </div>
         </div>
+
     </div>
+    <div class="footer">
+        <a href="{%url 'contact-me'%}">Contact Me</a>
+    </div>
+
 </div>
 
 <script type="module" src="{% static 'js/login.js' %}"></script>
