@@ -260,16 +260,18 @@ class ReportProblemApiView(CreateAPIView):
 		serializer = self.get_serializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
 		self.perform_create(serializer)
-		subject='Your report be recieved!'
-		body='thanks for reporting'
+		subject='Your report has been received'
+		report_user_message_body=render_to_string('email/report_user_body.txt',{'user':request.user})
+		
 		
 		to=request.user.email
-		msg_user = EmailMessage(subject, body, None,[to])
+		msg_user = EmailMessage(subject, report_user_message_body, None,[to])
 		msg_user.send()
+
 		admin_email_body=f'{request.user.username} report'
-		admin_email_subject='a'
+		admin_email_subject=f'{request.user.username} report'
 		mail=mail_admins(admin_email_subject,admin_email_body)
-		print(mail)
+		
 		headers = self.get_success_headers(serializer.data)
 		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -285,13 +287,13 @@ class MessageApiView(APIView):
 	# parser_classes=[JSONParser]
 	parser_classes=[FormParser,MultiPartParser,JSONParser]
 	def post(self, request, *args, **kwargs):
-		subject='Your message be recieved!'
-		body='Your message sent , thanks'
+		subject='Thank you for contacting us!'
+		body=render_to_string('email/message_user.txt',{'user':request.data['name']})
 		
 		to=request.data['email']
 		msg_user = EmailMessage(subject, body, None,[to])
 		msg_user.send()
 		admin_email_body=render_to_string('email/message_admin.txt',{'user':request.data['name'],'message':request.data['message']})
-		admin_email_subject='new message'
+		admin_email_subject='New message'
 		mail=mail_admins(admin_email_subject,admin_email_body)
 		return Response('sent')
