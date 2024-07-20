@@ -52,9 +52,6 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
 
     #installed
-    "crispy_forms",
-    "crispy_bootstrap5",
-    'fontawesomefree',
     'rest_framework',
 ]
 
