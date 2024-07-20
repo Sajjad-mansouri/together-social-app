@@ -62,6 +62,9 @@ contactForm.addEventListener('submit',async function(event){
 			successAlert.classList.add('form-message-success')
 			contactForm.prepend(successAlert)
 			successAlert.textContent='Your message sent'
+			setTimeout(()=>{
+				successAlert.remove()
+			},5000)
 		}
 	}
 })

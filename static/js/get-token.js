@@ -68,6 +68,7 @@ export async function login(event){
     event.preventDefault();
     const form=event.target;
     const formData=new FormData(form);
+    console.log(JSON.stringify(Object.fromEntries(formData)))
     const response=await fetch(origin+'/api/token/',{
         method:'POST',
         headers:{
