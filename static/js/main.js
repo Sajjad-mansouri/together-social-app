@@ -117,6 +117,7 @@ function hideModal(event, cloneModal, remove = false, element = false,refresh=fa
 
     } else if (condition) {
         
+        
         if(modalBack){
 
         modalBack.remove()
@@ -126,10 +127,11 @@ function hideModal(event, cloneModal, remove = false, element = false,refresh=fa
         // location.reload()
     }else{
         
+        
         document.removeEventListener('click',hideInsideModal)
         
         hideInsideModal=(e)=>hideModal(e, cloneModal, remove, element )
-        document.addEventListener('click',hideInsideModal)
+        document.addEventListener('click',hideInsideModal,{once:true})
     }
     
 }
@@ -355,6 +357,7 @@ function messageAddEvnetListener(messageElement) {
 
     messageElement.forEach(element => {
         element.addEventListener('click', (event) => {
+            
             event.preventDefault();
             let post = element.closest('.post')
             let postId = post.getAttribute('data-post');
@@ -494,21 +497,19 @@ async function fetechDeleteComment(comment, postId, responseComment) {
 }
 
 function deleteComment(comment, postId, responseComment = false) {
-
+    
     let deleteComment = comment.querySelector('.delete-comment')
     let dropDownContent = comment.querySelector('.drop-down-content')
     deleteComment.addEventListener('click', () => {
         dropDownContent.classList.toggle('show-drop')
     })
-    window.addEventListener('click', (event) => {
-        if (event.target == comment.querySelector('.delete-btn-comment')) {
-            event.preventDefault()
-            fetechDeleteComment(comment, postId, responseComment)
-        }
-        if (!event.target.matches('.delete-comment')) {
-            dropDownContent.classList.remove('show-drop')
-        }
+    let deleteCommentBtn=comment.querySelector('.delete-btn-comment')
+    deleteCommentBtn.addEventListener('click',()=>{
+        event.preventDefault()
+        
+        fetechDeleteComment(comment, postId, responseComment)
     })
+
 }
 /**********Upload post*************/
 const form = document.getElementById('upload-form');
