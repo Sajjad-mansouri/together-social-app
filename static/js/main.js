@@ -706,7 +706,7 @@ async function confirmDeletePost(event,submitDeleteModal,post,profile = false) {
         
         let postId=post.getAttribute('data-post')
         const accessToken = await getToken()
-        const response = await fetch(`http://localhost:8000/api/post/${postId}`, {
+        const response = await fetch(`${baseUrl}/api/post/${postId}`, {
             method: 'Delete',
             headers: {
                 Authorization: `Bearer ${accessToken}`
@@ -2478,8 +2478,7 @@ let closeReportProblemModal
 let submitReportProblem
 let reportProblems=document.querySelectorAll('.report-problem')
 reportProblems.forEach(element=>{
-    console.log('a')
-    element.addEventListener('click',(event)=>{
+        element.addEventListener('click',(event)=>{
         event.stopPropagation()
         let reportProblemModal=document.querySelector('#report-problem-modal')
         reportProblemModal.style.display='block'
