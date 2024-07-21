@@ -26,8 +26,7 @@ class Profile(ListView):
 
 		username=self.kwargs.get('username',self.request.user.username)
 		user=self.request.user
-		if username:
-			owner_user=get_object_or_404(UserModel,username=username)
+		owner_user=get_object_or_404(UserModel,username=username)
 		self.owner=owner_user
 		return Message.objects.filter(user=owner_user).exclude(reports__content_type__pk=ct.pk,reports__object_id__in=object_ids)
 
