@@ -304,7 +304,7 @@ async function getComments(modalClone, postId) {
     let response;
     if (currentUser != null) {
         let accessToken = await getToken()
-        response = await fetch(`http://localhost:8000/api/post/${postId}/comments`, {
+        response = await fetch(`${baseUrl}/api/post/${postId}/comments`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
@@ -313,7 +313,7 @@ async function getComments(modalClone, postId) {
         })
     } else {
 
-        response = await fetch(`http://localhost:8000/api/post/${postId}/comments`, {
+        response = await fetch(`${baseUrl}/api/post/${postId}/comments`, {
             method: 'GET',
             // headers: {
             //     'Authorization': `Bearer ${accessToken}`
@@ -433,7 +433,7 @@ async function postComment(modalClone, postId, comment, replyTO, mainComment) {
 
     const accessToken = await getToken()
 
-    const response = await fetch(`http://localhost:8000/api/post/${postId}/comments`, {
+    const response = await fetch(`${baseUrl}/api/post/${postId}/comments`, {
 
         method: 'POST',
         headers: {
@@ -464,7 +464,7 @@ async function fetechDeleteComment(comment, postId, responseComment) {
     const modalBody = comment.closest('.modal-body')
     const accessToken = await getToken();
     const commentId = comment.getAttribute('data-comment');
-    const response = await fetch(`http://localhost:8000/api/comment/${commentId}`, {
+    const response = await fetch(`${baseUrl}/api/comment/${commentId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${accessToken}`
@@ -644,7 +644,7 @@ function completed(imageFile) {
 
         const accessToken = await getToken()
 
-        const response = await fetch('http://localhost:8000/api/', {
+        const response = await fetch(`${baseUrl}/api/`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
@@ -1115,7 +1115,7 @@ if (pathName == '/') {
 async function searchUser(findDiv, searchValue) {
     
     const accessToken = await getToken()
-    const response = await fetch(`http://localhost:8000/api/users/?search=${searchValue}`, {
+    const response = await fetch(`${baseUrl}/api/users/?search=${searchValue}`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${accessToken}`
@@ -1643,7 +1643,7 @@ async function connectionList(queryType, username) {
 
     let owner = document.querySelector('.connections').getAttribute('data-owner')
     const accessToken = await getToken()
-    const response = await fetch(`http://localhost:8000/api/users/?relation=${queryType}&owner=${username}`, {
+    const response = await fetch(`${baseUrl}/api/users/?relation=${queryType}&owner=${username}`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${accessToken}`
@@ -2212,7 +2212,7 @@ let blockUser=function (event,stepsDiv=false,postOwner=false){
 
             let body={'to_user':to_user}
             const accessToken = await getToken();
-            const response = await fetch(`http://localhost:8000/api/restriction/${to_user}/`, {
+            const response = await fetch(`${baseUrl}/api/restriction/${to_user}/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
@@ -2301,7 +2301,7 @@ async function report(generalReport,postId,objectTyp,postOwner){
 }
 async function fetchReports(postOwner,postId,reportModal){
     let accessToken = await getToken()
-    let response = await fetch(`http://localhost:8000/api/reports/`, {
+    let response = await fetch(`${baseUrl}/api/reports/`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
@@ -2391,7 +2391,7 @@ if(action!=null){
         let to_user=action.getAttribute('data-to_user')
         const accessToken = await getToken();
 
-        const response = await fetch(`http://localhost:8000/api/restriction/${to_user}/`, {
+        const response = await fetch(`${baseUrl}/api/restriction/${to_user}/`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
