@@ -1093,8 +1093,15 @@ font-weight: bold;
   align-content: center;
   justify-content: center;
 }
+@media screen and (max-width: 498px){
+  #create_modal .modal-body #image_description {
+    grid-template-columns: 1fr;
+  }
+}
 
-
+#image_description  .description .cart{
+  margin-bottom: 10px;
+}
 /*more style*/
 
 .more,.profile-more,#image-upload{
@@ -1112,3 +1119,6 @@ a#delete_modal,a.report-problem,a.delete-btn-post,a.delete-btn-comment,a.block,.
   background-color: #007FFF;
   color: white;
 }
+
+
+
