@@ -1087,6 +1087,9 @@ font-weight: bold;
 
 
 /*create modal*/
+#create_modal .modal-body{
+  height: 70vh;
+}
 #create_modal .modal-content #image_description .img_p{
   background-color: white;
   display: grid;
