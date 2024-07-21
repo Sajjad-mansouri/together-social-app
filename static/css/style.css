@@ -1098,6 +1098,8 @@ font-weight: bold;
 }
 #create_modal .modal-content #image_description .img_p img{
   width: 70%;
+  justify-self: center;
+  align-self: center;
 }
   #create_modal .modal-body #image_description {
     grid-template-columns: 1fr;
