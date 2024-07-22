@@ -68,7 +68,7 @@ class Register(CreateView):
 class Deactivate(LoginRequiredMixin,DeleteView):
 	template_name='registration/delete_account.html'
 	model=User_Model
-	success_url=reverse_lazy('login')
+	success_url=reverse_lazy('home')
 
 
 
