@@ -645,22 +645,30 @@ function completed(imageFile) {
 
         const accessToken = await getToken()
 
-        const response = await fetch(`${baseUrl}/api/`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            },
-            body: formData
+        let xhr = new XMLHttpRequest()
+        xhr.open('POST',`${baseUrl}/api/`)
+        xhr.setRequestHeader('Authorization',`Bearer ${accessToken}`)
+        xhr.upload.addEventListener('progress',(event)=>{
+            if (event.lengthComputable) {
+              const percentComplete = Math.round((event.loaded * 100) / event.total);
+              console.log(percentComplete)
+            }else{
+                console.log('not computable')
+            }
         })
-        const data = await response.json()
 
-        if (response.ok) {
-            modal_dialog.classList.add("modal_complete");
-            post_published.classList.remove("hide_img");
-            share_btn_post.innerHTML = ""
-            addPost(data)
+        xhr.addEventListener('load',(e)=>{
+                    console.log(xhr.response)
 
-        }
+                    let data=JSON.parse(xhr.response)
+                    console.log(typeof data)
+                    modal_dialog.classList.add("modal_complete");
+                    post_published.classList.remove("hide_img");
+                    share_btn_post.innerHTML = ""
+                    addPost(data)
+        })
+
+        xhr.send(formData)
 
 
     })

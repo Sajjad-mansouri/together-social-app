@@ -1130,3 +1130,9 @@ a#delete_modal,a.report-problem,a.delete-btn-post,a.delete-btn-comment,a.block,.
 
 
 
+/*progress*/
+
+.progress-div #progress{
+  display: none;
+  width: 100%;
+}
