@@ -1097,7 +1097,7 @@ font-weight: bold;
   justify-content: center;
 }
 #create_modal .modal-content #image_description .img_p img{
-  width: 70%;
+  heigth:40vh;
   justify-self: center;
   align-self: center;
 }

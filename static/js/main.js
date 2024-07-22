@@ -645,13 +645,19 @@ function completed(imageFile) {
 
         const accessToken = await getToken()
 
+        let progress=document.getElementById('progress')
         let xhr = new XMLHttpRequest()
         xhr.open('POST',`${baseUrl}/api/`)
         xhr.setRequestHeader('Authorization',`Bearer ${accessToken}`)
+        xhr.upload.addEventListener('loadstart',(event)=>{
+            progress.style.display='block'
+        })
         xhr.upload.addEventListener('progress',(event)=>{
+
             if (event.lengthComputable) {
+
               const percentComplete = Math.round((event.loaded * 100) / event.total);
-              console.log(percentComplete)
+              progress.setAttribute('value',percentComplete)
             }else{
                 console.log('not computable')
             }
