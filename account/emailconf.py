@@ -217,6 +217,9 @@ class EmailConfirmView(TemplateView):
         context = super().get_context_data(**kwargs)
         if self.validlink:
             context["validlink"] = True
+            admin=UserModel.objects.filter(is_superuser=True)[0]
+
+            context['admin']=admin
         else:
             context.update(
                 {
