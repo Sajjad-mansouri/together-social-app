@@ -1329,14 +1329,19 @@ if (pathName == '/settings/') {
     }
 
     let backBtn = document.querySelectorAll('.back')
+    
     backBtn.forEach(element => {
+        
         element.addEventListener('click', () => {
+            
             let row = element.closest('.row')
+            
             row.classList.add('hide')
 
 
             tab.style.display = 'block'
         })
+        
     })
 }
 
