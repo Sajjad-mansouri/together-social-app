@@ -128,14 +128,14 @@
                                <a href="#" class="back"> <img src="{% static 'images/back.png' %}" width=20 ></a>
                                 <h1>Deactivate Account</h1>
                             </div>
-                             <h5>Please be aware that deactivating your account will result in the permanent deletion of all your data. This action is irreversible. If you proceed, all your information, including your profile, saved items, and any personal data, will be permanently erased and cannot be recovered.</h5>
-                            <form method="POST" id="deactivate-form" action="{%url 'deactivate' request.user.pk %}">
-                                {%csrf_token%}
-                              
-                               <h2>Do you wish to continue with deactivating your account?</h2>
-                               <input  type='submit'class="deactivate" value="deactivate">
+                             <p>Please be aware that deactivating your account will result in the permanent deletion of all your data. This action is irreversible. If you proceed, all your information, including your profile, saved items, and any personal data, will be permanently erased and cannot be recovered.</h5>
+                            
+                                <button class="deactivate">
+                                    deactivate
+                                </button>
+                            
 
-                            </form>  
+                            
                 </div>
             </div>
 

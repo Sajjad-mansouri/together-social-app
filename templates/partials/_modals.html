@@ -295,3 +295,24 @@
         <img class='submited' src="{%static 'images/green-tick.png'%}">
     </div>
 </div>
+
+
+<!-- deactivate account -->
+<div class="modal modal-container block" id="deactivate-modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Deactivate</h2>
+            </div>
+            <div class="content">
+                <h5>Do you wish to continue with deactivating your account?</h5>
+                <form method="POST" id="deactivate-form" action="{%url 'deactivate' request.user.pk %}">
+                                {%csrf_token%}
+                            
+                <input type='submit' class='btn confirm-deactivate' value='deactivate'>
+                <a href="#" class="btn cancel">cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1304,7 +1304,7 @@ if (currentUser != null) {
 
 
 
-
+let closeDeactivateModal=null
 if (pathName == '/settings/') {
     let tab = document.querySelector('.tab')
     let tabBtn = document.querySelectorAll('.tablinks')
@@ -1356,6 +1356,21 @@ if (pathName == '/settings/') {
             tab.style.display = 'block'
         })
         
+    })
+
+    let deactivate = document.querySelector('.deactivate')
+    deactivate.addEventListener('click',(event)=>{
+        console.log('clicked')
+        event.stopPropagation()
+        event.preventDefault()
+        let deactivateModal=document.getElementById('deactivate-modal')
+    deactivateModal.classList.add('show')
+    deactivateModal.style.display = 'block'
+
+    
+    document.removeEventListener('click', closeDeactivateModal, )
+    closeDeactivateModal = (e) => hideModal(e, deactivateModal, false)
+    document.addEventListener('click', closeDeactivateModal,{once:true})
     })
 }
 
@@ -2512,3 +2527,5 @@ reportProblems.forEach(element=>{
         document.addEventListener('click',closeReportProblemModal)
     })
 })
+
+
