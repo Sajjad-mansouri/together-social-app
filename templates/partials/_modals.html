@@ -1,5 +1,6 @@
 {%load static%}
 <!-- modal for block -->
+{%if user.is_authenticated%}
 {%if is_block%}
 <div class="modal modal-container block" id="unblock-clone">
     <div class="modal-dialog modal-dialog-centered">
@@ -316,3 +317,4 @@
         </div>
     </div>
 </div>
+{%endif%}
