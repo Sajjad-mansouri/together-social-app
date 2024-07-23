@@ -124,3 +124,10 @@ div.form-message-success{
   padding: 10px;
   border-color: #a3cfbb;
 }
+
+.connection a{
+  text-decoration: none;
+}
+.connection .title{
+  font-weight: bold;
+}
