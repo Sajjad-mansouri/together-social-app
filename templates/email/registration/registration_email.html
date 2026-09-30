@@ -1,0 +1,359 @@
+{% load i18n %}
+{% load static %}
+{% autoescape off %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="supported-color-schemes" content="light">
+    <title>{% translate "Verify your email" %} | Together</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+    /* Base resets */
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+
+    img {
+        border: 0;
+        display: block;
+        max-width: 100%;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .wrapper {
+        width: 100%;
+        background: #f4f4f4;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+    }
+
+    .card {
+        width: 600px;
+        max-width: 600px;
+        background: #ffffff;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .gradient-bar {
+        height: 6px;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        line-height: 6px;
+        font-size: 0;
+    }
+
+    .hero {
+        background: #ffffff;
+        padding: 44px 40px 36px;
+        text-align: center;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .brand-logo {
+        display: block;
+        margin: 0 auto 8px;
+        text-align: center;
+    }
+
+    .brand-logo img {
+        height: 64px;
+        width: auto;
+        max-width: 220px;
+        display: inline-block;
+        border: 0;
+        outline: none;
+        text-decoration: none;
+        margin: 0 auto;
+    }
+
+    .hero-title {
+        color: #1a1a1a;
+        font-size: 28px;
+        font-weight: 700;
+        margin: 24px 0 8px;
+        letter-spacing: -0.5px;
+    }
+
+    .hero-subtitle {
+        color: #6b7280;
+        font-size: 15px;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .content {
+        padding: 42px 46px;
+    }
+
+    .button {
+        display: inline-block;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        color: #ffffff !important;
+        padding: 16px 38px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(131, 58, 180, 0.3);
+    }
+
+    .info-box {
+        background: #faf5ff;
+        border-left: 4px solid #833ab4;
+        padding: 18px 20px;
+        border-radius: 8px;
+    }
+
+    .security-notice {
+        background: #fef2f2;
+        border-left: 4px solid #d32f2f;
+        padding: 18px 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .perks {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px 24px;
+        margin: 24px 0;
+        border: 1px solid #e0e0e0;
+    }
+
+    .perks ul {
+        margin: 0;
+        padding-left: 20px;
+        color: #444;
+        font-size: 14px;
+        line-height: 2;
+    }
+
+    .perks ul li::marker {
+        color: #833ab4;
+    }
+
+    .footer {
+        background: #fafafa;
+        border-top: 1px solid #ececec;
+        text-align: center;
+        padding: 28px 24px;
+        color: #7a7a7a;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .footer-brand {
+        display: inline-block;
+        margin: 0 auto 6px;
+        text-align: center;
+    }
+
+    .footer-brand img {
+        height: 32px;
+        width: auto;
+        max-width: 140px;
+        display: inline-block;
+        vertical-align: middle;
+        border: 0;
+    }
+
+    @media only screen and (max-width: 640px) {
+        .card {
+            width: 100% !important;
+            border-radius: 0;
+        }
+
+        .hero {
+            padding: 36px 24px 28px;
+        }
+
+        .content {
+            padding: 32px 22px;
+        }
+
+        .hero-title {
+            font-size: 24px;
+        }
+
+        .brand-logo img {
+            height: 52px;
+            max-width: 180px;
+        }
+
+        .footer-brand img {
+            height: 26px;
+            max-width: 120px;
+        }
+
+        .button {
+            display: block;
+            text-align: center;
+            padding: 16px 20px;
+        }
+    }
+    </style>
+</head>
+
+<body>
+    <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <!-- Main Card -->
+                <table class="card" cellpadding="0" cellspacing="0" width="100%" role="presentation">
+
+                    <!-- Gradient accent bar -->
+                    <tr>
+                        <td class="gradient-bar">&nbsp;</td>
+                    </tr>
+
+                    <!-- Hero -->
+                    <tr>
+                        <td class="hero">
+                            <div class="brand-logo">
+                                <img src="{{ logo_url }}" alt="Together" height="64" style="height:64px; width:auto; max-width:220px; display:inline-block; border:0;">
+                            </div>
+                            <h1 class="hero-title">
+                                {% translate "Verify Your Email Address" %}
+                            </h1>
+                            <p class="hero-subtitle">
+                                {% translate "You're one click away from joining the Together community." %}
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Body Content -->
+                    <tr>
+                        <td class="content">
+                            <p style="margin:0 0 18px; font-size:16px; color:#1a1a1a; line-height:1.8;">
+                                {% blocktranslate %}
+                                Hello and welcome to <strong>Together</strong>!
+                                {% endblocktranslate %}
+                            </p>
+                            <p style="margin:0 0 22px; font-size:15px; color:#444; line-height:1.8;">
+                                {% blocktranslate %}
+                                Thank you for creating an account with us. Before you can start sharing moments, connecting with friends, and building your community, please verify your email address by clicking the button below.
+                                {% endblocktranslate %}
+                            </p>
+
+                            <div class="perks">
+                                <p style="margin:0 0 10px; font-weight:600; font-size:14px; color:#833ab4;">
+                                    <i class="fas fa-star" style="margin-right: 6px;"></i>
+                                    {% translate "What you'll unlock once verified:" %}
+                                </p>
+                                <ul>
+                                    <li>{% translate "Share photos and stories with friends" %}</li>
+                                    <li>{% translate "Follow people and grow your network" %}</li>
+                                    <li>{% translate "Like, comment, and engage with posts" %}</li>
+                                    <li>{% translate "Build your personal profile" %}</li>
+                                </ul>
+                            </div>
+
+                            <div style="text-align:center; margin:36px 0 32px;">
+                                <a href="{{ protocol }}://{{ domain }}{% url 'account:register_confirm' uidb64=uid token=token %}" class="button" title="{% translate 'Verify Email Address' %}">
+                                    <i class="fas fa-envelope-circle-check" style="margin-right: 8px;"></i>
+                                    {% translate "Confirm My Email" %}
+                                </a>
+                            </div>
+
+                            <div class="info-box">
+                                <p style="margin:0 0 8px; font-weight:600; font-size:14px; color:#1a1a1a;">
+                                    <i class="fas fa-link" style="margin-right: 6px; color:#833ab4;"></i>
+                                    {% translate "Can't click the button?" %}
+                                </p>
+                                <p style="margin:0 0 12px; font-size:14px; color:#6b7280;">
+                                    {% translate "Copy and paste this link into your browser:" %}
+                                </p>
+                                <p style="margin:0; font-size:13px; font-family: Consolas, Monaco, 'Courier New', monospace; word-break:break-all; color:#833ab4;">
+                                    {{ protocol }}://{{ domain }}{% url 'account:register_confirm' uidb64=uid token=token %}
+                                </p>
+                            </div>
+
+                            <div class="security-notice">
+                                <p style="margin:0 0 8px; font-weight:600; font-size:14px; color:#991b1b;">
+                                    <i class="fas fa-shield-halved" style="margin-right: 6px;"></i>
+                                    {% translate "Security Notice" %}
+                                </p>
+                                <p style="margin:0; font-size:14px; color:#6b7280; line-height:1.8;">
+                                    {% blocktranslate %}
+                                    If you didn't create an account on {{ site_name }}, please ignore this email. No account will be activated without email verification.
+                                    {% endblocktranslate %}
+                                </p>
+                            </div>
+
+                            <hr style="margin:36px 0; border:none; border-top:1px solid #ececec;">
+
+                            <!-- Signature -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px;">
+                                <tr>
+                                    <td>
+                                        <p style="margin:0; font-size:15px; color:#444; font-weight:600;">
+                                            {% translate "See you soon," %}
+                                        </p>
+                                        <p style="margin:10px 0 2px; font-size:18px; font-weight:700; color:#1a1a1a;">
+                                            {{ developer_name|default:'Sajjad Mansouri' }}
+                                        </p>
+                                        <p style="margin:0 0 16px; font-size:14px; color:#6b7280;">
+                                            {% translate "Backend Developer & Creator of Together" %}
+                                        </p>
+                                        <p style="margin:0;">
+                                            <a href="{{ protocol }}://{{ domain }}" style="color:#833ab4; font-weight:600;">
+                                                <i class="fas fa-users" style="margin-right: 6px;"></i>
+                                                {{ site_name }}
+                                            </a>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td class="footer">
+                            <p style="margin:0 0 14px;">
+                                {% translate "This is an automated message – please do not reply to this email." %}
+                            </p>
+                            <div class="footer-brand">
+                                <img src="{{ logo_url }}" alt="Together" height="32" style="height:32px; width:auto; max-width:140px; display:inline-block; border:0;">
+                            </div>
+                            <p style="margin:14px 0 0;">
+                                &copy; {% now "Y" %} {{ site_name }}. {% translate "All rights reserved." %}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Bottom tagline -->
+                <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                    <tr>
+                        <td style="padding:22px 20px; text-align:center;">
+                            <p style="margin:0; font-size:12px; color:#9ca3af;">
+                                {% translate "Thank you for joining Together – let's connect!" %}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
+{% endautoescape %}

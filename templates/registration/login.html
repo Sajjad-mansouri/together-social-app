@@ -75,7 +75,7 @@ Login
                         <span class="ligne"></span>
                     </div>
                     <div class="forget-password">
-                        <a href="{%url 'password_reset'%}">
+                        <a href="{%url 'account:password_reset'%}">
                             Forgot password?
                         </a>
                     </div>
@@ -84,12 +84,14 @@ Login
             <div class="sing-up border_insc">
                 <p>
                     Don't have an account?
-                    <a href="{% url 'register'%}">Sign up</a>
+                    <a href="{% url 'account:register'%}">Sign up</a>
                 </p>
             </div>
     <div class="footer">
         <a href="{%url 'contact-me'%}">Contact Me</a>
-        <a href="{% url 'profile' admin %}">Manager Together Profile</a>
+        {%if admin%}
+        <a href="{% url 'user_profile' admin %}">Manager Together Profile</a>
+        {%endif%}
     </div>
         </div>
 
