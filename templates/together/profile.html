@@ -43,7 +43,7 @@
                         <div>...</div>
                         <section class="drop-down-content hide">
                             {% if owner == user%}
-                            <a class="dropdown-item" href="{%url 'setting'%}">
+                            <a class="dropdown-item" href="{%url 'social:setting'%}">
                                         <span>Settings</span>
                                         <img src="{% static 'images/reglage.png' %}">
                             </a>
@@ -54,7 +54,7 @@
 
                             <a class="dropdown-item logout" href="#">
                                         <span>Log out</span>
-                                        <form method="POST" action="{%url 'logout'%}">
+                                        <form method="POST" action="{%url 'account:logout'%}">
                                             {%csrf_token%}
                                         </form>
                                     </a>

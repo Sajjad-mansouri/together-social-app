@@ -90,7 +90,7 @@ Login
     <div class="footer">
         <a href="{%url 'contact-me'%}">Contact Me</a>
         {%if admin%}
-        <a href="{% url 'user_profile' admin %}">Manager Together Profile</a>
+        <a href="{% url 'social:user_profile' admin %}">Manager Together Profile</a>
         {%endif%}
     </div>
         </div>

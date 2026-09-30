@@ -28,7 +28,7 @@
                 <!-- nav for big->medium screen -->
                 <div class="nav">
                     <div class="logo">
-                        <a href="{%url 'home'%}">
+                        <a href="{%url 'social:home'%}">
                             <img class="d-block d-lg-none small-logo" src="{% static 'images/logo_main.png' %}" alt="logo">
                             <img class="d-none d-lg-block" src="{% static 'images/logo_menu.png' %}" alt="logo">
                         </a>
@@ -36,7 +36,7 @@
                     <div class="menu">
                         <ul>
                             <li>
-                                <a class=" home {%if request.path == '/' %}active{%endif%}" href="{% url 'home'%}">
+                                <a class=" home {%if request.path == '/' %}active{%endif%}" href="{% url 'social:home'%}">
                                     <img src="
                                     {%if request.path != '/' %}
                                     {%static 'images/home.png' %}"
@@ -67,7 +67,7 @@
                             </li>
                             <li>
                                 {%user_profile_path as user_profile_path%}
-                                <a class='profile {%if request.path == "/profile/"  or request.path == user_profile_path %}active{%endif%}' href="{%url 'profile' %}">
+                                <a class='profile {%if request.path == "/profile/"  or request.path == user_profile_path %}active{%endif%}' href="{%url 'social:profile' %}">
                                     <img class="circle story" src="{{user.profile.profile_image.url}}">
                                     <span class="d-none d-lg-block ">Profile</span>
                                 </a>
@@ -81,7 +81,7 @@
                                 <span class="d-none d-lg-block ">More</span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{%url 'setting'%}">
+                                <li><a class="dropdown-item" href="{%url 'social:setting'%}">
                                         <span>Settings</span>
                                         <img src="{% static 'images/reglage.png' %}">
                                     </a></li>
@@ -137,10 +137,10 @@
             </div>
             <!-- menu in the botton for smal screen  -->
             <div class="nav_bottom">
-                <a href="{% url 'home'%}"><img src="{% static 'images/accueil.png' %}"></a>
+                <a href="{% url 'social:home'%}"><img src="{% static 'images/accueil.png' %}"></a>
                 <a href="#" id="sm_create_modal"><img src="{% static 'images/tab.png' %}"></a>
                 <a href="{%url 'search'%}" id="sm_search_modal"><img src="{%static 'images/search.png' %}"></a>
-                <a href="{%url 'profile'  %}"><img class="circle story" src="{{user.profile.profile_image.url}}"></a>
+                <a href="{%url 'social:profile'  %}"><img class="circle story" src="{{user.profile.profile_image.url}}"></a>
             </div>
             {%endif%}
         </div>

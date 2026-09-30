@@ -28,7 +28,6 @@ class Profile(ListView):
         )
 
         username = self.kwargs.get("username", self.request.user.username)
-        user = self.request.user
         owner_user = get_object_or_404(UserModel, username=username)
         self.owner = owner_user
         return Message.objects.filter(user=owner_user).exclude(
@@ -133,7 +132,7 @@ class Setting(LoginRequiredMixin, TemplateView):
 
 
 class LikedPost(LoginRequiredMixin, ListView):
-    template_name = "social/home.html"
+    template_name = "together/home.html"
 
     def get_queryset(self):
         return Message.objects.filter(likes__user=self.request.user)
