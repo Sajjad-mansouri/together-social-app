@@ -125,7 +125,7 @@
 .login .content{
   height: 100%;
   align-self: center;
-  
+
   display: grid;
   grid-template-columns: 1fr;
 }
@@ -141,8 +141,8 @@
   background-color:#D8EFD3;
   padding:36px 40px;
   position: relative;
-  
-  
+
+
   height: 100%;
 }
 .typewrite-container a{
@@ -154,14 +154,14 @@
   font-optical-sizing: auto;
   font-style: normal;
 /*  height: 15px;*/
-  
+
 }
   }
 
 
 .footer{
 
- background-color:white; 
+ background-color:white;
     border:2px solid rgb(219, 219, 219);
   padding: 10px;
   font-family: "Playwrite FR Moderne", cursive;
@@ -170,12 +170,9 @@
   grid-template-columns: 1fr 1fr;
   justify-items: center;
   align-items: center;
-  
+
 }
 .footer a{
   color:black;
   text-align: center;
 }
-
-
-

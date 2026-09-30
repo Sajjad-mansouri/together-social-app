@@ -23,7 +23,7 @@ contactForm.addEventListener('submit',async function(event){
 		}
 		if(pair[0]=='email' && pair[1]!=''){
 			if(pair[1].match(emailReg)){
-				
+
 			}else{
 				errors=true
 				let message=document.createElement('div')
@@ -38,12 +38,12 @@ contactForm.addEventListener('submit',async function(event){
 	}
 
 	if(!errors){
-		
+
 		console.log(JSON.stringify(Object.fromEntries(formData)))
 		let response = await fetch(`${baseUrl}/api/message/`,{
 			method: 'POST',
 			headers:{
-				
+
 				'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify(Object.fromEntries(formData))

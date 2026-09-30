@@ -13,7 +13,7 @@
         max-height: 90vh;
         display: flex;
         border-radius: 5px;
-        border: 1px solid $gray;        
+        border: 1px solid $gray;
         @include ex-small-screen{
             height: auto;
             display: block;
@@ -142,16 +142,16 @@
                         background-color: $gray;
                     }
                 }
-                
+
             }
             form{
                 height: 50px;
                 padding: 0 20px;
                 float: left;
                 width: 100%;
-                
+
                 input{
-                   
+
                     padding: 5px 10px;
                     margin: auto;
                 }
@@ -167,4 +167,3 @@
         }
     }
 }
-

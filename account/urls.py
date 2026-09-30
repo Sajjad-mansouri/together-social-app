@@ -1,19 +1,18 @@
-from django.urls import path,include
+from django.urls import include, path
 
-from . import views
-from . import emailconf
+from . import emailconf, views
 
-urlpatterns=[
-	
-	path('edit-profile/',views.UpdateProfile.as_view(),name='update_profile'),
-	path('register/',views.Register.as_view(),name='register'),
-	path('deactivate/<int:pk>',views.Deactivate.as_view(),name='deactivate'),
-	path('',include('django.contrib.auth.urls')),
+urlpatterns = [
+    path("edit-profile/", views.UpdateProfile.as_view(), name="update_profile"),
+    path("register/", views.Register.as_view(), name="register"),
+    path("deactivate/<int:pk>", views.Deactivate.as_view(), name="deactivate"),
+    path("", include("django.contrib.auth.urls")),
 ]
 
-urlpatterns+=[
-	path(
+urlpatterns += [
+    path(
         "confirm/<uidb64>/<token>/",
         emailconf.EmailConfirmView.as_view(),
-        name="email_confirm",)
+        name="email_confirm",
+    )
 ]

@@ -1,34 +1,49 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Profile,Contact,MyUser,Notification,Block,AboutSite,SiteManager
+from .models import (
+    AboutSite,
+    Block,
+    Contact,
+    MyUser,
+    Notification,
+    Profile,
+    SiteManager,
+)
+
 
 class MyUserAdmin(UserAdmin):
-	pass
-admin.site.register(MyUser,MyUserAdmin)
+    pass
+
+
+admin.site.register(MyUser, MyUserAdmin)
+
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-	list_display=['user','profile_image','birth_day']
+    list_display = ["user", "profile_image", "birth_day"]
+
 
 @admin.register(Contact)
 class Contact(admin.ModelAdmin):
-	list_display=['id','from_user','to_user']
+    list_display = ["id", "from_user", "to_user"]
 
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
-	list_display=['user','content_object','object_id']
+    list_display = ["user", "content_object", "object_id"]
 
 
 @admin.register(Block)
 class BlockAdmin(admin.ModelAdmin):
-	list_display=['id','from_user','to_user']
+    list_display = ["id", "from_user", "to_user"]
+
 
 @admin.register(AboutSite)
 class AboutSiteAdmin(admin.ModelAdmin):
-	list_display=['text']
+    list_display = ["text"]
+
 
 @admin.register(SiteManager)
 class AboutSiteAdmin(admin.ModelAdmin):
-	list_display=['linkedin']
+    list_display = ["linkedin"]

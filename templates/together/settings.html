@@ -11,7 +11,7 @@
                 <button class='tablinks' data-tab='deactivate'>Deactivate Account</button>
 
             </div>
-            <div class="tab-content container"> 
+            <div class="tab-content container">
 
                 <div id='edit-profile' class="row hide">
                             <div class="title hide">
@@ -19,14 +19,14 @@
                                 <h1>Edit profile</h1>
                             </div>
                             <div class="messages">
-                                
+
                             </div>
                             <form method="POST" class="profile-form">
                                <div class='col image-container'>
                                     <img id='profile_image'src="" >
                                     <input type="file" name="profile_image" style="display:none" id='image-input'>
                                     <button id='imgBtn'>change profile image</button>
-                               </div>     
+                               </div>
                                <div class='col'>
                                     <label for="name">Name</label>
                                     <input type="text" name="first_name" id='first_name'>
@@ -37,12 +37,12 @@
                                </div>
                                 <div  class='col'>
                                     <label for="bio">Bio</label>
-                                    <textarea  name="bio" id='bio' id='bio'></textarea>                               
+                                    <textarea  name="bio" id='bio' id='bio'></textarea>
                                </div>
                                <button class="save">save changes</button>
 
-                            </form>  
-                        
+                            </form>
+
 
                 </div>
                 <div id="personal-detail" class="row hide">
@@ -51,7 +51,7 @@
                                 <h1>personal-detail</h1>
                             </div>
                             <div class="messages">
-                                
+
                             </div>
                             <form method="POST" class='personal-form'>
                                <div class='col'>
@@ -72,7 +72,7 @@
                                 <a href="#" class="back"><img src="{% static 'images/back.png' %}" width=20 ></a>
                                 <h1>Account privacy</h1>
                             </div>
-                            
+
                             <div class='is-private'>
                                  <span>
                                      Private Account
@@ -82,7 +82,7 @@
                               <input type="checkbox" checked name='private' id='private'>
                               <span class="slider round"></span>
                             </label>
-   
+
                             </div>
                             <p>
                                 when your account is public, your profile and posts can be seen by anyone.
@@ -91,7 +91,7 @@
                                 when your account is private, only people you approve can see your posts.Yours existing followers won't be affected.
                             </p>
 
-                            
+
 
                 </div>
                 <div id="security" class='row hide'>
@@ -100,11 +100,11 @@
                                 <h1>Security</h1>
                             </div>
                             <div class="messages">
-                                
+
                             </div>
 
                             <form method="POST" id="change-password-form">
-   
+
                                <div class='col'>
                                     <label for="old_password">old password</label>
                                     <input type="password" name="old_password" id='old_password'>
@@ -120,7 +120,7 @@
 
                                <button class="save">change password</button>
 
-                            </form>  
+                            </form>
                 </div>
 
                 <div id="deactivate" class='row hide'>
@@ -129,13 +129,13 @@
                                 <h1>Deactivate Account</h1>
                             </div>
                              <p>Please be aware that deactivating your account will result in the permanent deletion of all your data. This action is irreversible. If you proceed, all your information, including your profile, saved items, and any personal data, will be permanently erased and cannot be recovered.</h5>
-                            
+
                                 <button class="deactivate">
                                     deactivate
                                 </button>
-                            
 
-                            
+
+
                 </div>
             </div>
 

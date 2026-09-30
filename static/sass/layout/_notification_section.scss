@@ -12,14 +12,14 @@
         opacity: 1 !important;
         left: 12.6em;
     }
-    
+
     height: 100vh;
     padding: 1.5em 1em;
     @include medium-screen{
         &.show{
-           left: 5em; 
+           left: 5em;
         }
-        
+
     }
     @include small-screen{
         display: none;
@@ -38,7 +38,7 @@
                 color: $gray-color;
                 font-weight: 400;
             }
-        }  
+        }
     }
     .notifications{
         .notif{

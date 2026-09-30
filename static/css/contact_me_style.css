@@ -30,7 +30,7 @@ body {
   align-content: center;
   gap:10px;
 
-  
+
 }
 .about-me{
 
@@ -52,13 +52,13 @@ label{
 @media screen and (max-width: 768px){
 
   .row{
-    
+
     grid-template-columns: 1fr;
   }
   .about-me {
-    
+
     margin-bottom: 20px;
-    
+
   }
 }
 input,textarea{
@@ -115,7 +115,7 @@ div.alert {
   color: #721c24;
   padding: 10px;
   background-color: #f8d7da;
-  
+
 }
 
 div.form-message-success{

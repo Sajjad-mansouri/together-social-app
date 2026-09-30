@@ -57,7 +57,7 @@ window.onload = function() {
     var elements = document.getElementsByClassName('typewrite');
     if(window.screen.width>498){
     let hidden=document.querySelector('.descriptions')
-    let values=JSON.parse(hidden.textContent)     
+    let values=JSON.parse(hidden.textContent)
     for (var i = 0; i < elements.length; i++) {
 
 
@@ -66,7 +66,7 @@ window.onload = function() {
 
     }
 
-    
+
     // INJECT CSS
     var css = document.createElement("style");
     }
@@ -74,4 +74,3 @@ window.onload = function() {
     css.innerHTML = ".typewrite > .wrap { border-right: 0.08em solid #fff}";
     document.body.appendChild(css);
 };
-

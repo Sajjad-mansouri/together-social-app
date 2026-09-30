@@ -19,7 +19,7 @@ img{
 
 }
 .drop-down .drop-down-content{
-    
+
     position: absolute;
     text-align: center;
     width: 200px;
@@ -78,7 +78,7 @@ img{
 
   }
   .tab-content .row h1{
-    
+
     flex-basis: 100%;
     text-align: center;
   }
@@ -87,7 +87,7 @@ img{
 .tab-menu .tab{
   display: flex;
   flex-direction: column;
-  
+
   padding: 0px 15px;
   margin-right: 10px;
 
@@ -126,13 +126,13 @@ img{
 }
 
 .tab-content {
-  
+
   margin-top: 50px;
   padding: 0px 12px;
-  
-  
+
+
   border-left: none;
-  
+
 }
 
 
@@ -143,7 +143,7 @@ input{
   width: 100%;
     border: 2px solid #ccc;
   border-radius: 4px;
-  
+
   font-size: 16px;
 }
 textarea{
@@ -152,7 +152,7 @@ textarea{
   padding: 12px 20px;
   box-sizing: border-box;
   border: 2px solid #ccc;
-  
+
   font-size: 16px;
   resize: none;
 }
@@ -234,7 +234,7 @@ button.save{
   height: 34px;
 }
 
-.switch input { 
+.switch input {
   opacity: 0;
   width: 0;
   height: 0;
@@ -433,7 +433,7 @@ input:checked + .slider:before {
   margin: auto;
   z-index: 1000;
 
-  
+
 }
 #favDialog-clone{
   display: none;
@@ -466,7 +466,7 @@ input:checked + .slider:before {
 
 .comment-container .post .info {
   height: 10%;
-  
+
   display: flex;
   box-sizing: border-box;
   flex-direction: row;
@@ -1033,7 +1033,7 @@ font-weight: bold;
   top: 50%;
   transform: translate(-50%, -50%);
   padding: 10px;
-  
+
 
 }
 .report-problem-div img{
@@ -1051,7 +1051,7 @@ font-weight: bold;
 .report-problem-div img.submited{
   display: block;
   margin: 0 auto;
-  
+
 }
 .report-problem-div h1{
   text-align: center;

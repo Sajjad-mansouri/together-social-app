@@ -11,7 +11,7 @@
     .second_container{
         margin-top: 35px;
         margin-right: 3em;
-        
+
         display: grid;
         grid-template-columns: 3fr 1fr;
         @include medium-screen{
