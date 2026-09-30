@@ -11,6 +11,11 @@ urlpatterns = [
         views.RegistrationDoneView.as_view(),
         name="registration_done",
     ),
+    path(
+        "confirm/<uidb64>/<token>/",
+        views.RegistrationConfirmView.as_view(),
+        name="register_confirm",
+    ),
     path("password_reset/", views.PasswordResetView.as_view(), name="password_reset"),
     path(
         "password_reset/done/",
@@ -28,13 +33,6 @@ urlpatterns = [
         name="password_reset_complete",
     ),
     path("deactivate/<int:pk>", views.Deactivate.as_view(), name="deactivate"),
+    path("login/", views.CustomLoginView.as_view(), name="login"),
     path("", include("django.contrib.auth.urls")),
-]
-
-urlpatterns += [
-    path(
-        "confirm/<uidb64>/<token>/",
-        views.RegistrationConfirmView.as_view(),
-        name="register_confirm",
-    )
 ]

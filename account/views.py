@@ -8,6 +8,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -15,7 +16,12 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import CreateView, DeleteView, TemplateView, UpdateView
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    TemplateView,
+    UpdateView,
+)
 
 from .forms import CustomCreationForm, ProfileForm, UserForm
 from .models import Profile, SiteManager
@@ -42,30 +48,42 @@ class UpdateProfile(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = "Profile successfully Updated"
 
     def get_success_url(self):
-        return reverse("profile", args=(self.request.user.pk,))
+        return reverse("social:profile")
 
     def get_object(self, queryset=None):
         return self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["user_form"] = ProfileForm(instance=self.get_object().profile)
+        context["user_form"] = ProfileForm(
+            instance=self.get_object().profile,
+        )
         return context
 
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
-        profile = self.get_object().profile
+        self.object = self.get_object()
+
+        user_form = self.get_form()
         profile_form = ProfileForm(
-            instance=profile,
-            data=self.request.POST,
-            files=self.request.FILES,
+            instance=self.object.profile,
+            data=request.POST,
+            files=request.FILES,
         )
-        if profile_form.is_valid():
-            self.inf = profile_form.save(commit=False)
-            self.inf.user = self.request.user
-            self.inf.save()
-            return super().post(request, *args, **kwargs)
-        else:
-            return self.form_invalid(profile_form)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+
+            profile = profile_form.save(commit=False)
+            profile.user = self.object
+            profile.save()
+
+            return self.form_valid(user_form)
+
+        context = self.get_context_data(form=user_form)
+        context["user_form"] = profile_form
+
+        return self.render_to_response(context)
 
 
 class RegistrationView(CreateView):
@@ -180,7 +198,7 @@ class RegistrationConfirmView(TemplateView):
         context = super().get_context_data(**kwargs)
         if self.validlink:
             context["validlink"] = True
-            admin = User_Model.objects.filter(is_superuser=True)[0]
+            admin = User_Model.objects.filter(is_superuser=True).first()
 
             context["admin"] = admin
         else:
