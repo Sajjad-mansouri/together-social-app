@@ -1,9 +1,12 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
@@ -189,6 +192,43 @@ class RegistrationConfirmView(TemplateView):
                 }
             )
         return context
+
+
+class PasswordResetView(auth_views.PasswordResetView):
+    template_name = "registration/pass_reset_form.html"
+    email_template_name = "email/reset/pass_reset_email.txt"
+    html_email_template_name = "email/reset/pass_reset_email.html"
+    subject_template_name = "email/reset/pass_reset_subject.txt"
+    success_url = reverse_lazy("account:password_reset_done")
+
+    def form_valid(self, form):
+        self.extra_email_context = {
+            "developer_name": settings.DEVELOPER_NAME,
+            "logo_url": self.request.build_absolute_uri(
+                staticfiles_storage.url("images/logo_transparent.png")
+            ),
+        }
+        email = form.cleaned_data["email"]
+        self.request.session["email"] = email
+        return super().form_valid(form)
+
+
+class PasswordResetDoneView(auth_views.PasswordResetDoneView):
+    template_name = "registration/pass_reset_done.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["email"] = self.request.session.get("email")
+        return context
+
+
+class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    template_name = "registration/pass_reset_confirm.html"
+    success_url = reverse_lazy("account:password_reset_complete")
+
+
+class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = "registration/pass_reset_complete.html"
 
 
 class Deactivate(LoginRequiredMixin, DeleteView):

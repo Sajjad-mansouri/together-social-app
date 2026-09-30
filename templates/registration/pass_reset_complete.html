@@ -1,0 +1,386 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>{% translate "Password Reset Complete" %} | Together</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+    /* ---------- Base resets ---------- */
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        background: #fafafa;
+        color: #1a1a1a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 16px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .page-wrapper {
+        width: 100%;
+        max-width: 480px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 28px;
+    }
+
+    .brand img {
+        height: 64px;
+        width: auto;
+        display: block;
+        border: 0;
+    }
+
+    .status-card {
+        position: relative;
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 48px 36px 40px;
+        text-align: center;
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.08);
+        border: 1px solid #efefef;
+        overflow: hidden;
+        animation: cardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .status-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+    }
+
+    @keyframes cardIn {
+        from { opacity: 0; transform: translateY(14px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .status-icon {
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        margin: 0 auto 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        color: #ffffff;
+        box-shadow: 0 12px 28px rgba(131, 58, 180, 0.35);
+        animation: iconPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s backwards;
+    }
+
+    @keyframes iconPop {
+        from { opacity: 0; transform: scale(0.5); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+
+    .status-icon svg {
+        width: 48px;
+        height: 48px;
+        display: block;
+    }
+
+    .status-icon::after {
+        content: "";
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        opacity: 0.2;
+        z-index: -1;
+        animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.2; }
+        50%      { transform: scale(1.15); opacity: 0.08; }
+    }
+
+    .status-card h1 {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.6px;
+        margin: 0 0 12px;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .status-card p {
+        font-size: 15px;
+        line-height: 1.7;
+        color: #6b7280;
+        margin: 0 0 28px;
+        max-width: 380px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .checklist {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 18px 20px;
+        margin: 0 0 28px;
+        text-align: left;
+        border: 1px solid #efefef;
+    }
+
+    .checklist-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #833ab4;
+        margin: 0 0 10px;
+        letter-spacing: 0.2px;
+        text-transform: uppercase;
+    }
+
+    .checklist ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .checklist li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        color: #444;
+        line-height: 1.6;
+        padding: 6px 0;
+    }
+
+    .checklist li i {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        color: #ffffff;
+        font-size: 10px;
+    }
+
+    .security-tip {
+        background: #ecfdf5;
+        border-left: 4px solid #10b981;
+        border-radius: 8px;
+        padding: 14px 16px;
+        margin: 0 0 24px;
+        text-align: left;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .security-tip i {
+        color: #059669;
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+
+    .security-tip p {
+        margin: 0;
+        font-size: 13px;
+        color: #065f46;
+        line-height: 1.6;
+        text-align: left;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 15px 36px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+        font-family: inherit;
+        width: 100%;
+    }
+
+    .btn i {
+        font-size: 15px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        color: #ffffff !important;
+        box-shadow: 0 6px 18px rgba(131, 58, 180, 0.35);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(131, 58, 180, 0.45);
+    }
+
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .secondary-link {
+        display: block;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #6b7280;
+    }
+
+    .secondary-link a {
+        color: #833ab4;
+        font-weight: 600;
+        transition: color 0.15s;
+    }
+
+    .secondary-link a:hover {
+        color: #fd1d1d;
+    }
+
+    .page-footer {
+        text-align: center;
+        margin-top: 28px;
+        font-size: 12px;
+        color: #9ca3af;
+        line-height: 1.7;
+    }
+
+    .page-footer a {
+        color: #833ab4;
+        font-weight: 600;
+    }
+
+    @media only screen and (max-width: 520px) {
+        body {
+            padding: 24px 16px;
+        }
+
+        .brand img {
+            height: 52px;
+        }
+
+        .status-card {
+            padding: 40px 24px 32px;
+            border-radius: 18px;
+        }
+
+        .status-icon {
+            width: 84px;
+            height: 84px;
+        }
+
+        .status-icon svg {
+            width: 42px;
+            height: 42px;
+        }
+
+        .status-card h1 {
+            font-size: 24px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+        }
+    }
+    </style>
+</head>
+
+<body>
+    <div class="page-wrapper">
+
+        <!-- Brand -->
+        <a href="/" class="brand" aria-label="Together home">
+            <img src="{% static '/images/logo_transparent.png' %}" alt="Together">
+        </a>
+
+        <!-- ================= PASSWORD RESET COMPLETE ================= -->
+        <div class="status-card success-theme" id="resetCompleteCard">
+            <div class="status-icon">
+                <!-- Lock with check -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    <path d="m9 16 2 2 4-4"></path>
+                </svg>
+            </div>
+
+            <h1>{% translate "Password Reset Complete" %}</h1>
+            <p>
+                {% blocktranslate %}
+                Your password has been successfully changed. You can now log in with your new password.
+                {% endblocktranslate %}
+            </p>
+
+            <div class="checklist">
+                <p class="checklist-title">{% translate "What happens next" %}</p>
+                <ul>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        {% translate "Your new password is active" %}
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        {% translate "All other sessions have been signed out" %}
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        {% translate "You can log in and continue sharing" %}
+                    </li>
+                </ul>
+            </div>
+
+
+            <a href="{% url 'account:login' %}" class="btn btn-primary">
+                <i class="fas fa-right-to-bracket"></i>
+                {% translate "Proceed to Login" %}
+            </a>
+
+
+        </div>
+
+        <!-- Footer -->
+        <p class="page-footer">
+            &copy; {% now "Y" %} Together. {% translate "All rights reserved." %}<br>
+            {% translate "Made with" %} <i class="fas fa-heart" style="color:#fd1d1d;"></i> {% translate "for the community." %}
+        </p>
+    </div>
+</body>
+
+</html>

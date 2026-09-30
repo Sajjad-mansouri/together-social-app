@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+from email.utils import getaddresses
 from pathlib import Path
 
 import environ
@@ -182,9 +183,9 @@ REST_FRAMEWORK = {
 
 ADMINS = [("admin1", "admin1@gmail.com")]
 
-from email.utils import getaddresses
 
-# DJANGO_ADMINS=Alice Judge <alice@cyb.org>,blake@cyb.org
 ADMINS = getaddresses([env("ADMINS")])
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 SERVER_EMAIL = env("SERVER_EMAIL")
+
+DEVELOPER_NAME = env("DEVELOPER_NAME")
