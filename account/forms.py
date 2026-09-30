@@ -3,15 +3,15 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.mail import EmailMultiAlternatives
 from django.template import loader
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
-from django.contrib.staticfiles.storage import staticfiles_storage
-
-UserModel = get_user_model()
 
 from .models import Profile
+
+UserModel = get_user_model()
 
 
 class ProfileForm(forms.ModelForm):
@@ -118,7 +118,9 @@ class CustomCreationForm(UserCreationForm):
                 "username": user.get_username(),
                 "token": token_generator.make_token(user),
                 "protocol": "https" if use_https else "http",
-                'logo_url': request.build_absolute_uri(staticfiles_storage.url('images/logo_transparent.png')),
+                "logo_url": request.build_absolute_uri(
+                    staticfiles_storage.url("images/logo_transparent.png")
+                ),
                 **(extra_email_context or {}),
             }
 
@@ -146,7 +148,6 @@ class CustomCreationForm(UserCreationForm):
             )
 
         return user
-
 
 
 class UserForm(forms.ModelForm):

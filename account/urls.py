@@ -1,6 +1,7 @@
 from django.urls import include, path
 
-from . import  views
+from . import views
+
 app_name = "account"
 urlpatterns = [
     path("edit-profile/", views.UpdateProfile.as_view(), name="update_profile"),

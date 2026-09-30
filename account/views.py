@@ -2,24 +2,24 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator
-from django.core.exceptions import ImproperlyConfigured, ValidationError
-from django.views.decorators.debug import sensitive_post_parameters
-from django.views.decorators.cache import never_cache
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.utils.http import urlsafe_base64_decode
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.http import urlsafe_base64_decode
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import never_cache
+from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import CreateView, DeleteView, TemplateView, UpdateView
 
-from .services import EmailConfirmation
 from .forms import CustomCreationForm, ProfileForm, UserForm
-from .models import SiteManager, Profile
+from .models import Profile, SiteManager
 
 User_Model = get_user_model()
 INTERNAL_REGISTRATION_SESSION_TOKEN = "_registration_token"
+
 
 class PasswordContextMixin:
     extra_context = None
@@ -30,6 +30,7 @@ class PasswordContextMixin:
             {"title": self.title, "subtitle": None, **(self.extra_context or {})}
         )
         return context
+
 
 class UpdateProfile(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = User_Model
@@ -98,7 +99,8 @@ class RegistrationView(CreateView):
         )
 
         return HttpResponseRedirect(self.get_success_url())
-   
+
+
 class RegistrationDoneView(PasswordContextMixin, TemplateView):
     template_name = "registration/registration_done.html"
     title = _("Activition Email sent")
@@ -107,7 +109,6 @@ class RegistrationDoneView(PasswordContextMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["email"] = self.request.session.get("email")
         return context
-
 
 
 class RegistrationConfirmView(TemplateView):
@@ -130,7 +131,9 @@ class RegistrationConfirmView(TemplateView):
             token = kwargs["token"]
 
             if token == self.confirm_registration_url_token:
-                session_token = self.request.session.get(INTERNAL_REGISTRATION_SESSION_TOKEN)
+                session_token = self.request.session.get(
+                    INTERNAL_REGISTRATION_SESSION_TOKEN
+                )
                 if self.token_generator.check_token(self.user, session_token):
                     # If the token is valid, display the password reset form.
                     self.validlink = True
@@ -186,6 +189,7 @@ class RegistrationConfirmView(TemplateView):
                 }
             )
         return context
+
 
 class Deactivate(LoginRequiredMixin, DeleteView):
     template_name = "registration/delete_account.html"

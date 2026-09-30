@@ -6,7 +6,6 @@ from django.template import loader
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
-
 UserModel = get_user_model()
 
 
@@ -48,13 +47,9 @@ def send_email(
 
 
 class EmailConfirmation:
-    subject_template_name = (
-        "email/registration/confirmation_email_subject.txt"
-    )
+    subject_template_name = "email/registration/confirmation_email_subject.txt"
     email_template_name = "email/registration/confirmation_email.html"
-    html_email_template_name = (
-        "email/registration/confirmation_html_email.html"
-    )
+    html_email_template_name = "email/registration/confirmation_html_email.html"
 
     token_generator = default_token_generator
     domain_override = None
@@ -76,11 +71,7 @@ class EmailConfirmation:
             **{f"{email_field_name}__iexact": email}
         )
 
-        return (
-            user
-            for user in users
-            if user.has_usable_password()
-        )
+        return (user for user in users if user.has_usable_password())
 
     def send_mail(
         self,
@@ -125,11 +116,7 @@ class EmailConfirmation:
                 "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                 "username": user.get_username(),
                 "token": self.token_generator.make_token(user),
-                "protocol": (
-                    "https"
-                    if self.request.is_secure()
-                    else "http"
-                ),
+                "protocol": ("https" if self.request.is_secure() else "http"),
                 **(self.extra_email_context or {}),
             }
 
