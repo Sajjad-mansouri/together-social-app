@@ -401,20 +401,6 @@ class ReportSerializer(serializers.ModelSerializer):
         # read_only_fields=['is_user_comment']
 
 
-class RestrictionSerializer(serializers.ModelSerializer):
-    def to_internal_value(self, data):
-        self.user = self._context["request"].user.id
-        data["from_user"] = self.user
-        to_user = get_object_or_404(UserModel, username=data["to_user"])
-        data["to_user"] = to_user.pk
-
-        return super().to_internal_value(data)
-
-    class Meta:
-        model = Block
-        fields = ["id", "from_user", "to_user"]
-
-
 class ReportProblemSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         user = self._context["request"].user.id
@@ -430,6 +416,27 @@ class ReportProblemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportProblem
         fields = ["user", "report"]
+
+
+class RestrictionSerializer(serializers.ModelSerializer):
+    def to_internal_value(self, data):
+        data = data.copy()
+
+        self.user = self._context["request"].user.id
+        data["from_user"] = self.user
+
+        if "to_user" in data:
+            to_user = get_object_or_404(
+                UserModel,
+                username=data["to_user"],
+            )
+            data["to_user"] = to_user.pk
+
+        return super().to_internal_value(data)
+
+    class Meta:
+        model = Block
+        fields = ["id", "from_user", "to_user"]
 
 
 class MessageSerializer(serializers.Serializer):
