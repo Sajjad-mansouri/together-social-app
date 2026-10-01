@@ -288,18 +288,25 @@ class RestrictionApiView(DestroyModelMixin, CreateModelMixin, GenericAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def post(self, request, *args, **kwargs):
-        to_user = request.data["to_user"]
-        to_user = UserModel.objects.get(username=to_user)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
+
+        to_user = UserModel.objects.get(
+            username=request.data["to_user"],
+        )
+
         Contact.objects.filter(
             Q(from_user=request.user, to_user=to_user)
             | Q(from_user=to_user, to_user=request.user)
         ).delete()
+
         headers = self.get_success_headers(serializer.data)
+
         return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+            serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers,
         )
 
 
