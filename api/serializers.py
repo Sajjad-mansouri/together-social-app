@@ -23,9 +23,13 @@ class PostSerializer(serializers.ModelSerializer):
     def get_author(self, obj):
         try:
             image_url = obj.user.profile.profile_image.url
-        except ValueError:
+        except (Profile.DoesNotExist, ValueError):
             image_url = ""
-        return {"username": obj.user.username, "profile_image": image_url}
+
+        return {
+            "username": obj.user.username,
+            "profile_image": image_url,
+        }
 
     owner = serializers.SerializerMethodField("get_author")
 
@@ -34,7 +38,7 @@ class PostSerializer(serializers.ModelSerializer):
 
         try:
             like_obj = user.like_set.get(post=obj)
-        except:
+        except Like.DoesNotExist:
             like_obj = None
 
         like_count = obj.likes.count()
@@ -56,7 +60,7 @@ class PostSerializer(serializers.ModelSerializer):
 
         try:
             saved_obj = user.savepost_set.get(post=obj)
-        except:
+        except SavePost.DoesNotExist:
             saved_obj = None
 
         try:
@@ -266,7 +270,7 @@ class CommentSerializer(serializers.ModelSerializer):
         try:
             main_comment = validated_data["main_comment"]
             parent = validated_data["parent"]
-        except:
+        except KeyError:
             main_comment = None
             parent = None
 
