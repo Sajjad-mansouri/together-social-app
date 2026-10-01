@@ -223,6 +223,7 @@ class LikeCommentDetailApiView(generics.RetrieveDestroyAPIView):
 
 class ChangePasswordView(generics.UpdateAPIView):
     serializer_class = ChangePasswordSerializer
+    permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -242,6 +243,34 @@ class ReportApiView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ReportSerializer
     queryset = Report.objects.all()
+
+
+class ReportProblemApiView(CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ReportProblemSerializer
+    queryset = ReportProblem.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        subject = "Your report has been received"
+        report_user_message_body = render_to_string(
+            "email/report_user_body.txt", {"user": request.user}
+        )
+
+        to = request.user.email
+        msg_user = EmailMessage(subject, report_user_message_body, None, [to])
+        msg_user.send()
+
+        admin_email_body = f"{request.user.username} report"
+        admin_email_subject = f"{request.user.username} report"
+        mail_admins(admin_email_subject, admin_email_body)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
 
 class RestrictionApiView(DestroyModelMixin, CreateModelMixin, GenericAPIView):
@@ -268,34 +297,6 @@ class RestrictionApiView(DestroyModelMixin, CreateModelMixin, GenericAPIView):
             Q(from_user=request.user, to_user=to_user)
             | Q(from_user=to_user, to_user=request.user)
         ).delete()
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
-        )
-
-
-class ReportProblemApiView(CreateAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = ReportProblemSerializer
-    queryset = ReportProblem.objects.all()
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        subject = "Your report has been received"
-        report_user_message_body = render_to_string(
-            "email/report_user_body.txt", {"user": request.user}
-        )
-
-        to = request.user.email
-        msg_user = EmailMessage(subject, report_user_message_body, None, [to])
-        msg_user.send()
-
-        admin_email_body = f"{request.user.username} report"
-        admin_email_subject = f"{request.user.username} report"
-        mail_admins(admin_email_subject, admin_email_body)
-
         headers = self.get_success_headers(serializer.data)
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
