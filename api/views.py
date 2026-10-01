@@ -76,12 +76,13 @@ class UserListAPiView(generics.ListAPIView):
     def get_queryset(self):
         queryset = None
 
-        if self.request.query_params.get("search") != None:
+        if self.request.query_params.get("search") is not None:
             search = self.request.query_params.get("search")
-
             queryset = (
-                UserModel.objects.filter(username__istartswith=search)
-                .exclude(username=self.request.user)
+                UserModel.objects.filter(
+                    username__istartswith=search,
+                )
+                .exclude(pk=self.request.user.pk)
                 .exclude(block_from__to_user=self.request.user)
                 .select_related("profile")
             )
@@ -90,14 +91,16 @@ class UserListAPiView(generics.ListAPIView):
             username = self.request.query_params.get("owner")
             user = get_object_or_404(UserModel, username=username)
             queryset = UserModel.objects.filter(
-                rel_from__to_user=user, rel_from__access=True
+                rel_from__to_user=user,
+                rel_from__access=True,
             )
 
         elif self.request.query_params.get("relation") == "following":
             username = self.request.query_params.get("owner")
             user = get_object_or_404(UserModel, username=username)
             queryset = UserModel.objects.filter(
-                rel_to__from_user=user, rel_to__access=True
+                rel_to__from_user=user,
+                rel_to__access=True,
             )
 
         return queryset
@@ -124,7 +127,7 @@ class ContactDetailApiView(generics.RetrieveUpdateDestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
-        except:
+        except Contact.DoesNotExist:
             from_user = request.user
             to_user = kwargs.get("to_user")
             to_user = get_object_or_404(UserModel, username=to_user)
@@ -282,7 +285,7 @@ class ReportProblemApiView(CreateAPIView):
 
         admin_email_body = f"{request.user.username} report"
         admin_email_subject = f"{request.user.username} report"
-        mail = mail_admins(admin_email_subject, admin_email_body)
+        mail_admins(admin_email_subject, admin_email_body)
 
         headers = self.get_success_headers(serializer.data)
         return Response(
@@ -315,5 +318,5 @@ class MessageApiView(APIView):
             {"user": request.data["name"], "message": request.data["message"]},
         )
         admin_email_subject = "New message"
-        mail = mail_admins(admin_email_subject, admin_email_body)
+        mail_admins(admin_email_subject, admin_email_body)
         return Response("sent")
