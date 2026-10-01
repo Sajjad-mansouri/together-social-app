@@ -390,62 +390,88 @@ class GeneralReportSerializer(serializers.ModelSerializer):
 
 
 class ReportSerializer(serializers.ModelSerializer):
-    def to_internal_value(self, data):
-        self.user = self._context["request"].user.id
-        data["user"] = self.user
-        self.post_owner = data.pop("post_owner")
-        if data["content_type"] == "post":
-            self.content_type = "post"
-        return super().to_internal_value(data)
+    content_type = serializers.CharField(write_only=True)
+    post_owner = serializers.CharField(write_only=True)
+    is_following = serializers.SerializerMethodField()
 
-    def follow(self, obj):
-        try:
-            Contact.objects.get(from_user=self.user, to_user__username=self.post_owner)
-            return True
-        except Exception:
-            return False
+    def get_is_following(self, obj):
+        request = self.context["request"]
 
-    is_following = serializers.SerializerMethodField("follow")
+        return Contact.objects.filter(
+            from_user=request.user,
+            to_user__username=obj.post_owner,
+        ).exists()
+
+    def validate_content_type(self, value):
+        if value not in {"post", "user"}:
+            raise serializers.ValidationError(
+                "Content type must be either 'post' or 'user'."
+            )
+        return value
+
+    def validate(self, attrs):
+        content_type = attrs["content_type"]
+        object_id = attrs["object_id"]
+
+        if content_type == "post":
+            if not Message.objects.filter(pk=object_id).exists():
+                raise serializers.ValidationError(
+                    {"object_id": "The specified post does not exist."}
+                )
+
+        elif content_type == "user":
+            if not UserModel.objects.filter(pk=object_id).exists():
+                raise serializers.ValidationError(
+                    {"object_id": "The specified user does not exist."}
+                )
+
+        return attrs
 
     def create(self, validated_data):
-        user = validated_data.pop("user")
-        object_id = validated_data["object_id"]
-        general_report = validated_data["general_report"]
-        if self.content_type == "post":
-            content_object = Message.objects.get(id=object_id)
-        elif self.content_type == "user":
-            content_object = UserModel.objects.get(id=object_id)
+        request = self.context["request"]
 
-        return Report.objects.create(
-            user=user, content_object=content_object, general_report=general_report
+        content_type = validated_data.pop("content_type")
+        post_owner = validated_data.pop("post_owner")
+        object_id = validated_data.pop("object_id")
+
+        if content_type == "post":
+            content_object = Message.objects.get(pk=object_id)
+        else:
+            content_object = UserModel.objects.get(pk=object_id)
+
+        report = Report.objects.create(
+            user=request.user,
+            content_object=content_object,
+            general_report=validated_data["general_report"],
         )
 
-    def is_valid(self, raise_exception=False):
-        valid = super().is_valid(raise_exception=False)
+        # Keep the owner available for SerializerMethodField.
+        report.post_owner = post_owner
 
-        return valid
+        return report
 
     class Meta:
         model = Report
-        fields = ["id", "user", "object_id", "general_report", "is_following"]
-        # read_only_fields=['is_user_comment']
+        fields = [
+            "id",
+            "object_id",
+            "general_report",
+            "content_type",
+            "post_owner",
+            "is_following",
+        ]
+        read_only_fields = ["id", "is_following"]
 
 
 class ReportProblemSerializer(serializers.ModelSerializer):
-    def to_internal_value(self, data):
-        user = self._context["request"].user.id
-        data["user"] = user
-
-        return super().to_internal_value(data)
-
-    def is_valid(self, raise_exception):
-        valid = super().is_valid(raise_exception=False)
-
-        return valid
-
     class Meta:
         model = ReportProblem
         fields = ["user", "report"]
+        read_only_fields = ["user"]
+
+    def create(self, validated_data):
+        validated_data["user"] = self.context["request"].user
+        return super().create(validated_data)
 
 
 class RestrictionSerializer(serializers.ModelSerializer):
