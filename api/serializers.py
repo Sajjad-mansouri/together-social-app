@@ -268,68 +268,50 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    def get_time(self, obj):
+    author = UserProfileSerializer(read_only=True)
+    created = serializers.SerializerMethodField()
+    is_user_comment = serializers.SerializerMethodField()
+    like_info = serializers.SerializerMethodField()
+
+    def get_created(self, obj):
         return timesince(obj.created).split(",")[0]
 
-    def user_comment(self, obj):
-        user = self._context["request"].user.username
+    def get_is_user_comment(self, obj):
+        return obj.author_id == self.context["request"].user.id
 
-        if obj.author.username == user:
-            return True
-        else:
-            return False
-
-    def like(self, obj):
-        user = self._context["request"].user.id
-
+    def get_like_info(self, obj):
+        user_id = self.context["request"].user.id
         like_count = obj.like.count()
-        data = {}
-        try:
-            liked = obj.likecomment_set.get(user_id=user)
-            data.update({"is_liked": True, "id": liked.id})
-        except Exception:
-            data.update({"is_liked": False})
-        data.update({"like_count": like_count})
+
+        liked = obj.likecomment_set.filter(user_id=user_id).first()
+
+        data = {
+            "is_liked": liked is not None,
+            "like_count": like_count,
+        }
+
+        if liked is not None:
+            data["id"] = liked.id
 
         return data
 
-    author = UserProfileSerializer()
-    created = serializers.SerializerMethodField("get_time")
-    is_user_comment = serializers.SerializerMethodField("user_comment")
-    like_info = serializers.SerializerMethodField("like")
+    def validate_object_id(self, value):
+        if not Message.objects.filter(pk=value).exists():
+            raise serializers.ValidationError("The specified message does not exist.")
 
-    def to_internal_value(self, data):
-        user = self._context["request"].user.id
-        data["author"] = {"username": user}
-
-        return super().to_internal_value(data)
+        return value
 
     def create(self, validated_data):
-        author = validated_data.pop("author")
-        object_id = validated_data["object_id"]
-        username = int(author["username"])
-        comment = validated_data["comment"]
-        try:
-            main_comment = validated_data["main_comment"]
-            parent = validated_data["parent"]
-        except KeyError:
-            main_comment = None
-            parent = None
+        user = self.context["request"].user
+        object_id = validated_data.pop("object_id")
 
-        user = get_user_model().objects.get(id=username)
-        message = Message.objects.get(id=object_id)
         return Comment.objects.create(
-            content_object=message,
+            content_object=Message.objects.get(pk=object_id),
             author=user,
-            comment=comment,
-            parent=parent,
-            main_comment=main_comment,
+            comment=validated_data["comment"],
+            parent=validated_data.get("parent"),
+            main_comment=validated_data.get("main_comment"),
         )
-
-    def is_valid(self, raise_exception=False):
-        valid = super().is_valid(raise_exception=False)
-
-        return valid
 
     class Meta:
         model = Comment
@@ -344,7 +326,13 @@ class CommentSerializer(serializers.ModelSerializer):
             "is_user_comment",
             "like_info",
         ]
-        # read_only_fields=['is_user_comment']
+        read_only_fields = [
+            "id",
+            "author",
+            "created",
+            "is_user_comment",
+            "like_info",
+        ]
 
 
 class LikeCommentSerializer(serializers.ModelSerializer):

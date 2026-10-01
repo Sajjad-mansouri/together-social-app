@@ -195,27 +195,28 @@ class ProfileDetailApiView(generics.RetrieveUpdateDestroyAPIView):
 
 class CommentApiView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
-    permission_classes = [AuthorDeletePermission]
+    permission_classes = [IsAuthenticated, AuthorDeletePermission]
 
     def get_queryset(self):
         message_id = self.kwargs["message_id"]
-        post = Message.objects.get(id=message_id)
+        post = get_object_or_404(Message, id=message_id)
         return post.comment.all()
 
 
 class CommentDetailApiView(generics.RetrieveDestroyAPIView):
-    permission_classes = [AuthorDeletePermission]
+    permission_classes = [IsAuthenticated, AuthorDeletePermission]
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
 
 
 class LikeCommentApiView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = LikeCommentSerializer
     queryset = LikeComment.objects.all()
 
 
 class LikeCommentDetailApiView(generics.RetrieveDestroyAPIView):
-    Apermission_classes = [AuthorDeletePermission]
+    permission_classes = [IsAuthenticated, AuthorDeletePermission]
     serializer_class = LikeCommentSerializer
     queryset = LikeComment.objects.all()
 
@@ -232,11 +233,13 @@ class ChangePasswordView(generics.UpdateAPIView):
 
 
 class ReportsView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = GeneralReportSerializer
     queryset = GeneralProblem.objects.all()
 
 
 class ReportApiView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = ReportSerializer
     queryset = Report.objects.all()
 
