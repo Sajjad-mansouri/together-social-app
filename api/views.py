@@ -115,23 +115,29 @@ class UserListAPiView(generics.ListAPIView):
 
 
 class ContactApiView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = ContactSerializer
     queryset = Contact.objects.all()
 
 
 class ContactDetailApiView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [RelationDeletePermission]
+    permission_classes = [IsAuthenticated, RelationDeletePermission]
     serializer_class = ContactSerializer
     queryset = Contact.objects.all()
 
     def destroy(self, request, *args, **kwargs):
-        try:
+        if "to_user" in kwargs:
+            to_user = get_object_or_404(
+                UserModel,
+                username=kwargs["to_user"],
+            )
+            instance = get_object_or_404(
+                Contact,
+                from_user=request.user,
+                to_user=to_user,
+            )
+        else:
             instance = self.get_object()
-        except Contact.DoesNotExist:
-            from_user = request.user
-            to_user = kwargs.get("to_user")
-            to_user = get_object_or_404(UserModel, username=to_user)
-            instance = get_object_or_404(Contact, from_user=from_user, to_user=to_user)
 
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
