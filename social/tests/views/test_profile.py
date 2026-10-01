@@ -60,7 +60,8 @@ def test_message_3(test_user_2):
 
 
 @pytest.fixture
-def message_content_type():
+def message_content_type(db):
+    ContentType.objects.clear_cache()
     return ContentType.objects.get_for_model(Message)
 
 
@@ -75,10 +76,6 @@ def profile_request(test_user):
 def profile_view(profile_request):
     view = Profile()
     view.setup(profile_request)
-
-    # This is normally populated by ListView.get().
-    # The tests call get_queryset() directly, so initialize
-    # object_list to reproduce the normal ListView lifecycle.
     view.object_list = view.get_queryset()
 
     return view
@@ -103,7 +100,6 @@ class TestProfile:
     def test_get_queryset_uses_username_from_url(
         self,
         profile_request,
-        test_user,
         test_user_2,
         test_message_3,
     ):
@@ -489,7 +485,6 @@ class TestProfile:
     def test_following_count_excludes_pending_relationships(
         self,
         profile_request,
-        test_user,
         test_user_2,
         test_user_3,
     ):

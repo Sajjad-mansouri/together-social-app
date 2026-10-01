@@ -252,7 +252,7 @@ class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
 class Deactivate(LoginRequiredMixin, DeleteView):
     template_name = "registration/delete_account.html"
     model = User_Model
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("social:home")
 
 
 class SearchView(LoginRequiredMixin, TemplateView):

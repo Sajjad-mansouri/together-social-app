@@ -42,11 +42,13 @@ def test_general_report(db):
 
 @pytest.fixture
 def message_content_type(db):
+    ContentType.objects.clear_cache()
     return ContentType.objects.get_for_model(Message)
 
 
 @pytest.fixture
 def user_content_type(db, django_user_model):
+    ContentType.objects.clear_cache()
     return ContentType.objects.get_for_model(django_user_model)
 
 
@@ -124,8 +126,12 @@ class TestReport:
     def test_content_type_limit_choices_to(self):
         field = Report._meta.get_field("content_type")
 
-        expected_limit = models.Q(app_label="account", model="myuser") | models.Q(
-            app_label="social", model="message"
+        expected_limit = models.Q(
+            app_label="account",
+            model="myuser",
+        ) | models.Q(
+            app_label="social",
+            model="message",
         )
 
         assert field.remote_field.limit_choices_to == expected_limit
@@ -471,6 +477,9 @@ class TestReport:
     ):
         report_id = test_report.pk
 
-        message_content_type.delete()
+        try:
+            message_content_type.delete()
 
-        assert not Report.objects.filter(pk=report_id).exists()
+            assert not Report.objects.filter(pk=report_id).exists()
+        finally:
+            ContentType.objects.clear_cache()

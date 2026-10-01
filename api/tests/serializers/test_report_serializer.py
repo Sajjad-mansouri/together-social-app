@@ -63,13 +63,25 @@ def serializer_context(request_factory, test_user):
     return {"request": request}
 
 
+@pytest.fixture
+def test_report(test_user, test_message, general_problem):
+    return Report.objects.create(
+        user=test_user,
+        content_object=test_message,
+        general_report=general_problem,
+    )
+
+
 @pytest.mark.django_db
 class TestGeneralReportSerializer:
     def test_meta_model(self):
         assert GeneralReportSerializer.Meta.model is GeneralProblem
 
     def test_meta_fields(self):
-        assert GeneralReportSerializer.Meta.fields == ["id", "title"]
+        assert GeneralReportSerializer.Meta.fields == [
+            "id",
+            "title",
+        ]
 
     def test_serializes_general_problem(self, general_problem):
         serializer = GeneralReportSerializer(general_problem)
@@ -79,7 +91,7 @@ class TestGeneralReportSerializer:
             "title": "Spam",
         }
 
-    def test_serializes_multiple_general_problems(self, db):
+    def test_serializes_multiple_general_problems(self):
         first = GeneralProblem.objects.create(title="Spam")
         second = GeneralProblem.objects.create(title="Harassment")
 
@@ -94,9 +106,11 @@ class TestGeneralReportSerializer:
         ]
 
     def test_deserializes_title(self):
-        serializer = GeneralReportSerializer(data={"title": "Spam"})
+        serializer = GeneralReportSerializer(
+            data={"title": "Spam"},
+        )
 
-        assert serializer.is_valid()
+        assert serializer.is_valid(), serializer.errors
         assert serializer.validated_data["title"] == "Spam"
 
 
@@ -108,13 +122,42 @@ class TestReportSerializer:
     def test_meta_fields(self):
         assert ReportSerializer.Meta.fields == [
             "id",
-            "user",
             "object_id",
             "general_report",
+            "content_type",
+            "post_owner",
             "is_following",
         ]
 
-    def test_to_internal_value_sets_request_user(
+    def test_content_type_is_write_only(self):
+        serializer = ReportSerializer()
+
+        assert serializer.fields["content_type"].write_only is True
+
+    def test_post_owner_is_write_only(self):
+        serializer = ReportSerializer()
+
+        assert serializer.fields["post_owner"].write_only is True
+
+    def test_is_following_is_serializer_method_field(self):
+        serializer = ReportSerializer()
+
+        assert isinstance(
+            serializer.fields["is_following"],
+            serializers.SerializerMethodField,
+        )
+
+    def test_is_following_is_read_only(self):
+        serializer = ReportSerializer()
+
+        assert serializer.fields["is_following"].read_only is True
+
+    def test_id_is_read_only(self):
+        serializer = ReportSerializer()
+
+        assert serializer.fields["id"].read_only is True
+
+    def test_valid_post_data(
         self,
         serializer_context,
         test_user,
@@ -122,7 +165,6 @@ class TestReportSerializer:
         general_problem,
     ):
         data = {
-            "user": test_user_2.id if False else 999999,
             "object_id": test_message.id,
             "general_report": general_problem.id,
             "post_owner": test_user.username,
@@ -134,24 +176,24 @@ class TestReportSerializer:
             context=serializer_context,
         )
 
-        serializer.is_valid()
+        assert serializer.is_valid(), serializer.errors
 
-        assert serializer.validated_data["user"] == test_user
+        assert serializer.validated_data["object_id"] == test_message.id
+        assert serializer.validated_data["general_report"] == general_problem
+        assert serializer.validated_data["content_type"] == "post"
+        assert serializer.validated_data["post_owner"] == test_user.username
 
-    def test_to_internal_value_replaces_submitted_user(
+    def test_valid_user_data(
         self,
         serializer_context,
-        test_user,
         test_user_2,
-        test_message,
         general_problem,
     ):
         data = {
-            "user": test_user_2.id,
-            "object_id": test_message.id,
+            "object_id": test_user_2.id,
             "general_report": general_problem.id,
-            "post_owner": test_user.username,
-            "content_type": "post",
+            "post_owner": test_user_2.username,
+            "content_type": "user",
         }
 
         serializer = ReportSerializer(
@@ -159,81 +201,134 @@ class TestReportSerializer:
             context=serializer_context,
         )
 
-        assert serializer.is_valid()
+        assert serializer.is_valid(), serializer.errors
 
-        assert serializer.validated_data["user"] == test_user
-        assert serializer.validated_data["user"] != test_user_2
+        assert serializer.validated_data["object_id"] == test_user_2.id
+        assert serializer.validated_data["content_type"] == "user"
+        assert serializer.validated_data["post_owner"] == test_user_2.username
 
-    def test_to_internal_value_stores_post_owner(
+    def test_user_is_not_a_serializer_input_field(self):
+        serializer = ReportSerializer()
+
+        assert "user" not in serializer.fields
+
+    @pytest.mark.parametrize(
+        "content_type",
+        ["invalid", "post123", "POST", "User", ""],
+    )
+    def test_invalid_content_type(
+        self,
+        serializer_context,
+        test_message,
+        general_problem,
+        content_type,
+    ):
+        serializer = ReportSerializer(
+            data={
+                "object_id": test_message.id,
+                "general_report": general_problem.id,
+                "post_owner": "testuser",
+                "content_type": content_type,
+            },
+            context=serializer_context,
+        )
+
+        assert serializer.is_valid() is False
+        assert "content_type" in serializer.errors
+
+    def test_missing_content_type(
+        self,
+        serializer_context,
+        test_message,
+        general_problem,
+    ):
+        serializer = ReportSerializer(
+            data={
+                "object_id": test_message.id,
+                "general_report": general_problem.id,
+                "post_owner": "testuser",
+            },
+            context=serializer_context,
+        )
+
+        assert serializer.is_valid() is False
+        assert "content_type" in serializer.errors
+
+    def test_missing_post_owner(
+        self,
+        serializer_context,
+        test_message,
+        general_problem,
+    ):
+        serializer = ReportSerializer(
+            data={
+                "object_id": test_message.id,
+                "general_report": general_problem.id,
+                "content_type": "post",
+            },
+            context=serializer_context,
+        )
+
+        assert serializer.is_valid() is False
+        assert "post_owner" in serializer.errors
+
+    def test_missing_object_id(
+        self,
+        serializer_context,
+        general_problem,
+        test_user,
+    ):
+        serializer = ReportSerializer(
+            data={
+                "general_report": general_problem.id,
+                "post_owner": test_user.username,
+                "content_type": "post",
+            },
+            context=serializer_context,
+        )
+
+        assert serializer.is_valid() is False
+        assert "object_id" in serializer.errors
+
+    def test_nonexistent_post_is_rejected(
         self,
         serializer_context,
         test_user,
-        test_message,
         general_problem,
     ):
-        data = {
-            "object_id": test_message.id,
-            "general_report": general_problem.id,
-            "post_owner": test_user.username,
-            "content_type": "post",
-        }
-
         serializer = ReportSerializer(
-            data=data,
+            data={
+                "object_id": 999999,
+                "general_report": general_problem.id,
+                "post_owner": test_user.username,
+                "content_type": "post",
+            },
             context=serializer_context,
         )
 
-        serializer.is_valid()
+        assert serializer.is_valid() is False
+        assert serializer.errors["object_id"] == ["The specified post does not exist."]
 
-        assert serializer.post_owner == test_user.username
-
-    def test_to_internal_value_sets_content_type_for_post(
+    def test_nonexistent_user_is_rejected(
         self,
         serializer_context,
         test_user,
-        test_message,
         general_problem,
     ):
-        data = {
-            "object_id": test_message.id,
-            "general_report": general_problem.id,
-            "post_owner": test_user.username,
-            "content_type": "post",
-        }
-
         serializer = ReportSerializer(
-            data=data,
+            data={
+                "object_id": 999999,
+                "general_report": general_problem.id,
+                "post_owner": test_user.username,
+                "content_type": "user",
+            },
             context=serializer_context,
         )
 
-        serializer.is_valid()
+        assert serializer.is_valid() is False
+        assert serializer.errors["object_id"] == ["The specified user does not exist."]
 
-        assert serializer.content_type == "post"
-
-    def test_to_internal_value_removes_post_owner_from_data(
-        self,
-        serializer_context,
-        test_user,
-        test_message,
-        general_problem,
-    ):
-        data = {
-            "object_id": test_message.id,
-            "general_report": general_problem.id,
-            "post_owner": test_user.username,
-            "content_type": "post",
-        }
-
-        serializer = ReportSerializer(
-            data=data,
-            context=serializer_context,
-        )
-
-        serializer.is_valid()
-
-        assert "post_owner" not in serializer.validated_data
-
-    def test_follow_returns_true_when_user_follows_post_owner(
+    def test_is_following_returns_true_when_user_follows_post_owner(
         self,
         serializer_context,
         test_user,
@@ -246,23 +341,22 @@ class TestReportSerializer:
             to_user=test_user_2,
         )
 
-        data = {
-            "object_id": test_message.id,
-            "general_report": general_problem.id,
-            "post_owner": test_user_2.username,
-            "content_type": "post",
-        }
+        report = Report.objects.create(
+            user=test_user,
+            content_object=test_message,
+            general_report=general_problem,
+        )
+
+        report.post_owner = test_user_2.username
 
         serializer = ReportSerializer(
-            data=data,
+            report,
             context=serializer_context,
         )
 
-        serializer.is_valid()
+        assert serializer.get_is_following(report) is True
 
-        assert serializer.follow(None) is True
-
-    def test_follow_returns_false_when_user_does_not_follow_post_owner(
+    def test_is_following_returns_false_when_user_does_not_follow_post_owner(
         self,
         serializer_context,
         test_user,
@@ -270,49 +364,42 @@ class TestReportSerializer:
         test_message,
         general_problem,
     ):
-        data = {
-            "object_id": test_message.id,
-            "general_report": general_problem.id,
-            "post_owner": test_user_2.username,
-            "content_type": "post",
-        }
+        report = Report.objects.create(
+            user=test_user,
+            content_object=test_message,
+            general_report=general_problem,
+        )
+
+        report.post_owner = test_user_2.username
 
         serializer = ReportSerializer(
-            data=data,
+            report,
             context=serializer_context,
         )
 
-        serializer.is_valid()
+        assert serializer.get_is_following(report) is False
 
-        assert serializer.follow(None) is False
-
-    def test_follow_returns_false_for_unknown_post_owner(
+    def test_is_following_returns_false_for_unknown_post_owner(
         self,
         serializer_context,
         test_user,
         test_message,
         general_problem,
     ):
-        data = {
-            "object_id": test_message.id,
-            "general_report": general_problem.id,
-            "post_owner": "does-not-exist",
-            "content_type": "post",
-        }
+        report = Report.objects.create(
+            user=test_user,
+            content_object=test_message,
+            general_report=general_problem,
+        )
+
+        report.post_owner = "does-not-exist"
 
         serializer = ReportSerializer(
-            data=data,
+            report,
             context=serializer_context,
         )
 
-        serializer.is_valid()
-
-        assert serializer.follow(None) is False
-
-    def test_is_following_field_is_serializer_method_field(self):
-        field = ReportSerializer().fields["is_following"]
-
-        assert isinstance(field, serializers.SerializerMethodField)
+        assert serializer.get_is_following(report) is False
 
     def test_create_creates_report_for_post(
         self,
@@ -333,14 +420,16 @@ class TestReportSerializer:
             context=serializer_context,
         )
 
-        assert serializer.is_valid()
+        assert serializer.is_valid(), serializer.errors
 
         report = serializer.save()
 
         assert isinstance(report, Report)
+        assert report.pk is not None
         assert report.user == test_user
         assert report.content_object == test_message
         assert report.general_report == general_problem
+        assert report.post_owner == test_user.username
 
     def test_create_creates_report_for_user(
         self,
@@ -361,30 +450,29 @@ class TestReportSerializer:
             context=serializer_context,
         )
 
-        # The serializer currently only sets content_type for "post".
-        # Set it explicitly so create() exercises its "user" branch.
-        serializer.content_type = "user"
-
-        assert serializer.is_valid()
+        assert serializer.is_valid(), serializer.errors
 
         report = serializer.save()
 
         assert isinstance(report, Report)
+        assert report.pk is not None
         assert report.user == test_user
         assert report.content_object == test_user_2
         assert report.general_report == general_problem
+        assert report.post_owner == test_user_2.username
 
-    def test_is_valid_returns_true_for_valid_data(
+    def test_create_uses_authenticated_request_user(
         self,
         serializer_context,
         test_user,
+        test_user_2,
         test_message,
         general_problem,
     ):
         data = {
             "object_id": test_message.id,
             "general_report": general_problem.id,
-            "post_owner": test_user.username,
+            "post_owner": test_user_2.username,
             "content_type": "post",
         }
 
@@ -393,29 +481,63 @@ class TestReportSerializer:
             context=serializer_context,
         )
 
-        assert serializer.is_valid() is True
+        assert serializer.is_valid(), serializer.errors
 
-    def test_user_is_not_required_from_client(
+        report = serializer.save()
+
+        assert report.user == test_user
+        assert report.user != test_user_2
+
+    def test_serializer_representation_includes_is_following(
+        self,
+        serializer_context,
+        test_user,
+        test_user_2,
+        test_message,
+        general_problem,
+    ):
+        Contact.objects.create(
+            from_user=test_user,
+            to_user=test_user_2,
+        )
+
+        report = Report.objects.create(
+            user=test_user,
+            content_object=test_message,
+            general_report=general_problem,
+        )
+
+        report.post_owner = test_user_2.username
+
+        serializer = ReportSerializer(
+            report,
+            context=serializer_context,
+        )
+
+        assert serializer.data["is_following"] is True
+
+    def test_post_owner_is_available_after_create(
         self,
         serializer_context,
         test_user,
         test_message,
         general_problem,
     ):
-        data = {
-            "object_id": test_message.id,
-            "general_report": general_problem.id,
-            "post_owner": test_user.username,
-            "content_type": "post",
-        }
-
         serializer = ReportSerializer(
-            data=data,
+            data={
+                "object_id": test_message.id,
+                "general_report": general_problem.id,
+                "post_owner": test_user.username,
+                "content_type": "post",
+            },
             context=serializer_context,
         )
 
-        assert serializer.is_valid()
-        assert serializer.validated_data["user"] == test_user
+        assert serializer.is_valid(), serializer.errors
+
+        report = serializer.save()
+
+        assert report.post_owner == test_user.username
 
 
 @pytest.mark.django_db
@@ -429,156 +551,94 @@ class TestReportProblemSerializer:
             "report",
         ]
 
-    def test_to_internal_value_sets_request_user(
+    def test_user_is_read_only(self):
+        serializer = ReportProblemSerializer()
+
+        assert serializer.fields["user"].read_only is True
+
+    def test_report_is_required(self):
+        serializer = ReportProblemSerializer(data={})
+
+        assert serializer.is_valid() is False
+        assert "report" in serializer.errors
+
+    def test_valid_report_is_accepted(
         self,
         serializer_context,
-        test_user,
-        general_problem,
+        test_report,
     ):
-        report = Report.objects.create(
-            user=test_user,
-            content_object=test_user,
-            general_report=general_problem,
-        )
-
         serializer = ReportProblemSerializer(
-            data={"report": report.id},
+            data={"report": test_report.id},
             context=serializer_context,
         )
 
-        assert serializer.is_valid(False)
+        assert serializer.is_valid(), serializer.errors
 
-        assert serializer.validated_data["user"] == test_user
-
-    def test_submitted_user_is_ignored(
+    def test_user_is_not_required_from_client(
         self,
         serializer_context,
-        test_user,
-        test_user_2,
-        general_problem,
+        test_report,
     ):
-        report = Report.objects.create(
-            user=test_user,
-            content_object=test_user,
-            general_report=general_problem,
+        serializer = ReportProblemSerializer(
+            data={"report": test_report.id},
+            context=serializer_context,
         )
 
+        assert serializer.is_valid(), serializer.errors
+        assert "user" not in serializer.validated_data
+
+    def test_submitted_user_is_not_accepted_as_writable_field(
+        self,
+        serializer_context,
+        test_report,
+        test_user_2,
+    ):
         serializer = ReportProblemSerializer(
             data={
                 "user": test_user_2.id,
-                "report": report.id,
+                "report": test_report.id,
             },
             context=serializer_context,
         )
 
-        assert serializer.is_valid(False)
+        assert serializer.is_valid(), serializer.errors
+        assert "user" not in serializer.validated_data
 
-        assert serializer.validated_data["user"] == test_user
-        assert serializer.validated_data["user"] != test_user_2
-
-    def test_user_is_added_when_missing(
+    def test_save_sets_request_user(
         self,
         serializer_context,
-        test_user,
-        general_problem,
+        test_report,
     ):
-        report = Report.objects.create(
-            user=test_user,
-            content_object=test_user,
-            general_report=general_problem,
-        )
-
         serializer = ReportProblemSerializer(
-            data={"report": report.id},
+            data={"report": str(test_report.pk)},
             context=serializer_context,
         )
 
-        assert serializer.is_valid(False)
-
-        assert serializer.validated_data["user"] == test_user
-
-    def test_validation_accepts_valid_report(
-        self,
-        serializer_context,
-        test_user,
-        general_problem,
-    ):
-        report = Report.objects.create(
-            user=test_user,
-            content_object=test_user,
-            general_report=general_problem,
-        )
-
-        serializer = ReportProblemSerializer(
-            data={"report": report.id},
-            context=serializer_context,
-        )
-
-        assert serializer.is_valid(False) is True
-        assert serializer.errors == {}
-
-    def test_save_creates_report_problem(
-        self,
-        serializer_context,
-        test_user,
-        general_problem,
-    ):
-        report = Report.objects.create(
-            user=test_user,
-            content_object=test_user,
-            general_report=general_problem,
-        )
-
-        serializer = ReportProblemSerializer(
-            data={"report": report.id},
-            context=serializer_context,
-        )
-
-        assert serializer.is_valid(False)
+        assert serializer.is_valid() is True
 
         report_problem = serializer.save()
 
-        assert isinstance(report_problem, ReportProblem)
-        assert report_problem.report == str(report.id)
-        assert report_problem.user == test_user
+        assert report_problem.user == serializer_context["request"].user
+        assert report_problem.report == str(test_report.pk)
 
-    def test_save_uses_request_user_not_submitted_user(
+    def test_save_ignores_submitted_user(
         self,
         serializer_context,
         test_user,
         test_user_2,
-        general_problem,
+        test_report,
     ):
-        report = Report.objects.create(
-            user=test_user,
-            content_object=test_user,
-            general_report=general_problem,
-        )
-
         serializer = ReportProblemSerializer(
             data={
                 "user": test_user_2.id,
-                "report": report.id,
+                "report": test_report.id,
             },
             context=serializer_context,
         )
 
-        assert serializer.is_valid(False)
+        assert serializer.is_valid(), serializer.errors
 
         report_problem = serializer.save()
 
         assert report_problem.user == test_user
         assert report_problem.user != test_user_2
-
-    def test_report_is_required(
-        self,
-        serializer_context,
-        test_user,
-    ):
-        serializer = ReportProblemSerializer(
-            data={},
-            context=serializer_context,
-        )
-
-        assert serializer.is_valid(False) is False
-        assert "report" in serializer.errors

@@ -1,6 +1,7 @@
 import pytest
 from django.test import RequestFactory
 from django.utils.timesince import timesince
+from rest_framework import serializers
 
 from account.models import Profile
 from api.serializers import CommentSerializer, LikeCommentSerializer
@@ -96,6 +97,35 @@ class TestCommentSerializer:
 
         assert CommentSerializer.Meta.fields == expected_fields
 
+    def test_read_only_fields(self):
+        assert CommentSerializer.Meta.read_only_fields == [
+            "id",
+            "author",
+            "created",
+            "is_user_comment",
+            "like_info",
+        ]
+
+    def test_author_is_read_only(self):
+        serializer = CommentSerializer()
+
+        assert serializer.fields["author"].read_only is True
+
+    def test_created_is_read_only(self):
+        serializer = CommentSerializer()
+
+        assert serializer.fields["created"].read_only is True
+
+    def test_is_user_comment_is_read_only(self):
+        serializer = CommentSerializer()
+
+        assert serializer.fields["is_user_comment"].read_only is True
+
+    def test_like_info_is_read_only(self):
+        serializer = CommentSerializer()
+
+        assert serializer.fields["like_info"].read_only is True
+
     def test_serializes_comment(
         self,
         test_comment,
@@ -131,16 +161,16 @@ class TestCommentSerializer:
         assert author["username"] == test_comment.author.username
         assert set(author) == {"username", "profile"}
 
-    def test_get_time(self, test_comment, serializer_context):
+    def test_get_created(self, test_comment, serializer_context):
         serializer = CommentSerializer(
             context=serializer_context,
         )
 
         expected = timesince(test_comment.created).split(",")[0]
 
-        assert serializer.get_time(test_comment) == expected
+        assert serializer.get_created(test_comment) == expected
 
-    def test_created_uses_get_time(
+    def test_created_representation_uses_get_created(
         self,
         test_comment,
         serializer_context,
@@ -150,9 +180,9 @@ class TestCommentSerializer:
             context=serializer_context,
         )
 
-        assert serializer.data["created"] == serializer.get_time(test_comment)
+        assert serializer.data["created"] == serializer.get_created(test_comment)
 
-    def test_user_comment_returns_true_for_request_user(
+    def test_get_is_user_comment_returns_true_for_request_user(
         self,
         test_comment,
         serializer_context,
@@ -161,9 +191,9 @@ class TestCommentSerializer:
             context=serializer_context,
         )
 
-        assert serializer.user_comment(test_comment) is True
+        assert serializer.get_is_user_comment(test_comment) is True
 
-    def test_user_comment_returns_false_for_different_author(
+    def test_get_is_user_comment_returns_false_for_different_author(
         self,
         test_comment_2,
         test_profile_2,
@@ -173,7 +203,7 @@ class TestCommentSerializer:
             context=serializer_context,
         )
 
-        assert serializer.user_comment(test_comment_2) is False
+        assert serializer.get_is_user_comment(test_comment_2) is False
 
     def test_is_user_comment_representation(
         self,
@@ -187,7 +217,7 @@ class TestCommentSerializer:
 
         assert serializer.data["is_user_comment"] is True
 
-    def test_like_returns_no_likes(
+    def test_like_info_returns_no_likes(
         self,
         test_comment,
         serializer_context,
@@ -196,14 +226,14 @@ class TestCommentSerializer:
             context=serializer_context,
         )
 
-        result = serializer.like(test_comment)
+        result = serializer.get_like_info(test_comment)
 
         assert result == {
             "is_liked": False,
             "like_count": 0,
         }
 
-    def test_like_returns_liked_status_and_like_id(
+    def test_like_info_returns_liked_status_and_like_id(
         self,
         test_comment,
         test_user,
@@ -218,7 +248,7 @@ class TestCommentSerializer:
             context=serializer_context,
         )
 
-        result = serializer.like(test_comment)
+        result = serializer.get_like_info(test_comment)
 
         assert result == {
             "is_liked": True,
@@ -226,7 +256,7 @@ class TestCommentSerializer:
             "like_count": 1,
         }
 
-    def test_like_returns_false_for_different_user(
+    def test_like_info_returns_false_for_different_user(
         self,
         test_comment,
         test_user_2,
@@ -242,14 +272,14 @@ class TestCommentSerializer:
             context=serializer_context,
         )
 
-        result = serializer.like(test_comment)
+        result = serializer.get_like_info(test_comment)
 
         assert result == {
             "is_liked": False,
             "like_count": 1,
         }
 
-    def test_like_count_includes_all_likes(
+    def test_like_info_count_includes_all_likes(
         self,
         test_comment,
         test_user,
@@ -270,7 +300,7 @@ class TestCommentSerializer:
             context=serializer_context,
         )
 
-        result = serializer.like(test_comment)
+        result = serializer.get_like_info(test_comment)
 
         assert result["like_count"] == 2
         assert result["is_liked"] is True
@@ -290,44 +320,40 @@ class TestCommentSerializer:
             "like_count": 0,
         }
 
-    def test_to_internal_value_sets_author_to_request_user_id(
+    def test_author_is_not_accepted_from_request_data(
         self,
-        test_comment,
+        test_message,
         test_user,
+        test_user_2,
         serializer_context,
     ):
         serializer = CommentSerializer(
+            data={
+                "comment": "New comment",
+                "object_id": test_message.id,
+                "author": {"username": test_user_2.username},
+            },
             context=serializer_context,
         )
 
-        data = {
-            "comment": "New comment",
-            "object_id": test_comment.object_id,
-            "author": {"username": 999999},
-        }
+        assert serializer.is_valid(), serializer.errors
+        assert "author" not in serializer.validated_data
 
-        internal_data = serializer.to_internal_value(data)
-
-        assert internal_data["author"]["username"] == str(test_user.id)
-
-    def test_to_internal_value_adds_author_when_missing(
+    def test_author_is_not_required_for_creation(
         self,
-        test_comment,
-        test_user,
+        test_message,
         serializer_context,
     ):
         serializer = CommentSerializer(
+            data={
+                "comment": "New comment",
+                "object_id": test_message.id,
+            },
             context=serializer_context,
         )
 
-        data = {
-            "comment": "New comment",
-            "object_id": test_comment.object_id,
-        }
-
-        internal_data = serializer.to_internal_value(data)
-
-        assert internal_data["author"]["username"] == str(test_user.id)
+        assert serializer.is_valid(), serializer.errors
+        assert "author" not in serializer.validated_data
 
     def test_create_creates_comment_with_request_user(
         self,
@@ -340,7 +366,6 @@ class TestCommentSerializer:
         )
 
         validated_data = {
-            "author": {"username": test_user.id},
             "object_id": test_message.id,
             "comment": "Created comment",
         }
@@ -354,6 +379,27 @@ class TestCommentSerializer:
         assert comment.parent is None
         assert comment.main_comment is None
 
+    def test_create_does_not_use_submitted_author(
+        self,
+        test_user,
+        test_user_2,
+        test_message,
+        serializer_context,
+    ):
+        serializer = CommentSerializer(
+            context=serializer_context,
+        )
+
+        validated_data = {
+            "object_id": test_message.id,
+            "comment": "Created comment",
+        }
+
+        comment = serializer.create(validated_data)
+
+        assert comment.author == test_user
+        assert comment.author != test_user_2
+
     def test_create_creates_reply_with_parent_and_main_comment(
         self,
         test_user,
@@ -366,7 +412,6 @@ class TestCommentSerializer:
         )
 
         validated_data = {
-            "author": {"username": test_user.id},
             "object_id": test_message.id,
             "comment": "Reply comment",
             "parent": test_comment,
@@ -383,7 +428,6 @@ class TestCommentSerializer:
 
     def test_create_uses_message_from_object_id(
         self,
-        test_user,
         test_message,
         serializer_context,
     ):
@@ -392,7 +436,6 @@ class TestCommentSerializer:
         )
 
         validated_data = {
-            "author": {"username": test_user.id},
             "object_id": test_message.id,
             "comment": "Object ID test",
         }
@@ -401,7 +444,7 @@ class TestCommentSerializer:
 
         assert comment.content_object == test_message
 
-    def test_create_raises_for_invalid_author_id(
+    def test_validate_object_id_accepts_existing_message(
         self,
         test_message,
         serializer_context,
@@ -410,16 +453,69 @@ class TestCommentSerializer:
             context=serializer_context,
         )
 
-        validated_data = {
-            "author": {"username": 999999},
-            "object_id": test_message.id,
-            "comment": "Invalid author",
-        }
+        result = serializer.validate_object_id(test_message.id)
 
-        from django.core.exceptions import ObjectDoesNotExist
+        assert result == test_message.id
 
-        with pytest.raises(ObjectDoesNotExist):
-            serializer.create(validated_data)
+    def test_validate_object_id_rejects_nonexistent_message(
+        self,
+        serializer_context,
+    ):
+        serializer = CommentSerializer(
+            context=serializer_context,
+        )
+
+        with pytest.raises(
+            serializers.ValidationError,
+            match="The specified message does not exist.",
+        ):
+            serializer.validate_object_id(999999)
+
+    def test_invalid_object_id_fails_serializer_validation(
+        self,
+        serializer_context,
+    ):
+        serializer = CommentSerializer(
+            data={
+                "comment": "Invalid message",
+                "object_id": 999999,
+            },
+            context=serializer_context,
+        )
+
+        assert serializer.is_valid() is False
+        assert "object_id" in serializer.errors
+
+    def test_create_requires_object_id(
+        self,
+        serializer_context,
+    ):
+        serializer = CommentSerializer(
+            context=serializer_context,
+        )
+
+        with pytest.raises(KeyError):
+            serializer.create(
+                {
+                    "comment": "Missing object ID",
+                }
+            )
+
+    def test_create_requires_comment(
+        self,
+        test_message,
+        serializer_context,
+    ):
+        serializer = CommentSerializer(
+            context=serializer_context,
+        )
+
+        with pytest.raises(KeyError):
+            serializer.create(
+                {
+                    "object_id": test_message.id,
+                }
+            )
 
     def test_is_valid_returns_boolean(
         self,
@@ -434,7 +530,7 @@ class TestCommentSerializer:
             context=serializer_context,
         )
 
-        assert isinstance(serializer.is_valid(), bool)
+        assert serializer.is_valid() is True
 
 
 class TestLikeCommentSerializer:

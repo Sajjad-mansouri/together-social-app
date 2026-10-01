@@ -6,5 +6,4 @@ class ApiConfig(AppConfig):
     name = "api"
 
     def ready(self):
-        # Implicitly connect signal handlers decorated with @receiver.
         pass
