@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import (
 
 from . import views
 
+app_name = "api"
 urlpatterns = [
     path("", views.PostListApiView.as_view(), name="post-list"),
     path("posts/saved/", views.PostListApiView.as_view(), name="post-saved-list"),
