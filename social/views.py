@@ -1,13 +1,9 @@
-import json
-
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, TemplateView
-
-from account.models import AboutSite
 
 from .models import Message, Report
 
@@ -96,14 +92,11 @@ class Home(ListView):
         if request.user.is_authenticated:
             return super().get(request, *args, **kwargs)
         else:
-            descriptions = json.dumps([item.text for item in AboutSite.objects.all()])
-            admins = UserModel.objects.filter(is_superuser=True)
-
-            admin = admins[0]
+            admin = UserModel.objects.filter(is_superuser=True).first()
             return render(
                 request,
                 "registration/login.html",
-                {"descriptions": descriptions, "admin": admin},
+                {"admin": admin},
             )
 
     def get_queryset(self):

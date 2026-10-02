@@ -37,16 +37,13 @@ Login
             <span class="wrap"></span>
           </a>
 
-          <div class="descriptions" style="display:none">
-{{descriptions|safe}}
-          </div>
         </div>
         <div class="content">
             <div class="log-on border_insc">
                 <div class="logo">
-                    <img src="{%static 'images/logo.png' %}" alt="Instagram logo">
+                    <img src="{%static 'images/logo_transparent.png' %}" alt="Instagram logo">
                 </div>
-                <form method="POST" action='/login/'>
+                <form method="POST" action='/account/login/'>
                     {%csrf_token%}
                     {%if form.non_field_errors%}
                     <div class="errorlist nonfield">
@@ -88,7 +85,7 @@ Login
                 </p>
             </div>
     <div class="footer">
-        <a href="{%url 'contact-me'%}">Contact Me</a>
+        <a href="{%url 'landing:home'%}">About Site</a>
         {%if admin%}
         <a href="{% url 'social:user_profile' admin %}">Manager Together Profile</a>
         {%endif%}

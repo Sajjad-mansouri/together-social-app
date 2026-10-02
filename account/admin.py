@@ -2,13 +2,11 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .models import (
-    AboutSite,
     Block,
     Contact,
     MyUser,
     Notification,
     Profile,
-    SiteManager,
 )
 
 
@@ -37,13 +35,3 @@ class NotificationAdmin(admin.ModelAdmin):
 @admin.register(Block)
 class BlockAdmin(admin.ModelAdmin):
     list_display = ["id", "from_user", "to_user"]
-
-
-@admin.register(AboutSite)
-class AboutSiteAdmin(admin.ModelAdmin):
-    list_display = ["text"]
-
-
-@admin.register(SiteManager)
-class AboutSiteAdmin(admin.ModelAdmin):
-    list_display = ["linkedin"]

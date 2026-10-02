@@ -16,10 +16,7 @@ from pathlib import Path
 
 import environ
 
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
+env = environ.Env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
@@ -32,9 +29,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG")
+DEBUG = env("DEBUG", default=False)
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
 
 # Application definition
@@ -51,6 +48,7 @@ INSTALLED_APPS = [
     "account.apps.AccountConfig",
     "social.apps.SocialConfig",
     "api.apps.ApiConfig",
+    "landing",
     # installed
     "rest_framework",
 ]
@@ -189,3 +187,6 @@ DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 SERVER_EMAIL = env("SERVER_EMAIL")
 
 DEVELOPER_NAME = env("DEVELOPER_NAME")
+
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+HOST_ASYNC_ABILITY = env("HOST_ASYNC_ABILITY", default=False)

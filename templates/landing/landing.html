@@ -1,0 +1,1616 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="description" content="{% translate 'Together — a modern social platform for sharing moments, following friends, and building community.' %}">
+    <meta name="theme-color" content="#833ab4">
+    <title>Together — {% translate "Share Moments. Build Community." %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+    /* ================= Base ================= */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        background: #ffffff;
+        color: #1a1a1a;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    ul { list-style: none; padding: 0; margin: 0; }
+
+    /* ================= Utilities ================= */
+    .container {
+        width: 100%;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .section { padding: 100px 0; }
+
+    .section-title {
+        font-size: 40px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin: 0 0 16px;
+        text-align: center;
+    }
+
+    .section-subtitle {
+        font-size: 17px;
+        color: #6b7280;
+        text-align: center;
+        max-width: 660px;
+        margin: 0 auto 60px;
+        line-height: 1.7;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #833ab4;
+        background: rgba(131, 58, 180, 0.08);
+        border: 1px solid rgba(131, 58, 180, 0.2);
+        padding: 6px 14px;
+        border-radius: 999px;
+        letter-spacing: 0.2px;
+    }
+
+    /* ================= Buttons ================= */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 14px 28px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+        font-family: inherit;
+        white-space: nowrap;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        color: #ffffff !important;
+        box-shadow: 0 6px 18px rgba(131, 58, 180, 0.35);
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(131, 58, 180, 0.45);
+    }
+    .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .btn-outline {
+        background: #ffffff;
+        color: #1a1a1a;
+        border: 1.5px solid #e5e7eb;
+    }
+    .btn-outline:hover {
+        border-color: #833ab4;
+        color: #833ab4;
+        transform: translateY(-2px);
+    }
+
+    .btn-lg { padding: 16px 34px; font-size: 16px; }
+
+    /* ================= Navbar ================= */
+    .navbar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: saturate(180%) blur(14px);
+        -webkit-backdrop-filter: saturate(180%) blur(14px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 24px;
+        max-width: 1180px;
+        margin: 0 auto;
+    }
+
+    .nav-brand { display: flex; align-items: center; gap: 10px; }
+    .nav-brand img { height: 40px; width: auto; }
+
+    .nav-links { display: flex; align-items: center; gap: 34px; }
+    .nav-links a {
+        font-size: 14px;
+        font-weight: 500;
+        color: #4b5563;
+        transition: color 0.15s;
+    }
+    .nav-links a:hover { color: #833ab4; }
+
+    .nav-actions { display: flex; align-items: center; gap: 12px; }
+    .nav-actions .btn { padding: 10px 20px; font-size: 14px; }
+
+    .mobile-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 22px;
+        color: #1a1a1a;
+        cursor: pointer;
+        padding: 6px;
+    }
+
+    /* ================= Hero ================= */
+    .hero {
+        position: relative;
+        padding: 90px 0 100px;
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: "";
+        position: absolute;
+        top: -200px;
+        right: -200px;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(131, 58, 180, 0.14) 0%, transparent 70%);
+        z-index: 0;
+    }
+
+    .hero::after {
+        content: "";
+        position: absolute;
+        bottom: -200px;
+        left: -200px;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(252, 176, 69, 0.14) 0%, transparent 70%);
+        z-index: 0;
+    }
+
+    .hero-inner {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+    }
+
+    .hero-content { max-width: 560px; }
+
+    .hero-title {
+        font-size: 56px;
+        font-weight: 800;
+        line-height: 1.08;
+        letter-spacing: -1.8px;
+        margin: 20px 0 22px;
+    }
+
+    .hero-desc {
+        font-size: 17px;
+        color: #6b7280;
+        line-height: 1.75;
+        margin: 0 0 34px;
+        max-width: 520px;
+    }
+
+    .hero-cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 40px;
+    }
+
+    .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 28px;
+        padding-top: 28px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .hero-meta-item { display: flex; flex-direction: column; }
+    .hero-meta-value {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: #1a1a1a;
+    }
+    .hero-meta-label {
+        font-size: 12px;
+        color: #6b7280;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 2px;
+    }
+
+    /* Hero visual — floating cards */
+    .hero-visual {
+        position: relative;
+        height: 520px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mock-card {
+        position: absolute;
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #efefef;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .mock-card-1 { width: 300px; top: 20px; left: 20px; z-index: 2; }
+    .mock-card-2 { width: 280px; bottom: 30px; right: 20px; z-index: 3; animation-delay: 2s; }
+    .mock-card-3 { width: 260px; top: 200px; left: 60px; z-index: 1; animation-delay: 4s; }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-12px); }
+    }
+
+    .mock-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        border-bottom: 1px solid #f4f4f5;
+    }
+
+    .mock-avatar {
+        width: 34px; height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        flex-shrink: 0;
+    }
+    .mock-avatar.blue { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); }
+    .mock-avatar.green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+
+    .mock-user-info { flex: 1; }
+    .mock-name { font-size: 13px; font-weight: 700; color: #1a1a1a; margin: 0; }
+    .mock-handle { font-size: 11px; color: #9ca3af; margin: 0; }
+
+    .mock-image {
+        width: 100%;
+        aspect-ratio: 1;
+        background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 50%, #fed7aa 100%);
+        position: relative;
+    }
+    .mock-image::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(131, 58, 180, 0.15) 0%, rgba(252, 176, 69, 0.15) 100%);
+    }
+
+    .mock-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        font-size: 16px;
+        color: #1a1a1a;
+    }
+    .mock-actions .heart { color: #fd1d1d; }
+    .mock-likes {
+        padding: 0 16px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    /* ================= Mini bar ================= */
+    .mini-bar {
+        background: #fafafa;
+        border-top: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 30px 0;
+    }
+
+    .mini-bar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 40px;
+    }
+
+    .mini-bar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #6b7280;
+    }
+    .mini-bar-item i {
+        font-size: 20px;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* ================= Features ================= */
+    .features { background: #ffffff; }
+
+    .feature-group {
+        margin-bottom: 70px;
+    }
+
+    .feature-group:last-child { margin-bottom: 0; }
+
+    .feature-group-header {
+        text-align: center;
+        margin-bottom: 36px;
+    }
+
+    .feature-group-title {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin: 0 0 4px;
+        color: #1a1a1a;
+    }
+
+    .feature-group-title::after {
+        content: "";
+        display: block;
+        width: 42px;
+        height: 3px;
+        margin: 12px auto 0;
+        border-radius: 2px;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+
+    .feature-card {
+        background: #ffffff;
+        border: 1px solid #efefef;
+        border-radius: 16px;
+        padding: 32px 28px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+        border-color: rgba(131, 58, 180, 0.2);
+    }
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        color: #ffffff;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        box-shadow: 0 8px 20px rgba(131, 58, 180, 0.25);
+        margin-bottom: 20px;
+    }
+
+    .feature-image {
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        border-radius: 12px;
+        object-fit: cover;
+        margin-bottom: 20px;
+        border: 1px solid #efefef;
+    }
+
+    .feature-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 8px;
+        letter-spacing: -0.3px;
+    }
+
+    .feature-desc {
+        font-size: 14px;
+        color: #6b7280;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    /* ================= Highlights / API ================= */
+    .api { background: #fafafa; }
+
+    .api-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 28px;
+    }
+
+    .highlight-card {
+        background: #ffffff;
+        border: 1px solid #efefef;
+        border-radius: 20px;
+        padding: 36px 32px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .highlight-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+    }
+
+    .highlight-head {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 18px;
+    }
+
+    .highlight-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        color: #ffffff;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        box-shadow: 0 8px 20px rgba(131, 58, 180, 0.25);
+        flex-shrink: 0;
+    }
+
+    .highlight-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: -0.3px;
+    }
+
+    .highlight-desc {
+        font-size: 14px;
+        color: #6b7280;
+        line-height: 1.7;
+        margin: 0 0 20px;
+    }
+
+    .endpoint-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .endpoint-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+        font-size: 12.5px;
+        color: #1a1a1a;
+        background: #f8f9fa;
+        border: 1px solid #efefef;
+        border-radius: 8px;
+        padding: 10px 14px;
+        transition: background 0.15s, border-color 0.15s;
+    }
+
+    .endpoint-item:hover {
+        background: #faf5ff;
+        border-color: rgba(131, 58, 180, 0.25);
+    }
+
+    .endpoint-item i {
+        color: #833ab4;
+        font-size: 11px;
+        flex-shrink: 0;
+    }
+
+    /* ================= Stats ================= */
+    .stats {
+        background: #ffffff;
+        border-top: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .stats-inner { padding: 70px 0; }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 44px;
+        font-weight: 800;
+        letter-spacing: -1.5px;
+        margin: 0 0 6px;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        color: #6b7280;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    /* ================= Contact ================= */
+    .contact { background: #fafafa; }
+
+    .contact-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1.15fr;
+        gap: 48px;
+        align-items: start;
+    }
+
+    .contact-info h3 {
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin: 0 0 12px;
+    }
+
+    .contact-info > p {
+        font-size: 15px;
+        color: #6b7280;
+        line-height: 1.75;
+        margin: 0 0 32px;
+    }
+
+    .contact-detail {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 22px;
+    }
+
+    .contact-detail-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        flex-shrink: 0;
+        box-shadow: 0 8px 20px rgba(131, 58, 180, 0.25);
+    }
+
+    .contact-detail-body h4 {
+        font-size: 13px;
+        font-weight: 700;
+        color: #833ab4;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 2px 0 4px;
+    }
+
+    .contact-detail-body p {
+        font-size: 14px;
+        color: #374151;
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .social-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid #efefef;
+    }
+
+    .social-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        background: #ffffff;
+        border: 1px solid #efefef;
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+        transition: all 0.15s ease;
+    }
+
+    .social-link:hover {
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        color: #ffffff;
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(131, 58, 180, 0.25);
+    }
+
+    .social-link i { font-size: 14px; }
+
+    /* Contact form */
+    .contact-form-card {
+        background: #ffffff;
+        border: 1px solid #efefef;
+        border-radius: 20px;
+        padding: 36px 32px;
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.06);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .contact-form-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .form-group { margin-bottom: 16px; }
+
+    .form-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 6px;
+    }
+
+    .form-group label .req { color: #fd1d1d; }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 14px;
+        font-family: inherit;
+        color: #1a1a1a;
+        background: #ffffff;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #833ab4;
+        box-shadow: 0 0 0 3px rgba(131, 58, 180, 0.12);
+    }
+
+    .form-group textarea { min-height: 120px; }
+
+    .form-error {
+        font-size: 12.5px;
+        color: #dc2626;
+        margin-top: 6px;
+        display: none;
+    }
+
+    .form-error.show { display: block; }
+
+    /* Form status messages */
+    .form-status {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 18px;
+    }
+
+    .form-status.show { display: flex; }
+
+    .form-status.success {
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        color: #065f46;
+    }
+
+    .form-status.error {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #991b1b;
+    }
+
+    .form-status i { font-size: 16px; }
+
+    .btn-submit { width: 100%; margin-top: 8px; }
+
+    .btn-submit.loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.35);
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* ================= CTA ================= */
+    .cta-section { padding: 100px 0; }
+
+    .cta-card {
+        position: relative;
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        border-radius: 28px;
+        padding: 70px 40px;
+        text-align: center;
+        color: #ffffff;
+        overflow: hidden;
+        box-shadow: 0 24px 60px rgba(131, 58, 180, 0.35);
+    }
+
+    .cta-card::before,
+    .cta-card::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+    }
+    .cta-card::before { top: -80px; right: -80px; width: 300px; height: 300px; }
+    .cta-card::after  { bottom: -100px; left: -100px; width: 340px; height: 340px; }
+
+    .cta-content {
+        position: relative;
+        z-index: 1;
+        max-width: 640px;
+        margin: 0 auto;
+    }
+
+    .cta-title {
+        font-size: 40px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin: 0 0 16px;
+        line-height: 1.15;
+    }
+
+    .cta-desc {
+        font-size: 17px;
+        line-height: 1.7;
+        margin: 0 0 32px;
+        opacity: 0.95;
+    }
+
+    .cta-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        justify-content: center;
+    }
+
+    .cta-buttons .btn { padding: 16px 34px; font-size: 16px; }
+
+    .btn-white {
+        background: #ffffff;
+        color: #833ab4 !important;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    .btn-white:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-ghost {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(8px);
+    }
+    .btn-ghost:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    /* ================= Footer ================= */
+    .footer {
+        background: #0f172a;
+        color: #cbd5e1;
+        padding: 70px 0 30px;
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 50px;
+    }
+
+    .footer-brand img {
+        height: 44px;
+        margin-bottom: 16px;
+        filter: brightness(0) invert(1);
+    }
+
+    .footer-brand p {
+        font-size: 14px;
+        color: #94a3b8;
+        line-height: 1.7;
+        max-width: 320px;
+        margin: 0 0 20px;
+    }
+
+    .footer-social { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .footer-social a {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: #1e293b;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #cbd5e1;
+        font-size: 15px;
+        transition: background 0.15s, color 0.15s, transform 0.15s;
+    }
+    .footer-social a:hover {
+        background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    .footer-col h4 {
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 0 0 18px;
+    }
+
+    .footer-col ul { display: flex; flex-direction: column; gap: 10px; }
+    .footer-col a {
+        font-size: 14px;
+        color: #94a3b8;
+        transition: color 0.15s;
+    }
+    .footer-col a:hover { color: #ffffff; }
+
+    .footer-bottom {
+        border-top: 1px solid #1e293b;
+        padding-top: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        font-size: 13px;
+        color: #64748b;
+    }
+    .footer-bottom a { color: #94a3b8; }
+    .footer-bottom a:hover { color: #ffffff; }
+
+    /* ================= Responsive ================= */
+    @media (max-width: 1024px) {
+        .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+        .hero-visual { height: 420px; margin-top: 20px; }
+        .hero-title { font-size: 44px; }
+        .features-grid { grid-template-columns: repeat(2, 1fr); }
+        .api-grid { grid-template-columns: 1fr; }
+        .contact-wrapper { grid-template-columns: 1fr; }
+        .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+        .nav-links { display: none; }
+        .nav-actions .btn-outline { display: none; }
+        .mobile-toggle { display: block; }
+        .section { padding: 70px 0; }
+        .section-title { font-size: 32px; }
+        .hero { padding: 60px 0 70px; }
+        .hero-title { font-size: 38px; letter-spacing: -1px; }
+        .hero-desc { font-size: 16px; }
+        .features-grid { grid-template-columns: 1fr; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 30px 20px; }
+        .stat-value { font-size: 34px; }
+        .cta-card { padding: 50px 24px; border-radius: 22px; }
+        .cta-title { font-size: 30px; }
+        .form-row { grid-template-columns: 1fr; }
+        .mock-card-3 { display: none; }
+    }
+
+    @media (max-width: 520px) {
+        .container { padding: 0 18px; }
+        .hero-title { font-size: 34px; }
+        .hero-cta .btn { width: 100%; }
+        .hero-meta { gap: 20px; }
+        .hero-meta-value { font-size: 20px; }
+        .hero-visual { height: 340px; }
+        .mock-card-1 { width: 220px; left: 0; }
+        .mock-card-2 { width: 210px; right: 0; }
+        .cta-buttons .btn { width: 100%; }
+        .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+        .footer-bottom { flex-direction: column; text-align: center; }
+        .contact-form-card, .highlight-card { padding: 28px 22px; }
+    }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= Navbar ================= -->
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="/" class="nav-brand" aria-label="Together home">
+                <img src="{% static '/images/logo_transparent.png' %}" alt="Together">
+            </a>
+
+            <div class="nav-links">
+                <a href="#features">{% translate "Features" %}</a>
+                <a href="#api">{% translate "API" %}</a>
+                <a href="#stats">{% translate "Stats" %}</a>
+                <a href="#contact">{% translate "Contact" %}</a>
+            </div>
+
+            <div class="nav-actions">
+                <a href="{% url 'account:login' %}" class="btn btn-outline">{% translate "Log in" %}</a>
+                <a href="{% url 'account:register' %}" class="btn btn-primary">{% translate "Get Started" %}</a>
+                <button class="mobile-toggle" aria-label="Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= Hero ================= -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-inner">
+                <div class="hero-content">
+                    <span class="badge">
+                        <i class="fas fa-code"></i>
+                        {% translate "Portfolio Project · Django + DRF" %}
+                    </span>
+
+                    <h1 class="hero-title">
+                        {% translate "Share moments." %}<br>
+                        <span class="gradient-text">{% translate "Build community." %}</span>
+                    </h1>
+
+                    <p class="hero-desc">
+                        {% blocktranslate %}
+                        Together is a modern social platform inspired by Instagram — built with Django and Django REST Framework. Follow friends, share posts, comment, save, and connect in a privacy-first community.
+                        {% endblocktranslate %}
+                    </p>
+
+                    <div class="hero-cta">
+                        <a href="{% url 'account:register' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-rocket"></i>
+                            {% translate "Create Account" %}
+                        </a>
+                        <a href="#features" class="btn btn-outline btn-lg">
+                            <i class="fas fa-compass"></i>
+                            {% translate "Explore Features" %}
+                        </a>
+                    </div>
+
+                    {% if statistics %}
+                    <div class="hero-meta">
+                        <div class="hero-meta-item">
+                            <span class="hero-meta-value">{{ statistics.automated_tests }}</span>
+                            <span class="hero-meta-label">{% translate "Passing Tests" %}</span>
+                        </div>
+                        <div class="hero-meta-item">
+                            <span class="hero-meta-value">{{ statistics.api_endpoints }}</span>
+                            <span class="hero-meta-label">{% translate "API Endpoints" %}</span>
+                        </div>
+                        <div class="hero-meta-item">
+                            <span class="hero-meta-value">REST</span>
+                            <span class="hero-meta-label">{% translate "JWT Auth" %}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="hero-visual">
+                    <div class="mock-card mock-card-1">
+                        <div class="mock-header">
+                            <div class="mock-avatar"></div>
+                            <div class="mock-user-info">
+                                <p class="mock-name">Sara Ahmadi</p>
+                                <p class="mock-handle">@sara</p>
+                            </div>
+                        </div>
+                        <div class="mock-image"></div>
+                        <div class="mock-actions">
+                            <i class="fas fa-heart heart"></i>
+                            <i class="far fa-comment"></i>
+                            <i class="far fa-bookmark" style="margin-left:auto;"></i>
+                        </div>
+                        <p class="mock-likes">1,248 likes</p>
+                    </div>
+
+                    <div class="mock-card mock-card-2">
+                        <div class="mock-header">
+                            <div class="mock-avatar blue"></div>
+                            <div class="mock-user-info">
+                                <p class="mock-name">Reza Karimi</p>
+                                <p class="mock-handle">@reza</p>
+                            </div>
+                        </div>
+                        <div class="mock-image"></div>
+                        <div class="mock-actions">
+                            <i class="far fa-heart"></i>
+                            <i class="far fa-comment"></i>
+
+                            <i class="fas fa-bookmark" style="margin-left:auto; color:#833ab4;"></i>
+                        </div>
+                        <p class="mock-likes">892 likes</p>
+                    </div>
+
+                    <div class="mock-card mock-card-3">
+                        <div class="mock-header">
+                            <div class="mock-avatar green"></div>
+                            <div class="mock-user-info">
+                                <p class="mock-name">Nika</p>
+                                <p class="mock-handle">@nika</p>
+                            </div>
+                        </div>
+                        <div class="mock-image"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= Mini bar ================= -->
+    <div class="mini-bar">
+        <div class="container">
+            <div class="mini-bar-inner">
+                <div class="mini-bar-item"><i class="fab fa-python"></i> Python</div>
+                <div class="mini-bar-item"><i class="fas fa-cube"></i> Django</div>
+                <div class="mini-bar-item"><i class="fas fa-plug"></i> Django REST Framework</div>
+                <div class="mini-bar-item"><i class="fas fa-flask"></i> pytest</div>
+                <div class="mini-bar-item"><i class="fas fa-code-branch"></i> Ruff &amp; pre-commit</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= Features ================= -->
+    {% if features %}
+    <section class="section features" id="features">
+        <div class="container">
+            <h2 class="section-title">
+                {% translate "Everything you need to" %} <span class="gradient-text">{% translate "connect" %}</span>
+            </h2>
+            <p class="section-subtitle">
+                {% blocktranslate %}
+                Together brings the core social interactions you expect — profiles, posts, likes, comments, and privacy controls — all built on a clean Django architecture.
+                {% endblocktranslate %}
+            </p>
+
+            {% for feature in features %}
+            <div class="feature-group">
+                {% if feature.title %}
+                <div class="feature-group-header">
+                    <h3 class="feature-group-title">{{ feature.title }}</h3>
+                </div>
+                {% endif %}
+
+                <div class="features-grid">
+                    {% for item in feature.items.all %}
+                    <article class="feature-card">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.title }}" class="feature-image">
+                        {% elif item.icon %}
+                            <div class="feature-icon" style="{% if item.color %}background: {{ item.color }};{% endif %}">
+                                <i class="{{ item.icon }}"></i>
+                            </div>
+                        {% endif %}
+                        <h4 class="feature-title">{{ item.title }}</h4>
+                        <p class="feature-desc">{{ item.description }}</p>
+                    </article>
+                    {% empty %}
+                    <p style="color:#9ca3af; grid-column: 1 / -1; text-align: center;">
+                        {% translate "No items yet." %}
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- ================= API Highlights ================= -->
+    {% if highlights %}
+    <section class="section api" id="api">
+        <div class="container">
+            <h2 class="section-title">
+                {% translate "A complete" %} <span class="gradient-text">{% translate "REST API" %}</span>
+            </h2>
+            <p class="section-subtitle">
+                {% blocktranslate %}
+                Every feature on Together is backed by a REST endpoint — powered by Django REST Framework with JWT authentication, granular permissions, and comprehensive test coverage.
+                {% endblocktranslate %}
+            </p>
+
+            <div class="api-grid">
+                {% for highlight in highlights %}
+                <div class="highlight-card">
+                    <div class="highlight-head">
+                        {% if highlight.icon %}
+                        <div class="highlight-icon" style="{% if highlight.color %}background: {{ highlight.color }};{% endif %}">
+                            <i class="{{ highlight.icon }}"></i>
+                        </div>
+                        {% endif %}
+                        <h3 class="highlight-title">{{ highlight.title }}</h3>
+                    </div>
+                    <p class="highlight-desc">{{ highlight.description }}</p>
+
+                    {% if highlight.endpoints.all %}
+                    <div class="endpoint-list">
+                        {% for endpoint in highlight.endpoints.all %}
+                        <div class="endpoint-item">
+                            <i class="fas fa-terminal"></i>
+                            <span>{{ endpoint.end_point }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- ================= Stats ================= -->
+    {% if statistics %}
+    <section class="stats" id="stats">
+        <div class="container">
+            <div class="stats-inner">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <p class="stat-value">{{ statistics.automated_tests }}</p>
+                        <p class="stat-label">{% translate "Automated Tests" %}</p>
+                    </div>
+                    <div class="stat-item">
+                        <p class="stat-value">{{ statistics.api_endpoints }}</p>
+                        <p class="stat-label">{% translate "API Endpoints" %}</p>
+                    </div>
+                    <div class="stat-item">
+                        <p class="stat-value">13+</p>
+                        <p class="stat-label">{% translate "Core Models" %}</p>
+                    </div>
+                    <div class="stat-item">
+                        <p class="stat-value">100%</p>
+                        <p class="stat-label">{% translate "Portfolio Built" %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- ================= Contact ================= -->
+    <section class="section contact" id="contact">
+        <div class="container">
+            <h2 class="section-title">
+                {% translate "Get in" %} <span class="gradient-text">{% translate "touch" %}</span>
+            </h2>
+            <p class="section-subtitle">
+                {% blocktranslate %}
+                Have a question, a suggestion, or just want to say hello? Drop us a message — we'd love to hear from you.
+                {% endblocktranslate %}
+            </p>
+
+            <div class="contact-wrapper">
+                <!-- Contact info -->
+                <div class="contact-info">
+                    {% if contact %}
+                    <h3>{{ contact.title }}</h3>
+                    <p>{{ contact.description }}</p>
+
+                    {% if contact.email %}
+                    <div class="contact-detail">
+                        <div class="contact-detail-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-detail-body">
+                            <h4>{% translate "Email" %}</h4>
+                            <p><a href="mailto:{{ contact.email }}" style="color:#833ab4;">{{ contact.email }}</a></p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if contact.name %}
+                    <div class="contact-detail">
+                        <div class="contact-detail-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="contact-detail-body">
+                            <h4>{% translate "Contact" %}</h4>
+                            <p>{{ contact.name }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if contact.social_links.all %}
+                    <div class="social-links">
+                        {% for link in contact.social_links.all %}
+                        <a href="{{ link.url }}" class="social-link" target="_blank" rel="noopener" aria-label="{{ link.platform }}">
+                            {% if link.icon %}<i class="{{ link.icon }}"></i>{% endif %}
+                            <span>{{ link.platform }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <h3>{% translate "Let's talk" %}</h3>
+                    <p>{% translate "We're here to help — send us a message and we'll get back to you shortly." %}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Contact form -->
+                <div class="contact-form-card">
+                    <div class="form-status" id="formStatus" role="status" aria-live="polite">
+                        <i class="fas fa-circle-check" id="formStatusIcon"></i>
+                        <span id="formStatusText"></span>
+                    </div>
+
+                    <form id="contactForm" method="post" action="{% url 'landing:contact_message' %}" novalidate>
+                        {% csrf_token %}
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="id_name">{% translate "Your Name" %} <span class="req">*</span></label>
+                                <input type="text" id="id_name" name="name" required >
+                                <p class="form-error" data-error="name"></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_email">{% translate "Your Email" %} <span class="req">*</span></label>
+                                <input type="email" id="id_email" name="email" required >
+                                <p class="form-error" data-error="email"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_subject">{% translate "Subject" %}</label>
+                            <input type="text" id="id_subject" name="subject" placeholder="{% translate 'How can we help?' %}">
+                            <p class="form-error" data-error="subject"></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_message">{% translate "Message" %} <span class="req">*</span></label>
+                            <textarea id="id_message" name="message" required placeholder="{% translate 'Write your message here...' %}"></textarea>
+                            <p class="form-error" data-error="message"></p>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg btn-submit" id="submitBtn">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>{% translate "Send Message" %}</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= CTA ================= -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-card">
+                <div class="cta-content">
+                    <h2 class="cta-title">
+                        {% translate "Ready to join the community?" %}
+                    </h2>
+                    <p class="cta-desc">
+                        {% blocktranslate %}
+                        Create your account today and start sharing moments, following friends, and building your profile on Together.
+                        {% endblocktranslate %}
+                    </p>
+                    <div class="cta-buttons">
+                        <a href="{% url 'account:register' %}" class="btn btn-white">
+                            <i class="fas fa-user-plus"></i>
+                            {% translate "Get Started Free" %}
+                        </a>
+                        <a href="{% url 'account:login' %}" class="btn btn-ghost">
+                            <i class="fas fa-right-to-bracket"></i>
+                            {% translate "Log In" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= Footer ================= -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <img src="{% static '/images/logo_transparent.png' %}" alt="Together">
+                    <p>
+                        {% blocktranslate %}
+                        A modern social platform inspired by Instagram — built with Django and Django REST Framework as a portfolio project.
+                        {% endblocktranslate %}
+                    </p>
+                    {% if contact and contact.social_links.all %}
+                    <div class="footer-social">
+                        {% for link in contact.social_links.all %}
+                        <a href="{{ link.url }}" target="_blank" rel="noopener" aria-label="{{ link.platform }}">
+                            {% if link.icon %}<i class="{{ link.icon }}"></i>{% else %}<i class="fas fa-link"></i>{% endif %}
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="footer-col">
+                    <h4>{% translate "Product" %}</h4>
+                    <ul>
+                        <li><a href="#features">{% translate "Features" %}</a></li>
+                        <li><a href="#api">{% translate "REST API" %}</a></li>
+                        <li><a href="#stats">{% translate "Stats" %}</a></li>
+                        <li><a href="#contact">{% translate "Contact" %}</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>{% translate "Account" %}</h4>
+                    <ul>
+                        <li><a href="{% url 'account:register' %}">{% translate "Sign Up" %}</a></li>
+                        <li><a href="{% url 'account:login' %}">{% translate "Log In" %}</a></li>
+                        <li><a href="{% url 'account:password_reset' %}">{% translate "Reset Password" %}</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>{% translate "Resources" %}</h4>
+                    <ul>
+                        <li><a href="#">{% translate "Documentation" %}</a></li>
+                        <li><a href="#">{% translate "API Reference" %}</a></li>
+                        <li><a href="#">{% translate "GitHub Repo" %}</a></li>
+                        {% if contact and contact.email %}
+                        <li><a href="mailto:{{ contact.email }}">{% translate "Email us" %}</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; {% now "Y" %} Together. {% translate "All rights reserved." %}</p>
+                <p>
+                    {% translate "Made with" %}
+                    <i class="fas fa-heart" style="color:#fd1d1d;"></i>
+                    {% translate "using Django & DRF" %}
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= Mobile menu ================= -->
+    <script>
+        (function () {
+            const toggle = document.querySelector('.mobile-toggle');
+            const links = document.querySelector('.nav-links');
+            if (!toggle || !links) return;
+
+            toggle.addEventListener('click', () => {
+                const isOpen = links.style.display === 'flex';
+                if (isOpen) {
+                    links.style.display = '';
+                } else {
+                    links.style.display = 'flex';
+                    links.style.flexDirection = 'column';
+                    links.style.position = 'absolute';
+                    links.style.top = '100%';
+                    links.style.left = '0';
+                    links.style.right = '0';
+                    links.style.background = '#fff';
+                    links.style.padding = '20px 24px';
+                    links.style.borderBottom = '1px solid #e5e7eb';
+                    links.style.gap = '18px';
+                }
+            });
+        })();
+    </script>
+
+    <!-- ================= Contact form (async) ================= -->
+    <script>
+        (function () {
+            const form = document.getElementById('contactForm');
+            if (!form) return;
+
+            const submitBtn = document.getElementById('submitBtn');
+            const status = document.getElementById('formStatus');
+            const statusIcon = document.getElementById('formStatusIcon');
+            const statusText = document.getElementById('formStatusText');
+
+            const API_URL = "{% url 'landing:contact_message' %}";
+
+            function getCsrfToken() {
+                const input = form.querySelector('input[name="csrfmiddlewaretoken"]');
+                if (input) return input.value;
+                const m = document.cookie.match(/csrftoken=([^;]+)/);
+                return m ? m[1] : '';
+            }
+
+            function clearErrors() {
+                form.querySelectorAll('.form-error').forEach(el => {
+                    el.textContent = '';
+                    el.classList.remove('show');
+                });
+            }
+
+            function showFieldErrors(errors) {
+                Object.entries(errors).forEach(([field, msgs]) => {
+                    const el = form.querySelector(`[data-error="${field}"]`);
+                    if (el) {
+                        el.textContent = Array.isArray(msgs) ? msgs.join(' ') : msgs;
+                        el.classList.add('show');
+                    }
+                });
+            }
+
+            function showStatus(type, message) {
+                status.classList.remove('success', 'error');
+                status.classList.add('show', type);
+                statusIcon.className = type === 'success'
+                    ? 'fas fa-circle-check'
+                    : 'fas fa-circle-exclamation';
+                statusText.textContent = message;
+
+                if (type === 'success') {
+                    setTimeout(() => {
+                        status.classList.remove('show');
+                    }, 6000);
+                }
+            }
+
+            function setLoading(loading) {
+                submitBtn.classList.toggle('loading', loading);
+                submitBtn.disabled = loading;
+                submitBtn.innerHTML = loading
+                    ? '<span class="spinner"></span><span>Sending...</span>'
+                    : '<i class="fas fa-paper-plane"></i><span>Send Message</span>';
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                clearErrors();
+
+                const data = {
+                    name: form.name.value.trim(),
+                    email: form.email.value.trim(),
+                    subject: form.subject.value.trim(),
+                    message: form.message.value.trim(),
+                };
+
+                // Basic client-side validation
+                if (!data.name) {
+                    showFieldErrors({ name: ['Please enter your name.'] });
+                    return;
+                }
+                if (!data.email) {
+                    showFieldErrors({ email: ['Please enter your email.'] });
+                    return;
+                }
+                if (!data.message) {
+                    showFieldErrors({ message: ['Please write a message.'] });
+                    return;
+                }
+
+                setLoading(true);
+
+                try {
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCsrfToken(),
+                            'Accept': 'application/json',
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify(data),
+                    });
+
+                    let payload = {};
+                    try { payload = await res.json(); } catch (_) { /* ignore */ }
+
+                    if (res.ok) {
+                        showStatus('success', payload.detail || 'Your message has been sent successfully.');
+                        form.reset();
+                    } else {
+                        if (payload && typeof payload === 'object' && !payload.detail) {
+                            showFieldErrors(payload);
+                            showStatus('error', 'Please fix the highlighted fields.');
+                        } else {
+                            showStatus('error', payload.detail || 'Something went wrong. Please try again.');
+                        }
+                    }
+                } catch (err) {
+                    showStatus('error', 'Network error. Please check your connection and try again.');
+                } finally {
+                    setLoading(false);
+                }
+            });
+        })();
+    </script>
+
+</body>
+
+</html>

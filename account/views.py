@@ -24,7 +24,7 @@ from django.views.generic import (
 )
 
 from .forms import CustomCreationForm, ProfileForm, UserForm
-from .models import Profile, SiteManager
+from .models import Profile
 
 User_Model = get_user_model()
 INTERNAL_REGISTRATION_SESSION_TOKEN = "_registration_token"
@@ -261,15 +261,6 @@ class SearchView(LoginRequiredMixin, TemplateView):
 
 class NotificationView(LoginRequiredMixin, TemplateView):
     template_name = "together/notification.html"
-
-
-class ContactMe(TemplateView):
-    template_name = "together/contact-me.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["manager"] = SiteManager.objects.first()
-        return context
 
 
 class CustomLoginView(LoginView):

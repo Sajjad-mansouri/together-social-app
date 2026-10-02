@@ -1,0 +1,18 @@
+{% load i18n %}{% autoescape off %}
+{% translate "Hello" %} {{ name }},
+
+{% translate "Thank you for taking the time to send us a message through the Together platform. We'll review it and get back to you shortly." %}
+
+{% translate "Your message summary:" %}
+- {% translate "Name" %}: {{ name }}
+- {% translate "Email" %}: {{ email }}
+{% if subject %}- {% translate "Subject" %}: {{ subject }}{% endif %}
+- {% translate "Message" %}: {{ message }}
+
+{% translate "If you did not submit this request, please ignore this email — no action is needed." %}
+
+{% translate "Best regards," %}
+{{ developer_name|default:'Sajjad Mansouri' }}
+{% translate "Backend Developer & Creator of Together" %}
+{{ site_name|default:'Together' }} — {{ site_address }}
+{% endautoescape %}

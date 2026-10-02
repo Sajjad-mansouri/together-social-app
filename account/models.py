@@ -68,11 +68,6 @@ class Notification(models.Model):
         indexes = [models.Index(fields=["content_type", "object_id"])]
 
 
-class AboutSite(models.Model):
-    text = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
-
-
 class SiteManager(models.Model):
     description = models.TextField()
     linkedin = models.CharField(max_length=100)
