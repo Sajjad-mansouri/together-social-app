@@ -515,7 +515,7 @@ function deleteComment(comment, postId, responseComment = false) {
 const form = document.getElementById('upload-form');
 const img_container = document.querySelector("#image-container");
 
-form.addEventListener('change', handleSubmit);
+form?.addEventListener('change', handleSubmit);
 
 let img_url;
 //add the image post
@@ -2044,6 +2044,7 @@ if (pathName.includes('profile')) {
             let title = element.getAttribute('data-list')
             let username = element.getAttribute('data-owner')
             modalTitle.textContent = title
+            console.log("current user", currentUser)
             if (currentUser != null) {
 
 

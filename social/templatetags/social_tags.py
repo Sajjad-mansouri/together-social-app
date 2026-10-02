@@ -5,7 +5,7 @@ from django.db.models import Count, Q
 from user_agents import parse
 
 from account.models import Contact, Notification
-from social.models import Like, Message
+from social.models import Like, Message, SavePost
 
 UserModel = get_user_model()
 register = template.Library()
@@ -41,22 +41,23 @@ def count_like(post_id):
 @register.simple_tag(takes_context=True)
 def is_saved(context, post_id):
     user = context["user"]
-    try:
-        message = Message.objects.get(id=post_id)
-        return user in message.saved_post.all()
 
-    except Exception:
-        return False
+    return SavePost.objects.filter(
+        post_id=post_id,
+        user=user,
+    ).exists()
 
 
 @register.simple_tag(takes_context=True)
 def saved_post_id(context, post_id):
     user = context["user"]
-    try:
-        message = Message.objects.get(id=post_id)
-        return message.saved_posts.get(user=user).id
-    except Exception as e:
-        print(e)
+
+    saved_post = SavePost.objects.filter(
+        user=user,
+        post_id=post_id,
+    ).first()
+
+    return saved_post.id if saved_post else None
 
 
 @register.simple_tag(takes_context=True)

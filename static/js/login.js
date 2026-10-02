@@ -2,7 +2,7 @@ import { getToken, login } from './get-token.js'
 
 /* ================= Login form ================= */
 let loginForm = document.querySelector('.login form')
-console.log(loginForm)
+
 loginForm.addEventListener('submit', (event) => {
     login(event)
 })

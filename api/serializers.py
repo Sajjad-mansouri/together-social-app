@@ -34,56 +34,46 @@ class PostSerializer(serializers.ModelSerializer):
     owner = serializers.SerializerMethodField("get_author")
 
     def liked(self, obj):
-        user = self._context["request"].user
-
-        try:
-            like_obj = user.like_set.get(post=obj)
-        except Like.DoesNotExist:
-            like_obj = None
-
+        user = self.context["request"].user
         like_count = obj.likes.count()
 
-        try:
-            user_likes = user.like_set.values_list("post", flat=True)
-        except AttributeError:
-            user_likes = []
+        if not user.is_authenticated:
+            return False, None, like_count
 
-        if obj.id in user_likes:
-            return (True, like_obj.id, like_count)
-        else:
-            return (False, None, like_count)
+        like_obj = Like.objects.filter(
+            user=user,
+            post=obj,
+        ).first()
+
+        if like_obj:
+            return True, like_obj.id, like_count
+
+        return False, None, like_count
 
     is_liked = serializers.SerializerMethodField("liked")
 
     def saved(self, obj):
-        user = self._context["request"].user
+        user = self.context["request"].user
 
-        try:
-            saved_obj = user.savepost_set.get(post=obj)
-        except SavePost.DoesNotExist:
-            saved_obj = None
+        if not user.is_authenticated:
+            return False, None
 
-        try:
-            user_saves = user.savepost_set.values_list("post", flat=True)
-        except AttributeError:
-            user_saves = []
+        saved_obj = SavePost.objects.filter(
+            user=user,
+            post=obj,
+        ).first()
 
-        if obj.id in user_saves:
-            return (True, saved_obj.id)
-        else:
-            return (False, None)
+        if saved_obj:
+            return True, saved_obj.id
+
+        return False, None
 
     is_saved = serializers.SerializerMethodField("saved")
 
     def to_internal_value(self, data):
-        user = self._context["request"].user.id
-        data["user"] = user
+        data = data.copy()
+        data["user"] = self.context["request"].user.id
         return super().to_internal_value(data)
-
-    def is_valid(self, raise_exception=False):
-        valid = super().is_valid()
-
-        return valid
 
     class Meta:
         model = Message
@@ -97,7 +87,10 @@ class PostSerializer(serializers.ModelSerializer):
             "is_liked",
             "is_saved",
         ]
-        read_only_fields = ["owner", "is_liked"]
+        read_only_fields = [
+            "owner",
+            "is_liked",
+        ]
 
 
 class SearchSerializer(serializers.ModelSerializer):
