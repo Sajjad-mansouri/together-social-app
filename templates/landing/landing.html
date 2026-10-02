@@ -1337,12 +1337,12 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="id_name">{% translate "Your Name" %} <span class="req">*</span></label>
-                                <input type="text" id="id_name" name="name" required >
+                                <input type="text" id="id_name" name="name" required placeholder="Your Name">
                                 <p class="form-error" data-error="name"></p>
                             </div>
                             <div class="form-group">
                                 <label for="id_email">{% translate "Your Email" %} <span class="req">*</span></label>
-                                <input type="email" id="id_email" name="email" required >
+                                <input type="email" id="id_email" name="email" required  placeholder="example@email.com">
                                 <p class="form-error" data-error="email"></p>
                             </div>
                         </div>
@@ -1438,17 +1438,7 @@
                     </ul>
                 </div>
 
-                <div class="footer-col">
-                    <h4>{% translate "Resources" %}</h4>
-                    <ul>
-                        <li><a href="#">{% translate "Documentation" %}</a></li>
-                        <li><a href="#">{% translate "API Reference" %}</a></li>
-                        <li><a href="#">{% translate "GitHub Repo" %}</a></li>
-                        {% if contact and contact.email %}
-                        <li><a href="mailto:{{ contact.email }}">{% translate "Email us" %}</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
+
             </div>
 
             <div class="footer-bottom">

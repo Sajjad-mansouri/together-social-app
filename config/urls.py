@@ -26,10 +26,10 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("account/", include("account.urls")),
     path("api/", include("api.urls")),
-    path("", include("social.urls")),
+    path("main/", include("social.urls")),
     path("search/", SearchView.as_view(), name="search"),
     path("notifications/", NotificationView.as_view(), name="notifications"),
-    path("landing/", include("landing.urls")),
+    path("", include("landing.urls")),
 ]
 
 

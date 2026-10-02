@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import AllowAny
@@ -13,6 +13,8 @@ from .tasks import send_email_task
 
 @require_http_methods(["GET"])
 def landing_page(request):
+    if request.user.is_authenticated:
+        return redirect("social:home")
     context = {
         "features": SiteFeature.objects.prefetch_related("items").all(),
         "highlights": SiteHighlight.objects.prefetch_related("endpoints").all(),
