@@ -78,7 +78,7 @@ window.onload = async function () {
 /* ================= Fetch typing features ================= */
 async function fetchTypingValues() {
     const endpoint = document.body.dataset.typingEndpoint
-        || '/landing/get-site-feature/'   // fallback
+        || '/get-site-feature/'   // fallback
 
     const CACHE_KEY = 'typing_features_v1'
 
