@@ -1513,11 +1513,26 @@ button.log_btn:hover {
 }
 .profile_container .profile_info .cart .img img {
   width: 150px;
+  height: 150px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  background-color: var(--c-border-soft);
+  border: 3px solid var(--c-bg);
+  box-shadow: 0 0 0 1px var(--c-border-soft);
+  transition: box-shadow .2s ease;
 }
+.profile_container .profile_info .cart .img img:hover {
+  box-shadow: 0 0 0 1px var(--c-accent);
+}
+
 @media screen and (max-width: 498px) {
   .profile_container .profile_info .cart .img img {
     width: 100px;
+    height: 100px;
+    border-width: 2px;
   }
 }
 .profile_container .profile_info .info {
@@ -1653,4 +1668,399 @@ button.log_btn:hover {
     max-width: 200px;
     max-height: 200px;
   }
+}
+
+
+/* ============================================================
+   POST CARD — modern feed styling
+   Preserves all JS hooks: .like, .save, .loved, .not_loved,
+   .chat, .more, data-post, data-like, data-saved.
+   Uses project's existing breakpoints (768px / 498px).
+   `.posts:not(.hide)` is required so that `.hide` in profile's
+   mobile view still wins and keeps the block hidden until the
+   user clicks a post.
+   ============================================================ */
+
+/* ---------- Feed container (home & mobile profile) ---------- */
+.main_section .posts_container .posts:not(.hide) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 0 60px;
+}
+
+/* ---------- Post card ---------- */
+.main_section .posts_container .posts .post {
+  width: 100%;
+  max-width: 540px;
+  background: #ffffff;
+  border: 1px solid #efefef;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, .04);
+  transition: transform .2s ease,
+              box-shadow .2s ease,
+              border-color .2s ease;
+  position: relative;
+}
+
+.main_section .posts_container .posts .post:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .08);
+  border-color: rgba(131, 58, 180, .15);
+}
+
+/* Gradient hairline on top (reveals on hover) */
+.main_section .posts_container .posts .post::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+  opacity: 0;
+  transition: opacity .25s ease;
+  z-index: 1;
+}
+.main_section .posts_container .posts .post:hover::before {
+  opacity: 1;
+}
+
+/* ---------- Header ---------- */
+.main_section .posts_container .posts .post .info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f4f4f5;
+  background: #ffffff;
+}
+
+.main_section .posts_container .posts .post .info .person {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.main_section .posts_container .posts .post .info .person img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  padding: 2px;
+  background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+  flex-shrink: 0;
+}
+
+.main_section .posts_container .posts .post .info .person a {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color .15s;
+}
+.main_section .posts_container .posts .post .info .person a:hover {
+  color: #833ab4;
+}
+
+.main_section .posts_container .posts .post .info .person .circle {
+  display: inline-block;
+  color: #9ca3af;
+  font-size: 18px;
+  line-height: 1;
+  position: relative;
+  top: -2px;
+}
+
+.main_section .posts_container .posts .post .info .person > span:last-child {
+  font-size: 12.5px;
+  color: #9ca3af;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.main_section .posts_container .posts .post .info .more {
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+  flex-shrink: 0;
+}
+.main_section .posts_container .posts .post .info .more:hover {
+  background: #f4f4f5;
+}
+.main_section .posts_container .posts .post .info .more img {
+  width: 18px;
+  height: 18px;
+  opacity: .7;
+}
+
+/* ---------- Image ---------- */
+.main_section .posts_container .posts .post .image {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(135deg, #faf5ff 0%, #fef2f2 50%, #fffbeb 100%);
+  overflow: hidden;
+}
+
+.main_section .posts_container .posts .post .image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  max-height: 620px;
+  border-radius: 0;
+  border: none;
+  transition: transform .4s ease;
+}
+.main_section .posts_container .posts .post:hover .image img {
+  transform: scale(1.01);
+}
+
+/* ---------- Action bar ---------- */
+.main_section .posts_container .posts .post .desc {
+  padding: 12px 16px 16px;
+}
+
+.main_section .posts_container .posts .post .desc .icons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0 8px;
+}
+
+.main_section .posts_container .posts .post .desc .icons .icon_left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.main_section .posts_container .posts .post .desc .icons .icon_left > div,
+.main_section .posts_container .posts .post .desc .icons .save {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: background .15s, transform .15s;
+  position: relative;
+}
+
+.main_section .posts_container .posts .post .desc .icons .icon_left > div:hover,
+.main_section .posts_container .posts .post .desc .icons .save:hover {
+  background: #f4f4f5;
+  transform: scale(1.08);
+}
+
+.main_section .posts_container .posts .post .desc .icons .icon_left > div:active,
+.main_section .posts_container .posts .post .desc .icons .save:active {
+  transform: scale(.94);
+}
+
+.main_section .posts_container .posts .post .desc .icons img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Heart / save toggle — preserves JS logic
+   (.loved / .saved hidden by default, shown when JS adds .display) */
+.main_section .posts_container .posts .post .desc .icons .loved,
+.main_section .posts_container .posts .post .desc .icons .saved {
+  display: none;
+}
+
+.main_section .posts_container .posts .post .desc .icons .loved.display,
+.main_section .posts_container .posts .post .desc .icons .saved.display,
+.main_section .posts_container .posts .post .desc .icons .saved:not(.hide) {
+  display: block;
+}
+
+.main_section .posts_container .posts .post .desc .icons .hide_img {
+  display: none !important;
+}
+
+.main_section .posts_container .posts .post .desc .icons .hide {
+  display: none !important;
+}
+
+/* Heart pop animation when liked */
+.main_section .posts_container .posts .post .desc .icons .like[data-type="True"] img.loved,
+.main_section .posts_container .posts .post .desc .icons .like[data-type="true"] img.loved {
+  animation: heartPop .35s cubic-bezier(.34, 1.56, .64, 1);
+}
+@keyframes heartPop {
+  0%   { transform: scale(.6); }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- Liked count ---------- */
+.main_section .posts_container .posts .post .desc .liked {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  padding: 4px 0 6px;
+  min-height: 20px;
+}
+.main_section .posts_container .posts .post .desc .liked span {
+  font-weight: 700;
+}
+
+/* ---------- Description text ---------- */
+.main_section .posts_container .posts .post .desc .post_desc {
+  font-size: 14px;
+  line-height: 1.65;
+  color: #1a1a1a;
+  padding-top: 4px;
+}
+.main_section .posts_container .posts .post .desc .post_desc > p {
+  margin: 0 0 6px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+.main_section .posts_container .posts .post .desc .post_desc .bold {
+  font-weight: 700;
+  color: #1a1a1a;
+  text-decoration: none;
+  margin-right: 6px;
+}
+.main_section .posts_container .posts .post .desc .post_desc .bold:hover {
+  color: #833ab4;
+}
+.main_section .posts_container .posts .post .desc .post_desc .post_text span {
+  color: #333;
+  font-weight: 400;
+}
+
+/* ---------- View comments ---------- */
+.main_section .posts_container .posts .post .desc .view-comments {
+  margin: 6px 0 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  min-height: 0;
+}
+.main_section .posts_container .posts .post .desc .view-comments a.gray {
+  color: #9ca3af;
+  text-decoration: none;
+  transition: color .15s;
+}
+.main_section .posts_container .posts .post .desc .view-comments a.gray:hover {
+  color: #6b7280;
+  text-decoration: underline;
+}
+.main_section .posts_container .posts .post .desc .view-comments a.gray span {
+  font-weight: 600;
+  color: #6b7280;
+}
+
+/* ---------- Hidden template clone ---------- */
+.main_section .posts_container .posts .post-clone.hide {
+  display: none;
+}
+
+/* ============================================================
+   Responsive — uses project's existing breakpoints only.
+   ============================================================ */
+
+/* --- Tablet (matches existing 768px) --- */
+@media screen and (max-width: 768px) {
+  .main_section .posts_container .posts:not(.hide) {
+    gap: 18px;
+    padding: 14px 0 50px;
+  }
+
+  .main_section .posts_container .posts .post {
+    max-width: 100%;
+    border-radius: 14px;
+  }
+
+  .main_section .posts_container .posts .post .info {
+    padding: 12px 14px;
+  }
+
+  .main_section .posts_container .posts .post .info .person img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .main_section .posts_container .posts .post .desc {
+    padding: 10px 14px 14px;
+  }
+
+  .main_section .posts_container .posts .post .desc .icons img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .main_section .posts_container .posts .post .image img {
+    max-height: 520px;
+  }
+}
+
+/* --- Mobile (matches existing 498px) --- */
+@media screen and (max-width: 498px) {
+  .main_section .posts_container .posts:not(.hide) {
+    gap: 12px;
+    padding: 8px 0 40px;
+  }
+
+  .main_section .posts_container .posts .post {
+    max-width: 100%;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+  }
+
+  .main_section .posts_container .posts .post:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .main_section .posts_container .posts .post::before {
+    display: none;
+  }
+
+  .main_section .posts_container .posts .post .image img {
+    max-height: 500px;
+  }
+}
+
+
+/* ============================================================
+   Nav avatar (sidebar + bottom nav) — round, clean, modern
+   Scoped to nav only; does NOT touch `.story` global.
+   ============================================================ */
+.nav .menu ul li a img.circle,
+.nav_bottom img.circle {
+  width: 24px;
+  height: 24px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  box-sizing: border-box;
+  padding: 0;
+  border: 2px solid var(--c-bg);
+  background-color: var(--c-border-soft);
+  box-shadow: 0 0 0 1px var(--c-border);
+  transition: box-shadow .2s ease;
+}
+.nav .menu ul li a:hover img.circle,
+.nav .menu ul li a.active img.circle,
+.nav_bottom a:hover img.circle {
+  box-shadow: 0 0 0 1.5px var(--c-accent);
 }

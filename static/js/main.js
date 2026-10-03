@@ -190,7 +190,7 @@ function createCommentElement(modalBody, commentsSection, item, postId, post = f
         let replyTO = item.id
         let commentUser = item.author.username;
         let mainComment = item.id
-        if (window.screen.width <= 498 || pathName == '/') {
+        if (window.screen.width <= 498 || pathName == '/main/') {
 
             let postElement = document.querySelector(`[data-post="${postId}"]`)
             let viewComments = postElement.querySelector('.view-comments')
@@ -621,10 +621,10 @@ function addPostProfile(data, saved = false) {
 function addPost(data) {
     //add post in home
     let pathName = window.location.pathname;
-    if (pathName == '/') {
+    if (pathName == '/main/') {
         addPostHome(data)
     }
-    if (pathName == '/profile/') {
+    if (pathName == '/main/profile/') {
         addPostProfile(data)
         addPostHome(data)
     }
@@ -1116,7 +1116,7 @@ function addEventListeners(newPost = false) {
 }
 
 
-if (pathName == '/') {
+if (pathName == '/main/') {
 
     addEventListeners()
 }
@@ -1305,7 +1305,7 @@ if (currentUser != null) {
 
 
 let closeDeactivateModal=null
-if (pathName == '/settings/') {
+if (pathName == '/main/settings/') {
     let tab = document.querySelector('.tab')
     let tabBtn = document.querySelectorAll('.tablinks')
     let user = document.getElementById('user').textContent
