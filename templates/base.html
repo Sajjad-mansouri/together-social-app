@@ -38,7 +38,7 @@
                             <li>
                                 <a class=" home {%if request.path == '/' %}active{%endif%}" href="{% url 'social:home'%}">
                                     <img src="
-                                    {%if request.path != '/' %}
+                                    {%if request.path != '/main/' %}
                                     {%static 'images/home.png' %}"
                                     {%else%}
                                     {%static 'images/accueil.png' %}"
@@ -67,7 +67,7 @@
                             </li>
                             <li>
                                 {%user_profile_path as user_profile_path%}
-                                <a class='profile {%if request.path == "/profile/"  or request.path == user_profile_path %}active{%endif%}' href="{%url 'social:profile' %}">
+                                <a class='profile {%if request.path == "/main/profile/"  or request.path == user_profile_path %}active{%endif%}' href="{%url 'social:profile' %}">
                                     <img class="circle story" src="{{user.profile.profile_image.url}}">
                                     <span class="d-none d-lg-block ">Profile</span>
                                 </a>

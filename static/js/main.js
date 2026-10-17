@@ -1146,7 +1146,7 @@ async function searchUser(findDiv, searchValue) {
             account.className = 'account'
 
             let a = account.querySelector('a')
-            a.href = `${baseUrl}/profile/${data.username}`
+            a.href = `${baseUrl}/main/profile/${data.username}`
             let imageDiv = account.querySelector('.img');
             let image = document.createElement('img')
             image.src = data.profile_image
@@ -1695,7 +1695,7 @@ async function connectionList(queryType, username) {
             connectionList.setAttribute('data-relation', data.relation)
 
             let link = document.createElement('a')
-            link.href = `${baseUrl}/profile/${data.username}`
+            link.href = `${baseUrl}/main/profile/${data.username}`
 
             let image = document.createElement('img')
             image.src = data.profile_image
